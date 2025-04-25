@@ -1,0 +1,5 @@
+# Machine Epsilon
+
+Every floating-point format has a worst-case relative error for a single [rounding](/concept/rounding) operation. This is often called **machine epsilon** and represented in [the theorems](/theorem) as $$\epsilon$$.
+
+In **round-to-nearest** mode, $$\epsilon = \frac{1}{2} \cdot \text{ulp}(1)$$, where $$\text{ulp}(1)$$ is the [unit in the last place](/concept/ulp) for the number 1. For [IEEE 754 double precision](/format/fp64), $$ \epsilon = 2^{-53}$$, which implies that a correctly rounded floating-point number $$ \hat{x} $$ differs from $$ x $$ by at most about 1 part in $$ 2^{53} $$ for a well-behaved computation.

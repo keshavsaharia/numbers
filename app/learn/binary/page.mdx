@@ -1,0 +1,29 @@
+# Binary numbers
+
+Humans represents numbers in **base 10** - that is, with 10 different digits.
+
+- HumanNumber
+
+Each digit corresponds to a power of 10. Humans also occassionally write numbers in **base 16**, where the letters `a` through `f` represent the numbers `10` through `15`.
+
+- ColorPicker
+
+Regardless of which human representation you choose, a computer will represent that number in **base 2**, with only the digits 0 and 1. This roughly corresponds to the presence or non-presence of an electrical current.
+
+- BinaryNumber
+
+Each digit of a binary number is referred to as a **bit**. 
+
+You can experiment with the 8 bit binary number below, by clicking on the bits to change them from 0 to 1.
+
+<BinaryNumber unsigned length={ 8 } showTotal showSum/>
+
+Each digit represents a power of 2, just like our human numbering system uses each digit to represent a power of 10. A group of 8 bits is called a **byte**, and a single byte can represent 2<sup>8</sup> (256) different values.
+
+<BinaryNumber unsigned length={ 16 } showTotal showSum/>
+
+In the example above, we are using 8 bits to represent an **unsigned integer**. If we want to store negative numbers, we can dedicate 1 bit as a **sign bit** to store 0 for positive numbers and 1 for negative numbers.
+
+<BinaryNumber length={ 8 } showTotal showSum/>
+
+Try clicking the sign bit to see how the resulting value changes. If we allowed the sign bit to simply control whether there is a negative sign or not, we would have two binary numbers that both represent zero - `10000000` (negative zero) and `00000000` (positive zero). To avoid ambiguity, along with a variety of other reasons, computers represent negative numbers in [two's complement](https://en.wikipedia.org/wiki/Two%27s_complement). If the sign bit is `1`, then **invert** all bits (i.e. `1` is considered a `0`, and `0` is `1`) and add 1 to the sum to get the negative number. 

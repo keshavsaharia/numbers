@@ -1,0 +1,41 @@
+<TableOfContents/>
+
+# FP4
+
+4 bit floating point numbers were introduced in a paper titled [Ultra-Low Precision 4-bit Training of Deep Neural Networks](https://papers.nips.cc/paper/2020/file/13b919438259814cd5be8cb45877d577-Paper.pdf). As the title implies, the purpose of 4 bit floating point numbers is to improve the speed and efficiency of a machine learning system. But how can you possible cram a [sign, exponent, and significand](/learn/floats) into only 4 bits?
+
+## How FP4 works
+
+The FP4 format is specialized for representing a dense range of values around zero, which is a common characteristic of weights and activations in trained neural networks. Traditional floating-point formats like [FP32](/format/fp32) and [FP16](/format/fp16) offer higher precision but are increasingly seen as wasteful for inference tasks where performance and power efficiency are paramount. 
+
+### E2M1
+
+The **FP4 (E2M1)** format, as defined in the [OCP Microscaling Formats](/spec/ocpmx), allocates the 4 bits of an FP4 as 1 sign bit, 2 exponent bits, and 1 mantissa bit. This format supports representation of finite numbers, zero, and even `NaN` (Not a Number). Two FP4 values are typically packed into a single byte to optimize storage and bandwidth.
+
+### Integration with Microscaling (MX)
+
+In the MX framework, FP4 is employed within a block floating-point system, where a group of floating point values (commonly 32) share a single scaling factor. An 8-bit shared exponent (E8M0) is used across the block, allowing for a wider dynamic range than individual FP4 elements could achieve alone. This structure balances the low precision of FP4 with the need for dynamic range. It has been shown that FP4 in MX format can lead to significant reductions in memory usage and computational overhead, with minimal impact on model accuracy.
+
+Advanced methods, such as stochastic rounding and the use of random [Hadamard transforms](https://en.wikipedia.org/wiki/Hadamard_transform), have been employed to mitigate potential accuracy losses when training with FP4.
+
+## DeepSeek R1
+
+[DeepSeek R1 FP4](https://huggingface.co/nvidia/DeepSeek-R1-FP4) is a quantized version of the [DeepSeek R1 language model](https://api-docs.deepseek.com/news/news250120) that utilizes FP4 precision to enhance inference efficiency. FP4 quantization was a key architecture choice that significantly reduces the model's size and computational requirements while maintaining high accuracy.
+
+The quantization to FP4 is achieved through [NVIDIA's TensorRT Model Optimizer](https://github.com/NVIDIA/TensorRT-Model-Optimizer), which applies **post-training quantization** (PTQ) techniques. This process minimizes accuracy loss compared to the [FP8](/numbers/quantize/fp8) baseline across various datasets.
+
+DeepSeek R1 FP4 was optimized for deployment on NVIDIA's [Blackwell architecture](https://www.nvidia.com/en-us/data-center/technologies/blackwell-architecture/), leveraging fifth-generation Tensor Cores capable of delivering up to 20 petaflops of peak FP4 compute performance (see [notes on NVIDIA](#notes-on-nvidia) below for the caveats to this). This optimization allows for efficient inference on context lengths up to 128K tokens.
+
+The model is [open-source](https://huggingface.co/nvidia/DeepSeek-R1-FP4) and available for both commercial and non-commercial use.
+
+## NVIDIA
+
+In 2024, [NVIDIA](#nvidia) announced that FP4 had allowed them to 5X the performance of their [Blackwell GPU architecture](https://www.nvidia.com/en-us/data-center/technologies/blackwell-architecture/) over their [Hopper architecture](https://www.nvidia.com/en-us/data-center/technologies/hopper-architecture/) from two years prior, which employed [FP8](/numbers/quantize/fp8). 
+
+While weights can be saved in low precision, even a simple matrix multiplication on a vector of a couple thousand weights will easily overflow with 4 bit and 8 bit numbers. While some operations stay within acceptable error boundaries with [FP8](/numbers/quantize/fp8), certain computed sums must be stored in [BF16](/numbers/quantize/bf16) or [FP16](/numbers/quantize/fp16). Training exacerbates this issue because [back propagation] often requires the precision to be kept - it is often only after training that the model weights can be compressed down to 4 bits. The limiting factor is 16 bit floating point operations.
+
+While an [H100](https://www.nvidia.com/en-us/data-center/h100/) may achieve 2000 TFLOPS in FP16/BF16, the Blackwell architecture is likely ~5000 TFLOPS in FP16/BF16. What NVIDIA has achieved in a single chip is about 250x performance of FP16 in 8 years.
+
+### PyTorch
+
+Efforts are underway to integrate FP4 support into major machine learning frameworks like [PyTorch](https://pytorch.org/docs/main/quantization.html), which currently supports a minimum quantization of [FP16](/numbers/quantize/fp16). There is [this research paper](https://github.com/nbasyl/LLM-FP4) that created a Pytorch implementation of FP4 quantization, and [this extension](https://github.com/aredden/torch-bnb-fp4) for providing FP4 operations as a Torch C++ extension.

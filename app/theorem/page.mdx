@@ -1,0 +1,13 @@
+import theorems from '@/data/theorems'
+
+# Floating Point Numerical Analysis
+
+If you work on building computer systems, chances are you'll need to understand how floating-point arithmetic works at a deeper level. Surprisingly, there aren't many clear and detailed resources out there on the topic. 
+
+The theorems below are a practical introduction to the numerical analysis behind floating-point arithmetic. They are written for a technical audience, but should be comprehensible by anyone - even the less mathematically inclined. The purpose of these proofs is to understand how floating point calculations may be reasoned about in general, especially when it comes to rounding and exactness.
+
+<br/> <SectionListBox { ...theorems }/>
+
+## Exactness
+
+In floating-point, exactness is rare due to rounding. But knowing when you can subtract without error is useful for designing robust numerical algorithms—like square root calculations, computing differences, or detecting small perturbations.

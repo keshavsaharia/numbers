@@ -1,0 +1,33 @@
+<Theorem id="1"/>
+
+Using a floating-point format with parameters $$\beta$$ and $$p$$, and computing differences using $$p$$ digits, the relative error of the result can be as large as $$\beta - 1$$.
+
+## Summary
+
+This theorem shows that subtracting two floating-point numbers using only $$p$$ digits (no guard digit) can result in a very large relative error, up to $$\beta - 1$$, where $$\beta$$ is the number base (typically 2 or 10). The worst case happens when you subtract a number like $$1.000\ldots0$$ from a very close number like $$0.\rho\rho\ldots\rho$$, where $$\rho = \beta - 1$$. Because there aren't enough digits to capture the fine difference, the subtraction loses key information and the result is much less accurate.
+
+With base 10, this error could be 9 times the actual value, and in base 2, **every digit in the result could be incorrect** - a total failure of accuracy. To address this, floating-point systems use [guard digits](/concept/guard-digit) to keep extra precision during subtraction before rounding back to $$p$$ digits. This small change greatly improves accuracy, and allows the subtraction in the previous example to produce the exact result.
+
+However, even with a guard digit, the relative error may occasionally be slightly larger than the standard rounding error $$\epsilon$$, as shown in an example where the result differs by about 0.006 (compared to $$\epsilon = .005$$). Still, with a guard digit, the relative error stays small and controlled, which is why they are common in floating point systems.
+
+## Proof
+
+A relative error of $$\beta - 1$$ in the expression $$x - y$$ occurs when $$x = 1.000\ldots0$$ and $$y = .\rho\rho\ldots\rho$$ ($$p$$ digits all equal to $$\rho$$), where $$\rho = \beta - 1$$. The exact difference here is $$x - y = \beta^{-p}$$. However, when computing the answer using only $$p$$ digits, the rightmost digit of $$y$$ gets shifted off, so the computed difference is $$\beta^{-p + 1}$$. Thus the error is $$\beta^{-p} - \beta^{-p+1} = \beta^{-p}(\beta - 1)$$, and the relative error is $$\beta^{-p}(\beta - 1)/\beta^{-p} = \beta - 1$$. $$\blacksquare$$
+
+## Discussion
+
+When $$\beta = 2$$, the relative error can be as large as the result, and when $$\beta = 10$$, it can be 9 times larger. Or to put it another way, when $$\beta = 2$$, equation (3) shows that the number of contaminated digits is $$\log(\frac{1}{e}) = log2(2p) = p$$. That is, all of the $$p$$ digits in the result are wrong! 
+
+Suppose that one extra digit is added to guard against this situation (a guard digit). That is, the smaller number is truncated to $$p + 1$$ digits, and then the result of the subtraction is rounded to $$p$$ digits. With a guard digit, the previous example becomes
+
+$$x = 1.010 \times 101$$ <br/>
+$$y = 0.993 \times 101$$ <br/>
+$$x - y = .017 \times 101$$
+
+Thus the answer is exact. With a single guard digit, the relative error of the result may be greater than $$\epsilon$$, as in $$110 - 8.59$$.
+
+$$x = 1.10 \times 102$$ <br/>
+$$y = .085 \times 102$$ <br/>
+$$x - y = 1.015 \times 102$$
+
+This rounds to $$102$$, compared with the correct answer of $$101.41$$, for a relative error of $$.006$$, which is greater than $$\epsilon = .005$$. In general, the relative error of the result can be only slightly larger than $$\epsilon$$.

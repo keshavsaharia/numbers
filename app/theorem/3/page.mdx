@@ -1,0 +1,21 @@
+<Theorem id="3"/>
+
+## Theorem
+
+The rounding error incurred when using the following formula to compute the area of a triangle:
+
+<div>
+$$ A = \frac{\sqrt{(a + (b + c))(c - (a - b))(c + (a - b))(a + (b - c))}}{4}, a \ge b \ge c $$
+</div>
+
+is at most $$11\epsilon$$, provided that subtraction is performed with a guard digit, $$e \le .005$$, and square roots are computed to within $$\frac{1}{2}$$ [ulp](/concept/ulp).
+
+## Discussion
+
+The condition that $$\epsilon < .005$$ is true for virtually every real floating-point system. For example, when $$\beta = 2$$, $$\rho \ge 8$$ ensures that $$\epsilon < .005$$, and when $$\beta = 3$$, $$\rho \ge 3$$ is sufficient.
+
+A formal way to write the relative error of this expression is
+
+<div>
+$$ \sqrt((a \oplus (b \oplus c))(c \ominus (a \ominus b)) \otimes (c \oplus (a \ominus b))(a \oplus (b \ominus c))) \oslash 4 $$
+</div>

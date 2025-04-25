@@ -1,0 +1,12 @@
+# Guard digits
+
+TODO
+
+- Theorem 4
+
+The results of this section can be summarized by saying that a guard digit guarantees accuracy when nearby precisely known quantities are subtracted (benign cancellation). Sometimes a formula that gives inaccurate results can be rewritten to have much higher numerical accuracy by using benign cancellation; however, the procedure only works if subtraction is performed using a guard digit. The price of a guard digit is not high, because it merely requires making the adder one bit wider. For a 54 bit double precision adder, the additional cost is less than 2%. For this price, you gain the ability to run many algorithms such as formula (6) for computing the area of a triangle and the expression ln(1 + x). Although most modern computers have a guard digit, there are a few (such as Cray systems) that do not.
+
+
+When floating-point operations are done with a [guard digit](/concept/guard-digit), they are not as accurate as if they were computed exactly and then rounded to the nearest floating-point number. Operations performed in this manner are called **exactly rounded**. 
+
+The example immediately preceding Theorem 2 shows that a single guard digit will not always give exactly rounded results. The previous section gave several examples of algorithms that require a guard digit in order to work properly. This section gives examples of algorithms that require exact rounding.

@@ -1,0 +1,33 @@
+## Floating point numbers
+
+Floating point numbers represent numeric values in a binary form of scientific notation ($$a \times b^c$$). Each number consists of three parts:
+
+- The **sign** - a single bit which indicates whether the number is positive or negative, where `0` is positive and `1` is negative.
+- The **exponent** (written as $$\beta$$ ) - determines the *scale* of the number (how big or small it is). 
+- The **significand** (written as $$\rho\rho\rho\ldots\rho$$) determines the *precision* of the number (the actual digits), and is often referred to as the **mantissa**. 
+
+JavaScript uses [64-bit IEEE 754 double precision format](/numbers/quantize/fp64) for all numbers. This means that each 64 bit number uses 1 bit for the sign, 11 bits for the exponent, and 52 bits for the significand. 
+
+<FloatingPointNumber title="FP64" signed base={ 2 } exponent={ 11 } significand={ 52 }/>
+
+The equation for computing a decimal value from the binary representation above is
+
+<div className="text-center text-xl">
+    $$value = -1^{sign} \times 1.significand \times 2^{exponent - 1023}$$
+</div>
+
+### Floating point intuition
+
+Let's try to first understand this intuitively. The exponent is really just an interval between two successive powers of 2, like $$[1 \ldots 2]$$, $$[2 ... 4]$$, and so on. The significand is simply the offset within this interval. To see what this looks like, try entering values below to see their floating point decomposition, or click along the number line to see the sign, exponent, and significand change.
+
+<FloatingPointIntuition signed base={ 2 } exponent={ 11 } significand={ 52 }/>
+
+As a floating point number gets larger, it "floats" to the next interval, and as it gets smaller, it "floats" to the previous interval. Intervals closer to zero are "more dense", in the sense that the significand provides a more precise number along that interval.
+
+The significand is being displayed as a number, but it actually represents the sequence of binary digits of a **normalized value** which takes the form $$1.\rho\rho\ldots\rho$$. When we know the first digit is always a 1, we can actually get an extra bit of precision for free - this is called the [hidden bit trick](/numbers/hidden-bit-trick). 
+
+You will often see floating point numbers written in scientific notation ($$a \times b^c$$), but as you can see, this does not indicate a standard multiplication operation. 
+
+### Floating point proofs
+
+In floating point arithmetic and [associated proofs](/numbers/analysis), a floating point number is typically written as $$ \pm \rho\rho\rho\ldots\rho \times \beta^e$$, where $$\rho$$ represents digits of the significand, $$\beta$$ is the base, and $$e$$ is the exponent. 

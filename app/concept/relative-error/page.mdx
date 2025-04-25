@@ -1,0 +1,67 @@
+## Relative errors
+
+Different rounding strategies affect the results of basic math operations like addition, subtraction, multiplication, and division. There are two key ways to measure rounding error: [ulps](/concept/ulp) (units in the last place) and **relative error**.
+
+Relative error measures the size of the error in proportion to the true value. It provides a scale-invariant way to describe error (i.e. meaningful across different magnitudes), which is especially important in floating-point systems where numbers can span many orders of magnitude.
+
+Given an exact value $$x$$ and the **approximation** (e.g. due to rounding in floating-point) as $$\hat{x}$$, the relative error is $$\left| \frac{\hat{x} - x}{x} \right|$$. For example, an exact value $$.01$$ that is misrepresented as $$.02$$ would have a relative error of $$\frac{.02 - .01}{.01} = 1$$, and an exact value $$99.999$$ misrepresented as $$100$$ would have a relative error of $$\frac{100 - 99.999}{99.999} = .00001$$. 
+
+Relative error is dimensionless and generally expressed as a decimal or percentage.
+
+## Sources of Relative Error
+
+### Rounding
+
+Most operations or representations in floating-point round the result to the nearest representable number. This introduces a small error:
+
+$$ \hat{x} = \text{fl}(x) = x(1 + \delta), \quad |\delta| \leq \varepsilon $$
+
+Where $$ \delta $$ is the relative error due to rounding, and $$ \varepsilon $$ is the **machine epsilon** - the upper bound on relative error due to rounding in one operation.
+
+In IEEE 754 double precision, $$ \varepsilon = 2^{-53} \approx 1.11 \times 10^{-16} $$ - much lower than the machine epsilon used in [the theorems](/theorem) to demonstrate numerical stability of floating point calculations.
+
+### Cancellation
+
+When subtracting nearly equal numbers, significant digits can be lost, inflating relative error:
+
+$$ x = 1.23456789, \quad y = 1.23456780 \Rightarrow x - y = 0.00000009 $$
+
+If $$ x $$ and $$ y $$ are stored with limited precision, the small result may have few meaningful digits, leading to a high relative error in the result.
+
+### Propagation through Computation
+
+Operations like multiplication, division, and function evaluation (e.g., $$ \sin(x), \log(x) $$) can amplify small relative errors, especially in ill-conditioned algorithms.
+
+## Practical Implications
+
+Floating-point representations maintain **relative** precision, which means that large numbers have large absolute spacing between representable values, and small numbers have tightly packed representable values. This can cause accumulated relative error in summation of many large values, and potential loss of significance when subtracting close values ([catastrophic cancellation](/concept/cancellation)).
+
+### b. **Comparison Pitfalls**
+
+Relative error should often guide comparisons:
+```python
+def nearly_equal(a, b, rel_tol=1e-9):
+    return abs(a - b) <= rel_tol * max(abs(a), abs(b))
+```
+
+This approach handles floating-point comparisons more robustly than absolute difference alone.
+
+---
+
+## 8. Conclusion
+
+Relative error is a critical metric for understanding and managing the limitations of floating-point arithmetic. It provides a scale-aware way to analyze errors introduced by rounding, computation, and algorithmic instability.
+
+By keeping an eye on relative error, developers and scientists can:
+- Diagnose sources of inaccuracy.
+- Choose numerically stable algorithms.
+- Set appropriate tolerances for equality checks.
+- Avoid overinterpreting results near the limits of precision.
+
+---
+
+## Further Reading
+
+- David Goldberg, ["What Every Computer Scientist Should Know About Floating-Point Arithmetic"](https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html)
+- IEEE 754 Standard for Floating-Point Arithmetic
+- "Accuracy and Stability of Numerical Algorithms" by Nicholas J. Higham

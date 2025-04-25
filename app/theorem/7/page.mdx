@@ -1,0 +1,34 @@
+## Theorem
+
+When $$\beta = 2$$, if $$m$$ and $$n$$ are integers with $$|m| < 2^{p - 1}$$ and $$n$$ has the special form $$n = 2^i + 2^j$$, then $$(m \oslash n) \otimes n = m$$ if floating-point operations are exactly rounded.
+
+## Summary
+
+This theorem addresses the behavior of floating-point arithmetic if integers $$m$$ and $$n$$ satisfy $$|m| < 2^p - 1$$ and $$n$$ has the form $$n = 2^i + 2^j$$, then the operation $$(m \div n) \times n$$ yields exactly $$m$$, despite the involvement of division and multiplication.
+
+The proof shows that because scaling by powers of 2 doesn't affect the significand, we can normalize $$m$$ and $$ n $$ such that $$ \frac{1}{2} < \frac{m}{n} < 1 $$ and $$ m $$ has at most one bit after the binary point, to ensure rounding will be exact. The special structure of $$n$$ helps control rounding errors, particularly in edge cases like halfway rounding.
+
+## Proof
+
+Scaling by a power of two is harmless, since it changes only the exponent, not the significand. If $$q = \frac{m}{n}$$, scale $$n$$ so that $$2^{p - 1} \le n < 2^p$$ and scale $$m$$ so that $$\frac{1}{2} < q < 1$$. Thus, $$2^{p - 2} < m < 2^p$$. Since $$m$$ has $$p$$ significant bits, it has at most one bit to the right of the binary point. Changing the sign of $$m$$ is harmless, so assume that $$q > 0$$.
+
+If $$\overline{q} = m \oslash n$$, proving the theorem requires showing that $$ | n\overline{q} - m | \le \frac{1}{4}$$, because $$m$$ has at most 1 bit right of the binary point, so $$n\overline{q}$$ will round to $$m$$. To deal with the halfway case when $$ | n\overline{q} - m | = \frac{1}{4}$$, note that since the initial unscaled $$m$$ had $$|m| < 2^{p - 1}$$, its low-order bit was 0, so the low-order bit of the scaled $$m$$ is also 0. Thus, halfway cases will round to $$m$$.
+
+Suppose $$q = .q_1 q_2 \ldots$$, and let $$\hat{q} = .q_1 q_2 \ldots q_p 1$$. To estimate $$|n\overline{q} - m|$$, first compute 
+$$|\hat{q} - q| = |\frac{N}{2^{p + 1}} - \frac{m}{n}|$$, where $$N$$ is an odd integer. Since $$n = 2^i + 2^j$$ and $$2^{p - 1} \le n < 2^p$$, it must be that $$n = 2^{p - 1} + 2^k$$ for some $$k \le p - 2$$, and thus
+
+<Center>
+$$ |\hat{q} - q| = |\frac{nN - 2^{p + 1}m}{n 2^{p + 1}}| = |\frac{ (2^{p - 1 - k} + 1)N - 2^{p + 1 - k}m }{ n 2^{p + 1 - k} }| $$
+</Center>
+
+The numerator is an integer, and since $$N$$ is odd, it is in fact an odd integer. Thus, $$|\hat{q} - q| \ge \frac{1}{n 2^{p + 1 - k}}$$. Assume $$q < \hat{q}$$, which is similar to the case $$q > \hat{q}$$ - then $$n \overline{q} < m$$, and
+
+<Center>
+$$ |m - n \overline{q}| = m - n\overline{q} = n (q - \overline{q}) $$<br/>
+$$ = n(q - (\hat{q} - 2^{-p - 1})) \le n \lparen 2^{-p-1} - \frac{1}{n 2^{p + 1 - k}} \rparen $$ <br/>
+$$ = (2^{p - 1} + 2^k)2^{-p-1} + 2^{-p-1+k} = \frac{1}{4} \blacksquare $$
+</Center>
+
+## Discussion
+
+The theorem holds true for any base $$\beta$$, as long as $$2^i + 2^j$$ is replaced by $$\beta^i + \beta^j$$. As $$\beta$$ gets larger, however, denominators of the form $$\beta^i + \beta^j$$ are farther and farther apart. Most importantly, this theorem emphasizes that accurate rounding in basic operations is crucial not only for precision but also for proving exact algebraic relationships in floating-point arithmetic, even when inputs are only approximations of real values.

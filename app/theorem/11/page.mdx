@@ -1,0 +1,33 @@
+# Theorem 11
+
+When subtracting two floating-point numbers `x - y`, we usually lose some precision, especially if `x` and `y` are very close. However, under certain conditions where `x` and `y` are *close but not too close*, a [guard digit](/numbers/guard-digit) allows us to perform an exact subtraction when $$ \frac{y}{2} \le x \le 2y $$.
+
+## Detecting precision loss
+
+We can create a rudimentary mechanism for detecting precision loss during subtraction by scaling up the values before we subtract them, then scaling down the difference by the same factor. 
+
+```typescript {{ vfs: 'numeranal_11_intro' }}
+function checkSubtraction(x: number, y: number, factor = 1000) {
+    const diff = x - y
+    const scaledDiff = (x * factor - y * factor) / factor
+
+    console.log(`normal: ${ x } - ${ y } = ${ diff }`)
+    console.log(`scaled: ${ x } - ${ y } = ${ scaledDiff }`)
+}
+
+// Try values satisfying y/2 <= x <= 2y
+checkSubtraction(0.3, 0.15)
+checkSubtraction(0.29, 0.15)
+checkSubtraction(0.15, 0.08)
+checkSubtraction(0.15, 0.075)
+```
+
+Intuition suggests that this is true - now let's examine how we would construct a rigorous proof of this.
+
+## Proof
+
+If $$x$$ and $$y$$ have the same exponent, then certainly $$x \ominus y$$ is exact. Otherwise, from the condition of the theorem, the exponents can differ by at most $$1$$. Scale and interchange $$x$$ and $$y$$ if necessary so that $$0 \le y \le x$$, and $$x$$ is represented as $$x_0.x_1 \ldots x_{p - 1}$$ and $$y$$ as $$0.y_1 \ldots y_p$$. Then the algorithm for computing $$x \ominus y$$ will compute $$x - y$$ exactly and round to a floating-point number. If the difference is of the form $$0.d_1 \ldots d_p$$, the difference will already be $$p$$ digits long, and no rounding is necessary. Since $$x \le 2y$$, $$x - y \le y$$, and since $$y$$ is of the form $$0.d_1 \ldots d_p$$, so is $$x - y$$. $$\blacksquare$$
+
+## Notes
+
+When $$B > 2$$, the hypothesis of Theorem 11 cannot be replaced by $$\frac{y}{B} \le x \le By$$; the stronger condition $$y/2 \le x \le 2y$$ is still necessary. The analysis of the error in $$(x - y) (x + y)$$, immediately following the proof of [Theorem 10](/numbers/analysis/10), used the fact that the relative error in the basic operations of addition and subtraction is small, which is the most common kind of error analysis. 

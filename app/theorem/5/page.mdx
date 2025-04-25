@@ -1,0 +1,32 @@
+
+## Background
+
+Rounding is straightforward, with the exception of how to round halfway cases - for example, should $$42.5$$ round to $$42$$ or $$43$$? One school of thought is that half the digits ($$0, 1, 2, 3, 4$$) should round down, and the other half ($$5, 6, 7, 8, 9$$) should round up, so $$12.5$$ would round to $$13$$. 
+
+Another school of thought says that since numbers ending in $$5$$ are exactly halfway between two possible roundings, they should round down half the time and round up the other half. One way of obtaining this 50% behavior to determine the rounding direction by the cardinality of the least significant digit, so $$42.5$$ rounds to $$42$$ rather than $$43$$ because its least significant digit $$2$$ is even. 
+
+Which of these methods is best, round up or round to even? Reiser and Knuth [1975] offer the following reason for preferring round to even.
+
+## Theorem
+
+Let $$x$$ and $$y$$ be floating-point numbers, and define $$x_0 = x$$, $$x_1 = (x_0 \ominus y) \oplus y, \ldots ,$$ $$x_n = (x_{n - 1} \ominus y) \oplus y $$. If $$\oplus$$ and $$\ominus$$ are exactly rounded using round to even, then either $$x_n = x$$ for all $$n$$ or $$x_n = x_1$$ for all $$n \ge 1$$. 
+
+## Discussion
+
+To clarify this result, consider the floating point parameters $$\beta = 10, \rho = 3$$, with $$x = 1.00, y = -.555$$. When rounding up, the sequence becomes
+
+$$ x_0 \ominus y = 1.56$$ <br/>
+$$ x_1 = 1.56 \ominus .555 = 1.01 $$ <br/>
+$$ x_1 \ominus y = 1.01 \oplus .555 = 1.57 $$
+
+Each successive value of $$x_n$$ increases by $$.01$$ until $$x_n = 9.45 (n \le 845)$$. Under round to even, $$x_n$$ is always $$1.00$$. This example suggests that when using the round up rule, computations can gradually drift upward, whereas when using round to even the theorem says this cannot happen.
+
+One application of exact rounding occurs in multiple precision arithmetic. There are two basic approaches to higher precision. One approach represents floating-point numbers using a very large significand, which is stored in an array of words, and codes the routines for manipulating these numbers in assembly language. The second approach represents higher precision floating-point numbers as an array of ordinary floating-point numbers, where adding the elements of the array in infinite precision recovers the high precision floating-point number. It is this second approach that will be discussed here. The advantage of using an array of floating-point numbers is that it can be coded portably in a high level language, but it requires exactly rounded arithmetic.
+
+The key to multiplication in this system is representing a product $$x y$$ as a sum, where each summand has the same precision as $$x$$ and $$y$$. This can be done by splitting $$x$$ and $$y$$. Writing $$x = x_h + x_i$$ and $$y = y_h + y_i$$, the exact product is
+
+<Center>
+$$xy = x_h y_h + x_h y_i + x_i y_h + x_i y_i$$
+</Center>
+
+If $$x$$ and $$y$$ have $$\rho$$ bit significands, the summands will also have $$\rho$$ bit significands provided that $$x_i, x_h, y_h, y_i$$ can be represented using $$\frac{\rho}{2}$$ bits. When $$\rho$$ is even, it is easy to find a splitting. The number $$x_0.x_1 \ldots x_{\frac{\rho}{2} - 1}$$ can be written as the sum of $$x_0.x_1\ldots x_{\frac{\rho}{2} - 1}$$ and $$0.0\ldots0x_{\frac{\rho}{2}}\ldots x_{\rho - 1}$$. When $$\rho$$ is odd, this simple splitting method does not work. However, an extra bit can be gained by using negative numbers. For example if $$\beta = 2, \rho = 5, and x = .10111$$, $$x$$ can be split as $$x_h = .11 and x_i = -.00001$$. There is more than one way to split a number. A splitting method that is easy to compute is due to Dekker [1971], but it requires more than a single guard digit.

@@ -1,0 +1,29 @@
+# Double precision floating point format
+
+FP64, or double-precision floating point, is a numerical representation standardized by [IEEE 754](/spec/ieee754) that uses 64 bits to encode real numbers. It is a cornerstone of scientific computing, high-performance applications, and systems that demand a high degree of numerical accuracy and range. 
+
+The format comprises one sign bit, eleven exponent bits, and fifty-two bits for the significand (or mantissa), offering approximately 15 to 17 decimal digits of precision. This level of fidelity makes FP64 a common choice for simulations, numerical methods, and any application where the limitations of [single-precision](/format/fp32) might introduce unacceptable error accumulation.
+
+## Programming languages
+
+JavaScript, Python, and a wide range of interpreted languages use double precision floats for all numbers. This means that *every number in the browser you're using to read this page* is represented as a double precision float. 
+
+The `double` keyword in C, C++, and Fortran-languages corresponds to FP64. The `double` type of Java also closely follows the IEEE 754 standard. 
+
+<FloatingPointNumber title="FP64" signed base={ 2 } exponent={ 11 } significand={ 52 }/>
+
+The equation for computing a decimal value from the binary representation above is
+
+<div className="text-center text-xl">
+    $$value = -1^{sign} \times 1.significand \times 2^{exponent - 1023}$$
+</div>
+
+## Usage
+
+FP64 is used in a diverse range of fields like physics, chemistry, engineering, and finance. Numerical simulations in computational fluid dynamics or quantum mechanics often involve solving large systems of equations or integrating over time, both of which are sensitive to rounding errors. In such domains, even small inaccuracies can yield vastly different results over time. Similarly, in financial modeling, where compounding interest and risk calculations may involve millions of operations, double precision helps ensure that results remain consistent and reliable.
+
+## Graphics processing
+
+Graphics Processing Units (GPUs) have historically prioritized [FP32](/format/fp32) due to performance considerations, but there is increasing support for FP64 in scientific-grade hardware such as NVIDIA's [Tesla](https://www.nvidia.com/en-gb/data-center/tesla-v100/) and AMD's [Instinct](https://www.amd.com/en/products/accelerators/instinct.html) series. These GPUs are designed to support high-throughput, double-precision calculations, making them suitable for tasks such as machine learning model training at research scales, or complex weather simulations that span days of global data.
+
+Despite its advantages, FP64 comes with trade-offs. It consumes twice the memory of single precision and often requires more processing power, leading to reduced performance in environments where throughput is a bottleneck. As such, many applications default to FP32 unless accuracy concerns dictate otherwise. Hybrid approaches, where critical calculations are done in FP64 and others in FP32, are increasingly common, especially in large-scale simulations or AI workloads that balance speed and accuracy.

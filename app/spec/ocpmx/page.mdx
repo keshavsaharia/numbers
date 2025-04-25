@@ -1,0 +1,37 @@
+# OCP Microscaling Formats
+
+In September 2023, a consortium of large technology companies ([AMD](https://www.amd.com), [Arm](https://www.arm.com/), [Intel](https://www.intel.com), [Meta](https://www.meta.com), [Microsoft](https://www.microsoft.com), [NVIDIA](https://www.nvidia.com), and [Qualcomm](https://www.qualcomm.com)) introduced a family of standardized low-bitwidth data formats designed to enhance the efficiency of AI training and inference. The MX formats aim to provide a balance between computational performance and model accuracy, particularly in resource-constrained environments.
+
+## Key Features
+
+MX-compliant formats enable Artificial Intelligence (AI) training and inference with lower bit-width arithmetic operations and smaller memory footprints. This drives hardware performance and efficiency gains that can reduce overheads and operational costs. Additionally, standardizing new capabilities and formats that can be implemented across hardware and/or software — while enhancing existing standards such as OFP8 and INT8 — will reduce software and infrastructure
+costs and any associated costs or overheads with customized solutions.
+
+### Block-Scaled Data Representation
+
+MX formats utilize a block-based approach, where a group of elements shares a common scaling factor. This method allows for efficient representation of data with reduced precision while maintaining numerical stability. 
+
+- Scaling Factor: Typically an 8-bit exponent (E8M0), applied uniformly across a block.
+- Element Types: Various low-bitwidth formats, including:
+    - MXFP8: 8-bit floating-point (e.g., E5M2 or E4M3)
+    - MXFP6: 6-bit floating-point (e.g., E3M2 or E2M3)
+    - MXFP4: 4-bit floating-point (e.g., E2M1)
+    - MXINT8: 8-bit integer
+
+Each block typically contains 32 elements sharing the same scaling factor. 
+
+### Efficiency and Performance
+
+By reducing the bitwidth of data representations, MX formats decrease memory usage and bandwidth requirements, leading to faster data processing and lower energy consumption. This is particularly beneficial for large-scale AI models and edge computing scenarios.
+
+### Compatibility and Interoperability
+
+MX formats are designed to be compatible with existing AI hardware and software stacks. They can be integrated into current systems with minimal modifications, facilitating widespread adoption across different platforms.
+
+### Open and Collaborative Development
+
+The MX specification is released under an open, license-free model through the OCP Foundation, encouraging collaboration and innovation within the AI community. This openness aims to foster the development of new tools and techniques leveraging MX formats.
+
+### Practical Applications and Tools
+
+Emulation libraries such as Microsoft's [microxcaling](https://github.com/microsoft/microxcaling) provide tools for experimenting with MX formats in frameworks like PyTorch, enabling researchers and developers to evaluate their impact on model performance.

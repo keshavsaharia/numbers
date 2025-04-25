@@ -1,0 +1,76 @@
+# Brain Floating Point for Robust Low-Precision Computing
+
+The **bfloat16 (BF16)** format is a 16-bit floating-point representation designed for machine learning and numerical computing. Unlike the IEEE 754 half-precision (FP16) format, BF16 prioritizes **range** over **precision**, making it especially effective for deep learning applications where values often span many orders of magnitude.
+
+Originally developed by Google for use in Tensor Processing Units (TPUs), BF16 has since gained widespread support across CPUs, GPUs, and AI accelerators. This article examines the structure, mathematical properties, practical benefits, and implementation considerations of BF16 from a software engineering perspective.
+
+## Binary structure
+
+BF16 is not formally defined by IEEE 754, though it is closely aligned with IEEE formats. Like FP32, BF16 uses the same exponent size and bias, enabling a comparable dynamic range while cutting the number of mantissa bits in half. 
+
+- 1 sign bit ($$s$$)
+- 8 exponent bits ($$e$$) - same as [FP32](/format/fp32)
+- 7 mantissa/significand bits ($$f$$) - compared to 23 bits in [FP32](/format/fp32)
+
+The value is computed as $$(-1)^s \times 2^{e - 127} \times \left(1 + \frac{f}{2^7} \right)$$. Unlike FP16, which uses a 5-bit exponent and 10-bit mantissa, BF16 sacrifices mantissa precision to retain the exponent size of FP32. The critical distinction is that *BF16 shares the dynamic range of FP32*, allowing it to represent very large or small numbers that would overflow or underflow in FP16. However, it only retains 7 bits of significand precision, meaning calculations are more susceptible to rounding error.
+
+### Example encoding
+
+Consider the decimal number 1.5. Its IEEE 754 FP32 binary encoding is:
+
+```
+0 01111111 10000000000000000000000
+```
+
+To obtain the BF16 representation, we simply take the **upper 16 bits**:
+
+```
+0 01111111 1000000
+```
+
+This yields a BF16 hex encoding of `0x3FC0`.
+
+This truncation introduces a small rounding error compared to FP32 but preserves the scale of the number and its representation in exponent space.
+
+
+## Practical applications
+
+The development of BF16 was driven by empirical insights from deep learning workloads. Many neural network operations—such as convolution, matrix multiplication, and activation functions—are tolerant to precision loss in individual elements, but highly sensitive to range errors (e.g., overflow during training). By matching the exponent range of FP32, BF16 enables computations involving large gradients, scaled learning rates, and exponential moving averages, all without suffering from numerical instability. This allows models to train using low-precision data representations without requiring careful tuning of input magnitudes or loss scaling.
+
+## Hardware Implementation
+
+BF16 was designed with hardware simplification in mind. Conversion between BF16 and FP32 is straightforward, since an FP32 number can be converted to BF16 by simply truncating the lowest 16 mantissa bits, and preserving the exponent and sign bits. This enables high-throughput mixed-precision execution pipelines where storage and communication are in BF16, arithmetic is performed in FP32 or FP64, and downcasting is done via simple bit manipulation.
+
+For example, Intel's AVX-512 BF16 instructions and ARM's BFloat16 extension support fast accumulation and conversion pathways to minimize accuracy loss in training and inference.
+
+
+### Hardware
+
+- **Google TPUs**: Native BF16 support since TPU v2
+- **Intel CPUs**: Cooper Lake, Sapphire Rapids (AVX-512 BF16)
+- **NVIDIA GPUs**: Ampere and newer (BF16 matrix cores)
+- **ARM**: BF16 support in ARMv8.6-A and newer
+- **Apple Silicon**: BF16 vector support in ML cores
+
+### Software
+
+- **PyTorch**: `torch.bfloat16`, autocast via `torch.cuda.amp.autocast()`
+- **TensorFlow**: `tf.bfloat16` and mixed-precision API
+- **JAX**: Native BF16 support in XLA and TPU backends
+- **NumPy**: Via `numpy.dtype('bfloat16')` in third-party extensions (e.g., Intel Extension for NumPy)
+
+Many frameworks automatically cast parameters to BF16 where supported and fall back to FP32 where not, enabling portability and performance without sacrificing compatibility.
+
+## Best Practices
+
+BF16 is particularly effective in the following scenarios:
+
+- **Training large neural networks** with reduced memory and bandwidth constraints
+- **Inference on edge devices**, where latency and energy efficiency are critical
+- **Distributed model training**, where lower-precision communication reduces network bottlenecks
+
+It is essential to combine BF16 usage with **loss scaling** and **master weights** in FP32 to prevent degradation during gradient descent. Most frameworks provide automatic tools to handle these transitions.
+
+## Limitations
+
+While BF16 provides excellent dynamic range, it is unsuitable for algorithms requiring high **relative accuracy**, such as linear solvers with ill-conditioned matrices, eigenvalue decomposition, and scientific simulations requiring conservation laws. Developers should be aware that BF16 can yield visibly different results from FP32, even if convergence is preserved. Debugging numerical issues may also be more difficult when using truncated formats, due to the absence of low-order mantissa bits.

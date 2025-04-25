@@ -1,0 +1,43 @@
+# Single precision format
+
+FP32 offers a practical balance between range, precision, and memory footprint, making it the default choice for many hardware architectures and software frameworks.
+
+## Format
+
+FP32 is a binary format that represents real numbers in 32 bits. These bits are divided into three main components: one bit for the sign, eight bits for the exponent, and twenty-three bits for the fractional part, commonly referred to as the mantissa or significand. This structure allows FP32 to represent both very large and very small numbers, as well as fractional values, all while fitting within just four bytes of memory.
+
+$$(-1)^sign \times 1.mantissa \times 2^(exponent - 127)$$
+
+The mantissa is stored without the leading bit (called the implicit leading 1), which is assumed to be present for all normalized numbers. This saves one bit of storage and extends the effective precision of the format.
+
+The **bias** in the case of FP32 is 127, which means the actual exponent is stored as an unsigned number offset by 127. For example, an exponent value of 130 corresponds to an actual exponent of 3 (130 - 127).
+
+The **mantissa** is stored without the leading bit (called the implicit leading 1), which is assumed to be present for all normalized numbers. This saves one bit of storage and extends the effective precision of the format.
+
+### Normalization, Denormalization, and Special Values
+
+FP32 supports three major categories of numbers: normalized, denormalized (or subnormal), and special values like infinities and NaNs (Not a Number). Normalized values use the full exponent range minus the reserved bits and rely on the implicit leading bit to maximize precision. Denormalized values, which come into play when the exponent bits are all zeros, allow the representation of numbers very close to zero—at the cost of precision—by omitting the implicit leading bit.
+
+This flexibility comes at a cost: floating point arithmetic is not associative or distributive in the way integer arithmetic is. Minor changes in evaluation order can lead to different results due to rounding errors or loss of significance. This is especially critical in high-performance computing and scientific simulations, where numerical stability is a key concern.
+
+### FP32 in Hardware and Software
+
+Most modern CPUs and GPUs provide native support for FP32 arithmetic. In CPUs, the floating point unit (FPU) handles FP32 operations using specialized circuits. GPUs, particularly those from NVIDIA and AMD, are optimized for FP32 as it has historically been the standard for graphics shaders and GPGPU workloads via APIs like CUDA, OpenCL, and Vulkan.
+
+In deep learning, FP32 has been the default data type for years. Libraries like TensorFlow, PyTorch, and JAX use it extensively, although there's been a shift toward **FP16** and **bfloat16** for improved performance and reduced memory usage, especially in training large neural networks. Despite this, FP32 remains the go-to choice when precision is paramount, such as in validation stages or high-accuracy simulations.
+
+### Precision and Range
+
+FP32 can represent numbers approximately in the range of ±1.18 × 10^−38 to ±3.4 × 10^38. Its precision is roughly 7 decimal digits. That means any number with more than 7 significant digits may be rounded or approximated when stored in FP32. For many applications, this level of precision is sufficient, but in domains like finance or physics simulations involving chaotic systems, even slight inaccuracies can propagate and lead to significantly incorrect outcomes.
+
+### Pitfalls and Best Practices
+
+One common mistake in using FP32 is assuming exactness in representation. Many decimal values, such as 0.1, cannot be represented exactly in binary floating point. This can lead to small but non-zero errors, which, if unaccounted for, may cause logic bugs or convergence issues in iterative algorithms.
+
+Best practices include avoiding equality comparisons (`==`) between floating point numbers and instead using tolerance-based checks. Additionally, numerical algorithms should be designed to minimize the accumulation of round-off errors, for instance by summing small numbers before large ones or using compensated summation techniques like Kahan summation.
+
+### FP32 vs. Other Formats
+
+While FP32 remains a solid choice for general-purpose computation, it exists within a family of formats each optimized for specific use cases. **FP64** (double precision) offers greater accuracy at the cost of memory and computational speed. **FP16**, on the other hand, offers faster throughput and reduced bandwidth but at a significant reduction in precision and range.
+
+Emerging formats like **bfloat16** and **TensorFloat-32** (used in modern NVIDIA hardware) attempt to capture the best of both worlds—offering reduced storage with improved exponent range while maintaining acceptable accuracy for training deep neural networks.

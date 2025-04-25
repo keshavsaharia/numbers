@@ -1,0 +1,17 @@
+## Theorem 15
+
+When a binary IEEE single precision number is converted to the closest eight digit decimal number, it is not always possible to uniquely recover the binary number from the decimal one. However, if nine decimal digits are used, then converting the decimal number to the closest binary number will recover the original floating-point number.
+
+## Proof
+
+Binary single precision numbers lying in the half open interval $$[103, 210) = [1000, 1024)$$ have 10 bits to the left of the binary point, and 14 bits to the right of the binary point. Thus there are $$(2^{10} - 10^{3})2^{14} = 393,216$$ different binary numbers in that interval. If decimal numbers are represented with 8 digits, then there are $$(2^{10} - 10^{3})10^{4} = 240,000$$ decimal numbers in the same interval. There is no possible bijection from a set of $$240,000$$ decimal numbers to a set of $$393,216$$ binary numbers, so 8 decimal digits is not enough to uniquely represent each single precision binary number.
+
+To show that 9 digits are sufficient, it is sufficient to show that the spacing between binary numbers is always greater than the spacing between decimal numbers. This will ensure that for each decimal number $$N$$, the interval $$[N - \frac{ulp}{2}, N + \frac{ulp}{2}]$$ contains at most one binary number. Thus each binary number rounds to a unique decimal number which in turn rounds to a unique binary number.
+
+To show that the spacing between binary numbers is always greater than the spacing between decimal numbers, consider an interval $$[10^n, 10^{n + 1}]$$. On this interval, the spacing between consecutive decimal numbers is $$10^{(n + 1) - 9}$$. On $$[10^n, 2^m]$$, where $$m$$ is the smallest integer such that $$10^n < 2^m$$, the spacing of binary numbers is $$2^{m - 24}$$, and the spacing continuously increases along the interval. Thus, it is enough to check that $$10^{(n + 1) - 9} < 2^{m - 24}$$. But in fact, since $$10^n < 2^m$$, then 
+
+<div className="text-center">
+    $$10^{(n + 1) - 9} = 10^n10^{-8} < 2^m10^{-8} < 2^m2^{-24}$$
+</div>
+
+The same argument applied to double precision shows that 17 decimal digits are required to recover a double precision number.

@@ -1,0 +1,144 @@
+# MXFP8
+
+The **MXFP8** (Microscaling 8-bit Floating Point) format is a low-precision floating-point number representation introduced in the Open Compute Project (OCP) Microscaling Formats (MX) specification. Designed specifically for artificial intelligence (AI) workloads—particularly inference—MXFP8 balances minimal memory footprint with sufficient dynamic range, making it well-suited for high-throughput, energy-efficient computing environments.
+
+MXFP8 is one of the most promising formats in the emerging class of sub-16-bit representations. It is especially important in large-scale deep learning systems where memory bandwidth, cache size, and matrix throughput are dominant constraints.
+
+## Motivation and Background
+
+Modern neural networks often tolerate significant reductions in numerical precision, especially during inference. With sufficient robustness in architecture and training, activations and weights can be quantized to formats as low as 8 or even 4 bits, while maintaining acceptable accuracy.
+
+The MXFP8 format is optimized for:
+- **Hardware vectorization**
+- **Efficient memory and cache usage**
+- **Interoperability with Block Floating Point (BFP) schemes**
+- **Simplified conversion to/from FP16/FP32**
+
+This design is part of an industry-wide push to **standardize compact numerical formats**, with support from Intel, Meta, NVIDIA, AMD, Arm, and others through the OCP consortium.
+
+---
+
+## 2. MXFP8 Structure
+
+MXFP8 specifies two floating-point subformats:
+
+- **E4M3**: 4-bit exponent, 3-bit mantissa
+- **E5M2**: 5-bit exponent, 2-bit mantissa
+
+Each has:
+- **1 sign bit**
+- **8 total bits**
+
+These formats represent numbers in the IEEE-like normalized form:
+
+$$
+x = (-1)^s \times 2^{e - \text{bias}} \times (1 + \text{fraction})
+$$
+
+Where:
+- $$ s \in \{0,1\} $$ is the sign bit
+- $$ e $$ is the exponent field
+- $$ \text{bias} = 7 $$ for E4M3, and 15 for E5M2 (IEEE-like)
+- $$ \text{fraction} $$ is the normalized mantissa scaled by the number of mantissa bits
+
+### Comparison:
+
+| Format | Exponent Bits | Mantissa Bits | Exponent Bias | Dynamic Range        | Precision |
+|--------|---------------|----------------|----------------|----------------------|-----------|
+| E4M3   | 4             | 3              | 7              | ~$$10^{\pm 6}$$       | ~2–3 bits |
+| E5M2   | 5             | 2              | 15             | ~$$10^{\pm 19}$$      | ~1–2 bits |
+
+**E4M3** offers slightly more precision and a smaller range. **E5M2** sacrifices precision for a wider range, which may be useful for unnormalized tensors or values that vary drastically in scale (e.g., logits, attention scores).
+
+---
+
+## 3. Practical Usage and Benefits
+
+MXFP8 formats allow neural network inference to be:
+- **Faster** due to reduced bandwidth and SIMD-friendly formats
+- **Smaller** due to 75% reduction in memory compared to FP32
+- **More energy-efficient**, especially in memory-bound operations
+
+These benefits are most pronounced in:
+- **Transformer models** with attention mechanisms
+- **Recommendation systems** where feature embeddings are massive
+- **Edge devices** with power or thermal constraints
+
+### MXFP8 in Practice
+
+Frameworks and compilers typically use **block floating point (BFP)** or **scaling factor techniques** to keep tensors well-distributed across the limited exponent range. This can be done:
+- Per-channel (e.g., each convolution filter has its own scale)
+- Per-block (e.g., 32 values share one exponent)
+- Globally (e.g., entire tensor scaled by single factor)
+
+Hardware like **Intel’s AMX**, **NVIDIA Tensor Cores**, and **Google TPUs** have either implemented or proposed efficient handling of such ultra-low precision formats.
+
+---
+
+## 4. Comparison with Other Low-Precision Formats
+
+| Format   | Bits | Exponent | Mantissa | Range             | Use Case        |
+|----------|------|----------|----------|-------------------|------------------|
+| FP32     | 32   | 8        | 23       | ~$$10^{\pm 38}$$  | General-purpose |
+| BF16     | 16   | 8        | 7        | ~$$10^{\pm 38}$$  | ML training     |
+| FP16     | 16   | 5        | 10       | ~$$10^{\pm 5}$$   | ML inference    |
+| MXFP8-E4M3 | 8   | 4        | 3        | ~$$10^{\pm 6}$$   | ML inference    |
+| MXFP8-E5M2 | 8   | 5        | 2        | ~$$10^{\pm 19}$$  | ML inference    |
+
+Note that **MXFP8 formats are not covered by IEEE 754**, but follow similar encoding logic. Unlike INT8, MXFP8 values are **non-uniformly distributed** across the number line, enabling better representation of values near zero—common in deep learning.
+
+---
+
+## 5. Encoding and Decoding
+
+Let’s encode the decimal number `1.0` in E4M3:
+
+- Sign bit: `0`
+- Exponent: $$ e = 7 $$ (since bias = 7, real exponent is 0)
+- Mantissa: all zeros (implicit leading 1)
+  
+This yields the 8-bit binary:  
+```
+0 0111 000  → 0x70
+```
+
+For E5M2:
+- Bias = 15 → exponent field = 15
+- Mantissa = 0
+
+Binary:  
+```
+0 01111 00 → 0x78
+```
+
+Conversion from FP32 → MXFP8 typically uses **nearest-even rounding** or stochastic rounding to minimize error bias.
+
+---
+
+## 6. Limitations
+
+- **Very low precision** (as few as 2–3 decimal digits)
+- Susceptible to **quantization noise**, especially in sensitive operations like normalization or softmax
+- **Not suitable for training** without loss scaling or higher-precision accumulators
+
+These formats are **not appropriate** for traditional scientific computing or financial systems where numerical integrity is critical.
+
+---
+
+## 7. Future and Standardization
+
+The **OCP MX Format Specification v1.0** establishes a shared, open standard for 8-, 6-, and 4-bit floating point formats. By aligning the industry around common encodings like E4M3 and E5M2, the MXFP8 format encourages:
+
+- Hardware interoperability
+- Compiler-level optimizations
+- Portable inference models
+
+As compiler stacks (e.g., TVM, XLA, MLIR) and frameworks (e.g., PyTorch, TensorFlow) integrate MXFP8-aware kernels, it is expected to become a dominant format for next-generation AI inference workloads.
+
+---
+
+## 8. Conclusion
+
+**MXFP8** provides an elegant tradeoff between range and precision within a single byte. Its two configurations, **E4M3** and **E5M2**, offer flexibility depending on workload characteristics. When paired with intelligent quantization and block scaling strategies, MXFP8 enables compact, performant, and energy-efficient model execution—especially in production and at the edge.
+
+For practitioners building high-performance AI systems, understanding and leveraging MXFP8 is quickly becoming essential.

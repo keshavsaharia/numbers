@@ -1,0 +1,21 @@
+
+## Theorem
+
+If $$\ln{(1 + x)}$$ is computed using the formula
+
+<div>
+    $$\ln{(1 + x)} = \begin{cases} x & \text{for } 1 \oplus x = 1 \\ \frac{x \ln{(1 + x)}}{(1 + x) - 1} & \text{for } 1 \oplus x \ne 1 \end{cases}$$
+</div>
+
+then the relative error is at most $$5\epsilon$$ when $$0 \le x \le \frac{3}{4}$$. Provided subtraction is performed with a guard digit, $$\epsilon < 0.1$$, $$\ln$$ is computed to within 0.5 [ulp](/concept/ulp).
+
+This formula will work for any value of $$x$$, but is only interesting for $$x \propto 1$$, which is where [catastrophic cancellation](/concept/cancellation) occurs in the formula $$\ln{(1 + x)}$$. The reason this formula works is because $$\ln{(1 + x)}$$ can be rewritten as
+
+<Center>
+$$ x \lparen\frac{\ln{(1 + x)}}{x}\rparen = x \mu(x) $$
+</Center>
+
+The left hand factor can be computed exactly, but the right hand factor $$\mu(x) = \frac{\ln{(1 + x)}}{x}$$ will suffer a large rounding error when adding $$1$$ to $$x$$. However, $$\mu$$ is almost constant, since $$\ln{(1 + x)} \approx x$$. Therefore, changing $$x$$ slightly will not introduce much error. 
+
+In other words, if $$\overline{x} \propto x$$, computing $$x \mu(\overline{x})$$ will be a good approximation to $$x\mu(x) = \ln{(1 + x)}$$. Is there a value for $$\overline{x}$$ for which $$\overline{x}$$ and $$\overline{x} + 1$$ can be computed accurately? There is; namely $$\overline{x} = (1 \oplus x) \ominus 1$$, because then $$1 + \overline{x}$$ is exactly equal to $$1 \oplus x$$. $$\blacksquare$$
+

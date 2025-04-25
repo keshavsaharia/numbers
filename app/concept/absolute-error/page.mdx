@@ -1,0 +1,5 @@
+## Absolute Error
+
+Given an exact value $$x$$ and the **approximation** (e.g. due to rounding in floating-point) as $$\hat{x}$$, the absolute error is simply $$|\hat{x} - x|$$. For example, an exact value $$.01$$ that is misrepresented as $$.02$$ would have an absolute error of $$|.02 - .01| = .01$$ (versus a [relative error](/concept/relative-error) of $$1$$), and an exact value $$1000$$ misrepresented as $$1001$$ would have an absolute error of $$|1000 - 1001| = 1$$ (versus a relative error of $$0.001$$). 
+
+In general, absolute error fails to capture the significance of the error relative to the scale of the true value. The same absolute error may be negligible or catastrophic depending on the scale, which is why relative error is generally preferred in floating-point analysis.

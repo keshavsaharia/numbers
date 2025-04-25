@@ -1,0 +1,151 @@
+# MXINT8
+
+**MXINT8** is a standardized 8-bit integer format defined by the [Open Compute Project (OCP) Microscaling (MX) Formats](/spec/ocpmx) specification. It is designed to unify low-precision quantized representations across AI hardware and software platforms, making it easier to optimize, share, and deploy deep learning models at scale.
+
+Although 8-bit integers are widely used in practice - especially for inference workloads - prior to MXINT8, their representation and scaling conventions varied between vendors. MXINT8 provides a consistent, interoperable format that simplifies both software tooling and hardware implementation.
+
+## Background
+
+Quantized inference, which involves converting weights and activations from floating-point (e.g. FP32 or FP16) to fixed-point representations (e.g. INT8), dramatically reduces the computational load and memory footprint of neural networks. Many modern processors (e.g. NVIDIA TensorRT, Intel VNNI, ARM Ethos) already include specialized instructions for INT8 inference.
+
+However, existing quantized formats are often implementation-specific and lack standardized semantics, which complicates model interchange and hardware portability.
+
+MXINT8 addresses this issue by:
+
+- Defining a common **value range and interpretation**
+- Supporting both **symmetric** and **asymmetric quantization**
+- Enabling **block-level quantization** and **per-tensor scaling**
+- Harmonizing INT8 use across model frameworks and accelerators
+
+---
+
+## 2. Format Definition
+
+MXINT8 is a signed, two’s complement 8-bit integer with the following characteristics:
+
+| Field   | Width  | Description                 |
+|---------|--------|-----------------------------|
+| Value   | 8 bits | Stored as signed int8 (−128 to +127) |
+
+It represents quantized real values via an affine mapping:
+
+$$
+x_{\text{real}} = S \cdot (x_{\text{int8}} - Z)
+$$
+
+Where:
+- $$ S $$ is the **scale** (a real-valued floating-point factor)
+- $$ Z $$ is the **zero-point** (an integer offset, typically in [−128, 127])
+- $$ x_{\text{int8}} \in \{-128, -127, \dots, 127\} $$
+
+### Symmetric vs Asymmetric Quantization
+
+- **Symmetric quantization** uses $$ Z = 0 $$, preserving sign symmetry, and is commonly used for weights.
+- **Asymmetric quantization** allows $$ Z \neq 0 $$, which is more flexible for activations with a non-zero mean.
+
+---
+
+## 3. Quantization and Dequantization
+
+**Quantization** involves mapping a floating-point value to an integer:
+
+$$
+x_{\text{int8}} = \text{round} \left( \frac{x_{\text{real}}}{S} + Z \right)
+$$
+
+**Dequantization** reverses the process:
+
+$$
+x_{\text{real}} = S \cdot (x_{\text{int8}} - Z)
+$$
+
+These equations introduce quantization noise, but deep networks—particularly with ReLU activations and overparameterization—often tolerate this well.
+
+To minimize error:
+- **Dynamic quantization** adapts scale/zero-point per layer or batch
+- **Static quantization** precomputes them using calibration data
+
+Frameworks like PyTorch, TensorFlow Lite, and ONNX Runtime support both styles.
+
+---
+
+## 4. Advantages of MXINT8
+
+The MXINT8 format offers several benefits in large-scale and embedded AI inference:
+
+### a. Performance
+- Reduces memory usage by 75% vs FP32
+- Enables 4× more MAC operations per cycle on INT8-capable hardware
+- Accelerates memory-bound layers (e.g., attention heads, large FC layers)
+
+### b. Compatibility
+- Defined as part of OCP MX spec v1.0
+- Enables cross-vendor support for ONNX, PyTorch, XLA, TVM, etc.
+- Aligns with emerging accelerator architectures and unified quantization runtimes
+
+### c. Simplicity
+- No floating-point overhead in arithmetic units
+- Uniform structure for vectorized and matrix ops
+- Easily expressed in SIMD and tensor core instructions
+
+---
+
+## 5. Limitations
+
+Despite its efficiency, MXINT8 has inherent tradeoffs:
+
+- **Precision loss** due to coarse quantization levels
+- **Range constraints**—values outside the representable scale saturate or wrap
+- **Non-differentiability**, making it unsuitable for backpropagation in training
+- **Quantization-aware training (QAT)** is often required to preserve accuracy
+
+Furthermore, fixed-point formats lack denormal support, subnormal values, or dynamic range expansion—important in numerical simulations or gradient flows.
+
+---
+
+## 6. Use Cases and Applications
+
+MXINT8 is ideal for production-scale inference, especially in:
+
+- **Transformer inference**, including LLMs (e.g., BERT, GPT) with quantized QKV matrices
+- **Image classification** and **object detection** with CNNs
+- **Speech and audio models** deployed on mobile devices
+- **Recommendation systems** with massive embedding tables
+
+Hardware accelerators increasingly support INT8 with native dot-product instructions, including:
+- Intel VNNI (AVX512/AMX)
+- NVIDIA Tensor Cores
+- Apple Neural Engine (ANE)
+- Qualcomm Hexagon DSP
+- ARM Ethos-U and Ethos-N NPUs
+
+---
+
+## 7. MXINT8 vs Other Quantization Formats
+
+| Format   | Bit Width | Value Range     | Scale Factor | Use Case         |
+|----------|-----------|------------------|--------------|------------------|
+| INT8     | 8         | −128 to 127      | Static/Dynamic | General inference |
+| UINT8    | 8         | 0 to 255         | Static         | Activations only |
+| INT4     | 4         | −8 to 7          | High compression | Edge inference |
+| MXFP8    | 8         | FP dynamic range | Implicit       | Mixed-precision inference |
+| FP16     | 16        | IEEE 754 float   | None           | General ML       |
+
+MXINT8 fills a niche between very low-precision formats (e.g. INT4) and mixed-precision floating formats (e.g. BF16, FP16), offering **predictable behavior** and **efficient integer arithmetic**.
+
+---
+
+## 8. Standardization Impact
+
+By including MXINT8 in the **OCP MX Format Specification v1.0**, the AI industry now has a **vendor-neutral baseline** for INT8 inference. It aligns hardware, software, and model ecosystems toward:
+
+- **Interoperable model exchange** (e.g. ONNX models across TensorRT and XLA)
+- **Uniform quantization pipelines**
+- **Better reproducibility and profiling**
+
+This level of standardization also enables future extensions such as:
+- **Group-wise quantization**
+- **Hybrid quantization (e.g., INT8+FP8)**
+- **Quantization of gradients or optimizer states for edge training**
+
+**MXINT8** brings consistency and portability to the already widespread practice of 8-bit quantization in AI inference. By standardizing both representation and behavior, it lays the groundwork for scalable, high-performance, and hardware-efficient deployment of deep learning models.

@@ -1,0 +1,67 @@
+
+# Theorem 12
+
+If subtraction uses a guard digit, and if $$a, b, c$$ are the sides of a triangle ($$a \ge b \ge c$$), then the relative error in computing the area of the triangle as $$(a + (b + c))(c - (a - b))(c + (a - b))(a +(b - c))$$ is at most $$16\epsilon$$, provided $$\epsilon < .005$$.
+
+## Summary
+
+This proof shows that a specific formula involving the sides of a triangle can be calculated in floating-point arithmetic with very little error, as long as a certain technical condition is met (using a [guard digit](/concept/guard-digit) during subtraction) and the rounding error, denoted by $$\epsilon$$, is less than 0.005. Virtually all real-world floating point arithmetic systems provide a much lower value than 0.005 for $$\epsilon$$.
+
+The formula being calculated includes several additions, subtractions, and multiplications of the triangle's side lengths $$a$$, $$b$$, and $$c$$. Each of these operations can introduce small rounding errors in floating-point arithmetic, so the proof carefully examines each step and uses [earlier theorems](/theorem) to show that the individual errors from each operation are small and well-controlled. In particular, it points out that because of the [triangle inequality](https://en.wikipedia.org/wiki/Triangle_inequality), some potentially problematic subtractions turn out to be either exact or harmless.
+
+When all the small errors from the additions, subtractions, and multiplications are combined, the total relative error in the final result is shown to be less than $$16\epsilon$$. This means that despite each step potentially introducing a small amount of error, the final result stays very close to what you would get with perfect precision. This shows that the entire formula is **numerically stable**, and will yield accurately rounded results as long as $$\epsilon$$ is sufficiently small.
+
+## Proof
+
+Let's examine the factors one by one. From [Theorem 10](/theorem/10), $$b \oplus c = (b + c)(1 + \delta_1)$$, where $$\delta_1$$ is the relative error, and $$|\delta_1| \le 2\epsilon$$. Then the value of the first factor is
+
+<Center>
+$$ (a \oplus (b \oplus c)) = (a + (b \oplus c))(1 + \delta_2) = (a + (b + c))(1 + \delta_1)(1 + \delta_2)$$
+</Center>
+
+<Center>
+$$(a + b + c)(1 - 2\epsilon)^2 \le [a + (b + c)(1 - 2\epsilon)] \cdot (1 - 2\epsilon)$$<br/>
+$$ \le a \oplus (b \oplus c) \le [a + (b + c)(1 + 2\epsilon)](1 + 2\epsilon) $$<br/>
+$$ \le (a + b + c)(1 + 2\epsilon)^2 $$
+</Center>
+
+This means there is an $$\eta_1$$ such that
+
+<Center>
+$$ (a \oplus (b \oplus c)) = (a + b + c)(1 + \eta_1)^2, |\eta_1| \le 2\epsilon $$
+</Center>
+
+The next term involves the potentially catastrophic subtraction of $$c$$ and $$a \ominus b$$, because $$a \ominus b$$ may have rounding error. Because $$a$$, $$b$$ and $$c$$ are the sides of a triangle, $$a \le b + c$$, and combining this with the ordering $$c \le b \le a$$ gives $$a \le b + c \le 2b \le 2a$$. Therefore, $$a - b$$ satisfies the conditions of [Theorem 11](/theorem/11), so $$a - b = a \ominus b$$ is exact, and $$c \ominus (a - b)$$ is a harmless subtraction which can be estimated from [Theorem 9](/theorem/9) to be
+
+<Center>
+$$ (c \ominus (a \ominus b)) = (c - (a - b))(1 + \eta_2), |\eta_2| \le 2\epsilon $$
+</Center>
+
+The third term is the sum of two exact positive quantities, so
+
+<Center>
+$$ (c \oplus (a \ominus b)) = (c + (a - b))(1 + \eta_3), |\eta_3| \le 2\epsilon $$
+</Center>
+
+Finally, the last term is
+
+<Center>
+$$ (a \oplus (b \ominus c)) = (a + (b - c))(1 + \eta_4)^2, |\eta_4| \le 2\epsilon $$
+</Center>
+
+using both [Theorem 9](/theorem/9) and [Theorem 10](/theorem/10). If multiplication is assumed to be exactly rounded, so that $$x \otimes y = xy(1 + \zeta)$$ with $$|\zeta| \le \epsilon$$, then combining the terms above gives
+
+<Center>
+$$(a \oplus (b \oplus c))(c \ominus (a \ominus b))(c \oplus (a \ominus b))(a \oplus (b \ominus c))$$ <br/>
+$$ \le (a + (b + c))(c - (a - b))(c + (a - b))(a + (b - c)) \cdot E$$ <br/>
+</Center>
+
+Where the relative error $$E$$ is
+
+<Center>
+$$ E = (1 + \eta_1)^2 (1 + \eta_2)(1 + \eta_3)(1 + \eta_4)^2 (1 + \zeta_1)(1 + \zeta_2)(1 + \zeta_3)$$
+</Center>
+
+An upper bound for $$E$$ is $$(1 + 2\epsilon)^6(1 + \epsilon)^3$$, which expands out to $$1 + 15\epsilon + O(\epsilon^2)$$. Some writers simply ignore the $$O(\epsilon^2)$$ term, but it is easy to account for it. Writing $$(1 + 2\epsilon)^6(1 + \epsilon)^3 = 1 + 15\epsilon + \epsilon R(\epsilon)$$, where $$R(\epsilon)$$ is a polynomial in $$\epsilon$$ with positive coefficients, and therefore an increasing function of $$\epsilon$$. Since $$R(.005) = .505$$, $$R(\epsilon) < 1$$ for all $$\epsilon < .005$$, and hence $$E \le (1 + 2\epsilon)^6(1 + \epsilon)^3 < 1 + 16\epsilon$$. 
+
+To get a lower bound on $$E$$, note that $$1 - 15\epsilon - \epsilon R(\epsilon) < E$$, so when $$\epsilon < .005$$, $$1 - 16\epsilon < (1 - 2\epsilon)^6(1 - \epsilon)^3$$. Combining these two bounds yields $$1 - 16\epsilon < E < 1 + 16\epsilon$$, so the relative error is at most $$16\epsilon$$. $$\blacksquare$$

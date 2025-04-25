@@ -1,0 +1,83 @@
+# Half-Precision Floating Point
+
+While the IEEE 754 [single-precision](/format/fp32) (32-bit) and [double-precision](/format/fp64) (64-bit) formats are familiar to most developers, the 16-bit floating-point representation — commonly referred to as **FP16** or **half-precision** — has gained prominence in recent years due to its efficiency advantages in specialized computing domains.
+
+## Binary Representation
+
+The FP16 format is defined by the [IEEE 754-2008 standard](/spec/ieee754). It encodes a real number using 16 bits, divided into three fields:
+
+- **1 sign bit** $$s$$
+- **5 exponent bits** $$e$$, with a bias of $$15$$
+- **10 fraction bits** $$f$$, representing the significand (or mantissa)
+
+The value represented by an FP16 number is determined as follows:
+
+- For normalized numbers (where $$ e \neq 0 $$ and $$ e \neq 31 $$):
+  
+  $$
+  x = (-1)^s \times 2^{e - 15} \times \left(1 + \frac{f}{2^{10}} \right)
+  $$
+
+- For subnormal numbers (when $$ e = 0 $$ and $$ f \neq 0 $$):
+
+  $$
+  x = (-1)^s \times 2^{-14} \times \frac{f}{2^{10}}
+  $$
+
+- For special values:
+  - $$ e = 31, f = 0 $$: $$ x = \pm \infty $$
+  - $$ e = 31, f \neq 0 $$: $$ x = \text{NaN} $$
+  - $$ e = 0, f = 0 $$: $$ x = \pm 0 $$
+
+The exponent field enables a range of approximately $$ \pm 6.55 \times 10^4 $$ for normalized values, while the smallest positive subnormal value is $$ \approx 5.96 \times 10^{-8} $$. Due to the 10-bit mantissa, the format supports roughly **three decimal digits** of precision.
+
+### Encoding example
+
+To encode the decimal number 1.5 in FP16:
+
+- Sign bit: 0 (positive)
+- Binary representation: $$1.1_2 = 1 + 2^{-1}$$
+- Exponent: 0 + bias (15) = 15 → binary: `01111`
+- Fractional bits: `1000000000` (representing the `.1` after the leading implicit `1`)
+
+The complete bit pattern is:
+
+```
+0 01111 1000000000 → 0x3E00
+```
+
+This demonstrates the use of the normalized encoding format. Lossy conversion is often necessary when casting from FP32 to FP16, due to overflow, underflow, or truncation of significand bits.
+
+## Practical advantages
+
+The resurgence of interest in FP16 arises from its compelling trade-offs in memory footprint, computational throughput, and energy efficiency — all critical considerations in large-scale or resource-constrained environments.
+
+### Computational Efficiency
+
+Many modern GPUs (e.g., NVIDIA's Tensor Cores) and dedicated ML accelerators (e.g., Google TPUs) provide native support for FP16 arithmetic, allowing for massively parallel computation with lower latency and higher throughput. In machine learning, this enables **mixed-precision training**, where most operations are performed in FP16 while maintaining master copies in FP32 to mitigate precision loss.
+
+### Reduced Memory and Bandwidth Requirements
+
+FP16 consumes only 2 bytes per value, compared to 4 bytes for FP32 and 8 bytes for FP64. This reduction significantly decreases memory bandwidth usage, enabling larger batch sizes or models to be processed in the same memory space—a major advantage in deep learning training and inference pipelines.
+
+### Power Efficiency
+
+Arithmetic at lower precision requires fewer transistors to execute and less data movement, both of which reduce power consumption. This is particularly valuable in mobile and embedded systems where battery life is critical.
+
+## Limitations and Numerical Hazards
+
+Despite its advantages, FP16 should be applied with care due to its narrow dynamic range and limited precision. The reduced exponent width (5 bits) means that FP16 cannot represent very large or very small values. In practical terms, underflow and overflow become significantly more likely, particularly in algorithms involving accumulations or divisions.
+
+For instance, the smallest normalized value $$ \approx 6.1 \times 10^{-5} $$ and the largest representable value $$ \approx 6.5 \times 10^4 $$ are far less than those provided by FP32, whose range spans roughly $$ 1.4 \times 10^{-45} $$ to $$ 3.4 \times 10^{38} $$. Furthermore, the 10-bit mantissa offers only about three significant decimal digits, which can lead to [catastrophic cancellation](/concept/cancellation) and [accumulated rounding error](/concept/accumulated-error) in iterative computations.
+
+In many scientific and engineering applications, FP16 is unsuitable as a standalone representation. Instead, it is often paired with higher-precision formats in hybrid computation schemes, such as FP16 arithmetic with FP32 accumulation, to reduce error propagation. There are also lossless casting strategies to minimize degradation of critical parameters (e.g., gradients, loss values).
+
+## Software and Hardware Support
+
+Support for FP16 is now widely available across modern platforms:
+
+- **Python**: `numpy.float16`, `struct`, and external IEEE 754 conversion libraries.
+- **Machine Learning Frameworks**: PyTorch (`torch.float16`, `torch.autocast`), TensorFlow (`tf.float16`, `tf.keras.mixed_precision`).
+- **Hardware**: Supported natively on NVIDIA GPUs (Pascal and newer), AMD RDNA, Apple’s Neural Engine, ARM Cortex cores, and many embedded DSPs.
+
+In many of these systems, FP16 support is tightly integrated with kernel-level optimizations and vectorized operations.

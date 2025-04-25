@@ -1,0 +1,64 @@
+## Theorem 9
+
+If $$x$$ and $$y$$ are positive floating-point numbers in a format with parameters $$\beta$$ and $$p$$, and if subtraction is done with $$p + 1$$ digits (i.e. one guard digit), then the relative rounding error in the result is less than $$(\frac{\beta}{2} + 1)\beta^{-p} = \lparen 1 + \frac{2}{\beta}\rparen \epsilon \le 2\epsilon$$.
+
+## Summary
+
+This proof shows that when subtracting two positive floating-point numbers using one [guard digit](/concept/guard-digit), the relative error in the result is very small - specifically, less than about twice the normal rounding error, or $$2\epsilon$$.
+
+This is done by examining three different cases depending on how the two numbers $$x$$ and $$y$$ are represented. If they are close together, or if one has fewer digits than the other, the guard digit ensures that the subtraction is either exact or accurately rounded. In each case, it carefully estimates how much error is introduced and proves that it always stays under the allowed limit. While this is a generalized proof for any base representation, in binary (base 2) this bound is exactly $$2\epsilon$$.
+
+Overall, this provides a reassuring guarantee: *if subtraction is done with a guard digit, it's reliably accurate*, even in worst-case scenarios.
+
+## Proof
+
+Interchange $$x$$ and $$y$$ if necessary so that $$x > y$$. It is also harmless to scale $$x$$ and $$y$$ so that $$x$$ is represented by $$x_0.x_1 \ldots x_{p - 1} \times \beta^0$$. If $$y$$ is represented as $$y_0.y_1 \ldots y_{p-1}$$, then the difference is exact. If $$y$$ is represented as $$0.y_1\ldots y_p$$, then the guard digit ensures that the computed difference will be the exact difference rounded to a floating-point number, so the rounding error is at most $$\epsilon$$. In general, let $$y = 0.0\ldots 0y_{k + 1}\ldots y_{k + p}$$ and $$\overline{y}$$ be $$y$$ truncated to $$p + 1$$ digits. Then
+
+<Center>
+    $$ y - \overline{y} < (\beta - 1)(\beta^{-p-1} + \beta^{-p-2} + \ldots + \beta^{-p-k})$$
+</Center>
+
+From the definition of [guard digit](/concept/guard-digit), the computed value of $$x - y$$ is $$x - \overline{y}$$ rounded to a floating-point number $$(x - \overline{y}) + \delta$$, where the rounding error $$\delta$$ satisfies
+
+<Center>
+    $$|\delta| \le (\frac{\beta}{2})\beta^{-p}$$
+</Center>
+
+The exact difference is $$x - y$$, so the error is $$(x - y) - (x - \overline{y} + \delta) = \overline{y} - y + \delta$$. 
+
+Consider three possible cases: 
+
+1. If $$x - y \ge 1$$, then the relative error is bounded as
+
+<Center>
+    $$\frac{y - \overline{y} + \delta}{1} \le \beta^{-p}[(\beta - 1)(\beta^{-1} + \ldots + \beta^{-k}) + \frac{\beta}{2}] < \beta^{-p}(1 + \frac{\beta}{2})$$
+</Center>
+
+2. If $$x - \overline{y} < 1$$, then $$\sigma = 0$$. Since the smallest that $$x - y$$ can be is
+
+<Center>
+    $$0.\overbrace{0 \ldots 0}^\text{k} \overbrace{p \ldots p}^\text{p} > (\beta - 1)(\beta^{-1} + \ldots + \beta^{-k}), p = \beta - 1$$
+</Center>
+
+in this case the relative error is bounded by
+
+<Center>
+    $$\frac{y - \overline{y} + \delta}{(\beta - 1)(\beta^{-1} + \ldots + \beta^{-k})} < \frac{(\beta - 1)\beta^{-p}(\beta^{-1} + \ldots + \beta^{-k})}{(\beta - 1)(\beta^{-1} + \ldots + \beta^{-k})} = \beta^{-p}$$
+</Center>
+
+3. If $$x - y < 1$$ and $$x - \overline{y} \ge 1$$, which implies $$x - \overline{y} = 1$$, in which case $$\delta = 0$$. If $$\delta = 0$$, then the same bound as above applies, so the relative error is also bounded by $$\beta^{-p} < \beta^{-p}(1 + \frac{\beta}{2})$$. 
+
+When $$\beta = 2$$, the bound is exactly $$2\epsilon$$, and this bound is achieved for $$x = 1 + 2^{2 - p}$$ and $$y = 2^{1 - p} - 2^{1 - 2p}$$ in the limit as $$p \to \infty$$. $$\blacksquare$$
+
+## Related theorems
+
+When adding numbers of the same sign, a guard digit is not necessary to achieve good accuracy, as shown in [Theorem 10](/numbers/analysis/10).
+
+<References reference={[
+    {
+        author: 'David Goldberg',
+        publication: 'ACM Computing Surveys, Vol 23, No 1, March 1991',
+        page: 37,
+        url: '/paper/goldberg_IEEE754.pdf'
+    }
+]}/>
