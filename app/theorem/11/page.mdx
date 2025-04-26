@@ -1,4 +1,4 @@
-# Theorem 11
+<Theorem id="11"/>
 
 When subtracting two floating-point numbers `x - y`, we usually lose some precision, especially if `x` and `y` are very close. However, under certain conditions where `x` and `y` are *close but not too close*, a [guard digit](/numbers/guard-digit) allows us to perform an exact subtraction when $$ \frac{y}{2} \le x \le 2y $$.
 
@@ -31,3 +31,8 @@ If $$x$$ and $$y$$ have the same exponent, then certainly $$x \ominus y$$ is exa
 ## Notes
 
 When $$B > 2$$, the hypothesis of Theorem 11 cannot be replaced by $$\frac{y}{B} \le x \le By$$; the stronger condition $$y/2 \le x \le 2y$$ is still necessary. The analysis of the error in $$(x - y) (x + y)$$, immediately following the proof of [Theorem 10](/numbers/analysis/10), used the fact that the relative error in the basic operations of addition and subtraction is small, which is the most common kind of error analysis. 
+
+
+<References reference={[
+    'goldberg'
+]}/>

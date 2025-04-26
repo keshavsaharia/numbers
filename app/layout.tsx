@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Noto_Serif, Noto_Sans_Mono } from 'next/font/google'
+import { Noto_Sans, Noto_Sans_Mono } from 'next/font/google'
 import './globals.css'
 import { Header } from './header'
 import { Footer } from '../components/footer/footer'
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     'A free and open-source guide to numerical representations and states in digital computation.',
 }
 
-const serifFont = Noto_Serif({
+const serifFont = Noto_Sans({
   variable: '--font-serif',
   subsets: ['latin'],
 })
@@ -49,6 +49,8 @@ export default function RootLayout({
                         </div>
                     </div>
                 </ThemeProvider>
+                
+                <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
             </body>
         </html>
     )

@@ -1,27 +1,43 @@
+<Theorem id="10"/>
+
+When adding two non-negative floating-point numbers $$x$$ and $$y$$, the relative error in computing $$x + y$$ is at most $$2\epsilon$$ (twice the [machine epsilon](/concept/epsilon)), even without using extra bits to protect against rounding errors.
+
+This proof addresses the precision loss caused by adding two numbers, where the smaller number $$y$$ potentially loses digits when shifting to align with the larger one $$x$$. Even without guard digits, the shifted-off digits of $$y$$ contribute to a very small relative error in the full result, especially when $$x$$ is much larger than $$y$$. The rounding error from this shift, plus the final rounding to $$p$$ digits, leads to a maximum relative error of $$2\epsilon$$.
+
+This theorem illustrates the surprisingly good accuracy of floating-point addition, even in the absence of guard digits, and reinforces the idea that the *structure of a formula* greatly affects its numerical stability.
+
 ## Theorem
 
-If $$x \ge 0$$ and $$y \ge 0$$, then the relative error in computing $$x + y$$ is at most $$2\epsilon$$, even if no guard digits are used.
-
-## Summary
-
-This theorem states that when adding two non-negative floating-point numbers $$x$$ and $$y$$, the relative error in computing $$x + y$$ is at most $$ 2\epsilon$$, even without using extra bits to protect against rounding errors.
-
-This proof addresses the precision loss caused by adding two numbers, where the smaller number $$y$$ to be shifted to align with the larger one $$x$$, potentially losing digits. Even without guard digits, the shifted-off digits of $$y$$ contribute to a very small relative error in the full result, especially when $$x$$ is much larger than $$y$$. The rounding error from this shift, plus the final rounding to $$p$$ digits, leads to a maximum relative error of $$2\epsilon$$.
-
-This theorem illustrates the surprisingly good accuracy of floating-point addition - even in the absence of guard digits - and reinforces the idea that the *structure of a formula* greatly affects its numerical reliability.
+If $$x \ge 0$$ and $$y \ge 0$$, the relative error in computing $$x + y$$ is at most $$2\epsilon$$, even when no guard digits are used.
 
 ## Proof
 
-The algorithm for addition with $$k$$ guard digits is similar to that for subtraction. If $$x \ge y$$, shift $$y$$ right until the radix points of $$x$$ and $$y$$ are aligned. Discard any digits shifted past the $$p + k$$ position. Compute the sum of these two $$p + k$$ digit numbers exactly, then round to $$p$$ digits.
+The algorithm for floating-point addition with $$k$$ guard digits closely resembles that used for subtraction. When $$x \ge y$$, we right-shift $$y$$ until its radix point aligns with that of $$x$$. Any digits shifted beyond the $$p + k$$-th place are discarded. We then compute the exact sum of these two truncated numbers (each with $$p + k$$ digits), and round the result to $$p$$ digits.
 
-The general case of this theorem is similar to the case where no guard digits are used. There is no loss of generality in assuming that $$x \ge y \ge 0$$ and that $$x$$ is scaled to be of the form $$d.dd...d \times \beta^0$$. First, assume there is no carry out - the digits shifted off the end of $$y$$ have a value less than $$\beta^{-p + 1}$$, and the sum is at least $$1$$, so the relative error is less than $$\beta^{-p+1} = 2\epsilon$$. If there is a carry out, then the error from shifting must be added to the rounding error of $$\frac{\beta^{-p + 2}}{2}$$.
+To analyze the worst-case scenario, it suffices to consider the case with no guard digits ($$k = 0$$). Without loss of generality, we may assume $$x \ge y \ge 0$$, and scale $$x$$ to the normalized form $$x = d.dd\ldots d \times \beta^0$$, where $$\beta$$ is the base of the floating-point system.
 
-The sum is at least $$\beta$$, so the relative error is bounded as
+**Case 1: No carry-out during addition**  
+
+In this case, the digits of $$y$$ that are shifted out contribute a value less than $$\beta^{-p + 1}$$. Since the sum $$x + y$$ is at least $$1$$, the relative error due to truncation is bounded by  
 
 <Center>
-    $$\frac{\beta^{-p + 1} + \frac{1}{2}\beta^{-p + 2}}{\beta} = (1 + \frac{\beta}{2})\beta^{-p} \le 2\epsilon$$
+    $$ \frac{\text{error}}{\text{true sum}} < \frac{\beta^{-p + 1}}{1} = \beta^{-p + 1} = 2\epsilon. $$
 </Center>
+
+**Case 2: Carry-out occurs**  
+
+Here, we must account for both the truncation error and the rounding error. The rounding error is at most $$\frac{1}{2}\beta^{-p + 2}$$, and the truncation error is again at most $$\beta^{-p + 1}$$. Since the sum must now be at least $$\beta$$, the relative error is bounded by  
+
+<Center>
+$$ \frac{\beta^{-p + 1} + \frac{1}{2}\beta^{-p + 2}}{\beta} = \left(1 + \frac{\beta}{2}\right)\beta^{-p} \le 2\epsilon.$$
+</Center>
+
+In both cases, the relative error is bounded by $$2\epsilon$$. $$\blacksquare$$
 
 ## Discussion
 
-This theorem underpins [Theorem 2](/theorem/2), which provides bounds for relative error in a single operation. Combining Theorems 2 and 10 helps explain why computing an expression like $$(x - y)(x + y)$$ is generally more accurate than computing $$x^2 - y^2$$, especially when $$x$$ and $$y$$ are close together. The latter can suffer large relative errors due to [catastrophic cancellation](/concept/cancellation), while the former maintains more numerical stability.
+This theorem provides part of the proof for [Theorem 2](/theorem/2), which establishes bounds for relative error in a single operation. These theorems collectively demonstrate why computing an expression like $$(x - y)(x + y)$$ is generally more accurate than computing $$x^2 - y^2$$, especially when $$x$$ and $$y$$ are close together. The latter can suffer large relative errors due to [catastrophic cancellation](/concept/cancellation), while the former maintains more numerical stability.
+
+<References reference={[
+    'goldberg'
+]}/>

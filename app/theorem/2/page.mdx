@@ -1,7 +1,13 @@
 <Theorem id="2"/>
 
+We will now formalize the idea that rounding a real number to its closest floating-point representation introduces a small relative error. This error behaves like a multiplicative perturbation bounded by [machine epsilon](/concept/epsilon) - that is, any floating-point number you store can be thought of as the exact number times a factor very close to 1 (within a factor of $$\epsilon$$). 
+
+This theorem is crucial for reasoning about numerical stability and error propagation in floating-point computations.
+
 ## Theorem
 
 If $$x$$ and $$y$$ are floating-point numbers in a format with parameters $$\beta$$ and $$\rho$$, and if subtraction is done with $$\rho + 1$$ digits (i.e. one guard digit), then the relative rounding error in the result is less than $$2\epsilon$$.
 
+## Proof
 
+There are two parts to the proof of this theorem (addition and subtraction), which are proved in [Theorem 9](/theorem/9) and [Theorem 10](/theorem/10). $$\blacksquare$$

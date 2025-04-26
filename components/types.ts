@@ -29,3 +29,15 @@ export interface SectionLink {
     video?: string
     tags?: string[]
 }
+
+export interface Reference {
+    id: string
+    edition?: number | number[]
+    year?: number | number[]
+    author: string
+    title: string
+    publisher?: string
+    link?: string
+    publication?: string
+    [key: string]: any
+}

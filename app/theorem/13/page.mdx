@@ -1,0 +1,39 @@
+<Theorem id="13"/>
+
+This theorem analyzes the logarithmic mean function $$\mu(x) = \frac{\ln(1 + x)}{x}$$, which appears in floating-point error analysis and logarithmic approximations. This function has useful and well-behaved properties in the range $$ 0 < x < 1 $$, which the theorem formalizes. 
+
+Specifically, it proves that $$ \mu(x) \leq 1 $$ for all $$ x > 0 $$, and the derivative $$ \mu'(x) $$ is bounded in magnitude with $$ |\mu'(x)| \leq \frac{1}{2} $$. The proof uses the [Taylor expansion](https://en.wikipedia.org/wiki/Taylor_series) of $$ \mu(x) $$, which is an alternating series:
+
+$$\mu(x) = 1 - \frac{x}{2} + \frac{x^2}{3} - \cdots$$
+
+Since the series alternates with decreasing terms, the sum lies below the first term, hence $$ \mu(x) \leq 1 $$. Furthermore, because all terms past the first are negative for $$ x > 0 $$, we can estimate $$ \mu(x) \geq 1 - \frac{x}{2} $$, and when $$ x \leq 1 $$, this means $$ \mu(x) \geq \frac{1}{2} $$. So overall, $$ \mu(x) \in [\frac{1}{2}, 1] $$ for small positive $$ x $$.
+
+The derivative, $$ \mu'(x) $$, also expands into an alternating Taylor series. Like $$ \mu(x) $$, it is well-behaved and bounded in absolute value by $$|\mu'(x)| \leq \frac{1}{2}$$, because the leading term in $$ \mu'(x) $$'s expansion is negative and therefore subsequent terms decay quickly. This gives a bound of at most $$ \frac{1}{2} $$ for small values of $$ x $$.
+
+These bounds make $$ \mu(x) $$ and its derivative particularly stable and reliable in numerical computations — especially in error estimation for logarithmic expressions and in the analysis of floating-point division and logarithmic mean approximations.
+
+## Theorem
+
+If $$\mu(x) = \frac{\ln{(1 + x)}}{x}$$, then for $$0 \le x \le \frac{3}{4}$$, $$\frac{1}{2} \le \mu(x) \le 1$$ and the derivative satisfies $$|\mu'(x)| \leq \frac{1}{2}$$.
+
+## Proof
+
+Observe that the Taylor expansion of $$ \mu(x) = \frac{\ln(1 + x)}{x} $$ is:
+
+$$ \mu(x) = 1 - \frac{x}{2} + \frac{x^2}{3} - \frac{x^3}{4} + \cdots $$
+
+This is an alternating series with terms that decrease in magnitude. For $$ x \leq 1 $$, this implies $$ \mu(x) \geq 1 - \frac{x}{2} \geq \frac{1}{2} $$, since $$ \frac{x}{2} \leq \frac{1}{2} $$. Also, because the series alternates starting from 1 and subtracts terms, it must be less than or equal to 1. Therefore:
+
+$$
+\frac{1}{2} \leq \mu(x) \leq 1
+$$
+
+Now consider the derivative $$ \mu'(x) $$. Its Taylor series is also alternating and takes the form:
+
+$$ \mu'(x) = -\frac{1}{2} + \frac{2x}{3} - \cdots $$
+
+For $$ x \leq \frac{3}{4} $$, this is again an alternating series with decreasing terms, and so we can bound the derivative:
+
+$$ - \frac{1}{2} \leq \mu'(x) \leq -\frac{1}{2} + \frac{2x}{3} $$
+
+Since $$ x \geq 0 $$, this implies $$ \mu'(x) \leq 0 $$, and the lower bound is $$ -\frac{1}{2} $$, so $$ |\mu'(x)| \leq \frac{1}{2} $$. $$\blacksquare$$

@@ -1,14 +1,14 @@
-## Theorem 9
+<Theorem id="9"/>
+
+When subtracting two positive floating-point numbers using one [guard digit](/concept/guard-digit), the relative error in the result is very small - specifically, less than about twice the normal rounding error, or $$2\epsilon$$.
+
+This can be proven by examining three different cases depending on how the two numbers $$x$$ and $$y$$ are represented. If they are close together, or if one has fewer digits than the other, the guard digit ensures that the subtraction is either exact or accurately rounded. In each case, a careful estimation of how much error is introduced supports the assertion that the relative error always stays under the allowed limit. While this is a generalized proof for any base representation, in binary (base 2) this bound is exactly $$2\epsilon$$.
+
+Overall, this provides a reassuring guarantee that subtraction with a guard digit will be reliably accurate, even in worst-case scenarios.
+
+## Theorem
 
 If $$x$$ and $$y$$ are positive floating-point numbers in a format with parameters $$\beta$$ and $$p$$, and if subtraction is done with $$p + 1$$ digits (i.e. one guard digit), then the relative rounding error in the result is less than $$(\frac{\beta}{2} + 1)\beta^{-p} = \lparen 1 + \frac{2}{\beta}\rparen \epsilon \le 2\epsilon$$.
-
-## Summary
-
-This proof shows that when subtracting two positive floating-point numbers using one [guard digit](/concept/guard-digit), the relative error in the result is very small - specifically, less than about twice the normal rounding error, or $$2\epsilon$$.
-
-This is done by examining three different cases depending on how the two numbers $$x$$ and $$y$$ are represented. If they are close together, or if one has fewer digits than the other, the guard digit ensures that the subtraction is either exact or accurately rounded. In each case, it carefully estimates how much error is introduced and proves that it always stays under the allowed limit. While this is a generalized proof for any base representation, in binary (base 2) this bound is exactly $$2\epsilon$$.
-
-Overall, this provides a reassuring guarantee: *if subtraction is done with a guard digit, it's reliably accurate*, even in worst-case scenarios.
 
 ## Proof
 

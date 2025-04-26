@@ -1,0 +1,82 @@
+<Theorem id="14"/>
+
+This theorem provides a clever method for rounding a floating-point number $$x$$ to $$p - k$$ significant digits using only basic floating-point operations—multiplication and subtraction—with exact rounding. By defining $$m = \beta^k + 1$$, the expression $$(m \otimes x) \ominus (m \otimes x \ominus x)$$ produces $$x$$ rounded to $$p - k$$ digits. 
+
+The key insight is that multiplying by $$m$$ shifts the digits, effectively exposing the lower bits to rounding, and the subsequent subtraction removes the influence of these bits, recovering the correctly rounded value. The proof shows that this method captures the high part of $$x$$ accurately under all rounding cases—chopping, rounding down, or rounding up—and that any rounding error is carefully controlled and representable within the precision bounds.
+
+## Theorem
+
+Let $$0 < k < p$$, and define $$m = \beta^k + 1$$, where floating-point operations are exactly rounded. Then:
+
+$$(m \otimes x) \ominus (m \otimes x \ominus x)$$
+
+equals $$x$$ *exactly*, rounded to $$p - k$$ significant digits. More precisely, this operation rounds the significand of $$x$$ by imagining a radix point placed just to the left of the $$k$$ least significant digits and rounding to the nearest integer.
+
+## Example
+
+Consider a floating point system where $$\beta = 2$$ (binary), $$p = 8$$ (8-bit significands), and $$k = 3$$ (i.e. we will round to $$p - k = 5$$ significant bits). If we define $$m = 2^k + 1 = 2^3 + 1 = 9$$, the theorem proposes that $$(m \otimes x) \ominus (m \otimes x \ominus x)$$ gives you $$x$$ rounded to 5 significant bits.
+
+Let's take a floating-point number $${x = 1.01101110 \times 2^0}$$ (using 8 bits of precision, i.e. the full $$p = 8$$). We want to round this to 5 significant bits, so
+
+$$x \approx 1.0110\underline{1}110 \to \boxed{1.0111} \times 2^0$$  
+
+Because the 6th bit is a `1`, we will round up. Now we compute the expression $$m \otimes x$$:
+
+$${m = 9 = 2^3 + 1}$$ <br/>
+$$ m \cdot x = (2^3 + 1) \cdot x = 8x + x = 9x $$ <br/>
+$$9 \cdot (1.01101110) = 1001.01101110 $$
+
+However, since we are rounding and therefore only keeping only 8 significant bits, $$m \otimes x = \boxed{1001.0110}$$. Next, we compute $$m \otimes x \ominus x$$, again rounded to 8 bits:
+
+$$m \otimes x \ominus x = 1001.0110 - 1.01101110 \approx 1000.0000 $$ <br/>
+$$(m \otimes x) \ominus (m \otimes x \ominus x) = 1001.0110 - 1000.0000 = \boxed{1.0110}$$
+
+Which yields a final result of $${1.0110 \times 2^0}$$, which is $$x$$ rounded to **5 bits**.
+
+## Proof
+
+Let $$x_h$$ denote $$x$$ rounded to $$p - k$$ digits. We'll show that the expression:
+
+$$(m \otimes x) \ominus (m \otimes x \ominus x)$$
+
+computes exactly $$x_h$$.
+
+**High part ($$x_h$$)**
+
+Assume $$x$$ has the normalized form $${x = x_0.x_1 x_2 \dots x_{p-1} \times \beta^e}$$.
+
+Rounding $$x$$ to $$p - k$$ digits affects only digit $$x_{p - k}$$. If there's no carry-out during rounding, then the result $$x_h$$ fits within $$p - k$$ digits and is representable.
+
+If there **is** a carry-out (i.e., rounding $$x_{p - k}$$ causes a chain of 9s to roll over), then the low-order digit of $$x_h$$ becomes 0, and $$x_h$$ still has only $$p - k$$ nonzero digits. So in all cases, $$x_h$$ is representable.
+
+**Low part ($$x_\ell = x - x_h$$)**
+
+To isolate the rounding behavior, we scale $$x$$ to be an integer such that $${\beta^{p-1} \le x < \beta^p}$$. Let $$x = x_h + x_\ell$$, where $$x_h$$ is the high part (rounded to $$p - k$$ digits), and $$x_\ell$$ is the low part (remainder).
+
+Now consider $$m = \beta^k + 1$$.
+
+Then:
+$$(m \otimes x) = (\beta^k + 1) \cdot x = \beta^k x + x$$
+
+So:
+$$(m \otimes x) \ominus (m \otimes x \ominus x) = \beta^k x + x - (\beta^k x) = x$$
+
+But since all operations are rounded to $$p$$ digits, what we **actually** get is:
+
+- The high part $$\beta^k x$$ is rounded to remove the $$k$$ least significant digits.
+- Subtracting that from $$\beta^k x + x$$ recovers $$x_h$$—i.e., $$x$$ rounded to $$p - k$$ digits.
+
+**Accuracy of the low part**
+
+Depending on the exact value of $$x_\ell$$, there are three cases:
+
+1. **No rounding required (chopping)**: If the digits beyond $$p - k$$ are zero, then rounding is the same as chopping and $$x_\ell = 0$$.
+
+2. **Rounding down**: Then $$x_h$$ is simply the chopped value and $$x_\ell = x - x_h$$ has at most $$k$$ nonzero digits, all at the lowest significance—so it's representable.
+
+3. **Rounding up**: Then $$x_h = \text{chopped value} + \beta^{-p + k}$$ and
+   $${x_\ell = x - x_h = x - (\text{chopped} + \beta^{-p + k}) = \text{low part} - \beta^{-p + k}}$$
+
+Again, this is small and precisely representable.
+
+So in all cases, the expression computes $$x_h$$, i.e., $$x$$ rounded to $$p - k$$ digits. $$\blacksquare$$

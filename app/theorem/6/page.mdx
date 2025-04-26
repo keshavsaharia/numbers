@@ -1,0 +1,38 @@
+<Theorem id="6"/>
+
+This theorem presents a powerful technique in floating-point arithmetic: any number $$x$$ can be split into two parts — a high part $$x_h$$ and a low part $$x_l$$ — such that $$ x = x_h + x_l $$, and each part is representable using only half the original precision. This decomposition is possible under the assumption of [exact rounding](/concept/exact-rounding), and it's especially useful for reducing rounding errors in sensitive calculations.
+
+To perform the split, we define $$ m = 2^k + 1 $$, where $$ k = \lceil p/2 \rceil $$, and $$ p $$ is the number of bits of floating-point precision. Then, the high part is computed as $$ x_h = (m \cdot x) - [(m \cdot x) - x] $$, and the low part as $$ x_l = x - x_h $$. When rounding is exact, both $$ x_h $$ and $$ x_l $$ retain $$ k $$-bit precision, making them safely usable in subsequent computations.
+
+Consider a calculation of the quadratic formula with $$p = 4$$ (i.e. 4 digits of precision), with values like $$ b = 3.476 $$, $$ a = 3.463 $$, and $$ c = 3.479 $$. A naive calculation of $$ b^2 - ac $$ using rounded values yields $$ 0.03 $$, which is significantly different from the correctly rounded result $$ 0.03480 $$. However, using this theorem, we can justify splitting the numbers around a common base (even a fractional base like $$3.5$$), performing algebraic expansion (e.g. $$ b^2 = 3.5^2 - 2 \cdot 3.5 \cdot 0.024 + 0.024^2 $$), and evaluating each term exactly. Subtracting the expanded forms for $$ b^2 $$ and $$ ac $$ yields a result that matches the correctly rounded value, with no significant loss of precision.
+
+The theorem critically depends on exact rounding - otherwise, the decomposition may fail. For instance, if $$ p = 3 $$ and only one guard digit is used, the calculation of $$ x_h $$ and $$ x_l $$ can yield parts that aren't even representable in the required bit-width, invalidating the method. This limitation underlines why floating-point standards, such as [IEEE 754](/spec/ieee754), *mandate* exact rounding — it is essential for accurate and reliable numerical algorithms.
+
+## Theorem
+
+Let $$p$$ be the floating-point precision, with the restriction that $$p$$ is even when $$\beta > 2$$, and assume that floating-point operations are exactly rounded. Then if $$k = \lceil \frac{p}{2} \rceil $$ is half the precision (rounded up) and $$m = \beta^k + 1$$, $$x$$ can be split as $$x = x_h + x_l$$, where 
+
+$$x_h = (m \otimes x) \ominus (m \otimes x \ominus x), x_l = x \ominus x_h$$
+
+and each $$x_l$$ is representable using $$\lfloor \frac{p}{2} \rfloor$$ bits of precision.
+
+## Proof
+
+By [Theorem 14](/theorem/14), $$x_h$$ is $$x$$ rounded to $$p - k = \lfloor \frac{p}{2} \rfloor$$ places. If there is no carry out, then certainly $$x_h$$ can be represented with $$\lfloor \frac{p}{2} \rfloor$$ significant digits. 
+
+Suppose there is a carry-out. If $$x = x0.x1 ... xp - 1 \times \beta^e$$, then rounding adds $$1$$ to $$x_{p - k - 1}$$, and the only way there can be a carry-out is if $$x_{p - k - 1} = \beta - 1$$, but then the low order digit of $$x_h$$ is $$1 + x_{p - k - 1} = 0$$, and so again $$x_h$$ is representable in $$\lfloor \frac{p}{2} \rfloor$$ digits.
+
+To deal with $$x_l$$, scale $$x$$ to be an integer satisfying $$\beta^{p - 1} \le x \le \beta^{p} - 1$$. Let $$x = \overline{x_h} + \overline{x_l}$$, where $$\overline{x_h}$$ is the $$p - k$$ high order digits of $$x$$, and $$\overline{x_l}$$ is the $$k$$ low order digits. 
+
+Consider three cases. If $$\overline{x_l} < (\frac{\beta}{2})\beta^{k - 1}$$, then rounding $$x$$ to $$p - k$$ places is the same as chopping and $$x_h = \overline{x_h}$$, and $$x_l = \overline{x_l}$$. 
+
+Since $$\overline{x_l}$$ has at most $$k$$ digits, if $$p$$ is even, then  has at most $$k = \lceil \frac{p}{2} \rceil = \lfloor \frac{p}{2} \rfloor$$ digits. Otherwise, $$\beta = 2$$ and $$\overline{x_1} < 2^{k - 1}$$ is representable with $$k - 1 \le \lfloor \frac{p}{2} \rfloor$$ significant bits. 
+
+The second case is when $$\overline{x_l} > (\frac{\beta}{2})\beta^{k - 1}$$, and then computing $$x_h$$ involves rounding up, so $$x_h = \overline{x_h} + \beta^k$$, and $$x_l = x - x_h = x - \overline{x_h} - \beta^k = \overline{x_h} - \beta^k$$. Once again, $$\overline{x_l}$$ has at most $$k$$ digits, so is representable with $$\lfloor \frac{p}{2} \rfloor$$ digits. 
+
+Finally, if $$\overline{x_l} = (\frac{\beta}{2})\beta^{k - 1}$$, then $$x_h = \overline{x_h}$$ or $$x_h = \overline{x_h} + \beta^k$$ depending on whether there is a round up. Therefore, $$x_l$$ is either $$\frac{\beta}{2} \beta^{k - 1}$$ or $$\frac{\beta}{2} \beta^{k - 1} - \beta^k = - \frac{\beta^k}{2}$$, both of which are represented with 1 digit. $$\blacksquare$$
+
+
+<References reference={[
+    'goldberg'
+]}/>
