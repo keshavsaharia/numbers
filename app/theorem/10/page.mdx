@@ -1,3 +1,5 @@
+<Theorem id="10"/>
+
 When adding two non-negative floating-point numbers $$x$$ and $$y$$, the relative error in computing $$x + y$$ is at most $$2\epsilon$$ (twice the [machine epsilon](/concept/epsilon)), even without using extra bits to protect against rounding errors.
 
 This proof addresses the precision loss caused by adding two numbers, where the smaller number $$y$$ potentially loses digits when shifting to align with the larger one $$x$$. Even without guard digits, the shifted-off digits of $$y$$ contribute to a very small relative error in the full result, especially when $$x$$ is much larger than $$y$$. The rounding error from this shift, plus the final rounding to $$p$$ digits, leads to a maximum relative error of $$2\epsilon$$.
@@ -35,3 +37,7 @@ In both cases, the relative error is bounded by $$2\epsilon$$. $$\blacksquare$$
 ## Discussion
 
 This theorem provides part of the proof for [Theorem 2](/theorem/2), which establishes bounds for relative error in a single operation. These theorems collectively demonstrate why computing an expression like $$(x - y)(x + y)$$ is generally more accurate than computing $$x^2 - y^2$$, especially when $$x$$ and $$y$$ are close together. The latter can suffer large relative errors due to [catastrophic cancellation](/concept/cancellation), while the former maintains more numerical stability.
+
+<References reference={[
+    'goldberg'
+]}/>

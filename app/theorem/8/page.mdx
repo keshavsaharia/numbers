@@ -1,2 +1,122 @@
+<Theorem id="8"/>
+
+This theorem shows that the [Kahan summation algorithm](https://en.wikipedia.org/wiki/Kahan_summation_algorithm) computes a sum with significantly less rounding error than naïve summation. Specifically, each term $$ x_j $$ is distorted by at most a small relative error $$ \delta_j $$, with:
+
+$$ |\delta_j| \leq 2\epsilon \quad \text{and total error} \quad \mathcal{O}(N^2 \epsilon^2) \sum_j |x_j| $$
+
+In naïve summation, small rounding errors pile up. Worst case, early terms like $$ x_1 $$ get multiplied by lots of small relative errors (like $$ (1 + \delta)^n $$), leading to distortion. Kahan summation tries to fix this by tracking the error introduced at each step, and subtracting it off in the next step.
+
+For each term $$ x_k $$, it first corrects the term by subtracting the previously lost bits $$ y_k = x_k - c_{k-1} $$. It then performs the floating-point addition $$ s_k = s_{k-1} + y_k $$ and updates the compensation term to store the newly lost bits ($$ c_k = (s_k - s_{k-1}) - y_k $$), therefore reclaiming lost precision bit by bit.
+
+Even though each operation introduces rounding error, the algorithm systematically cancels much of it out. It turns out that the distortion for each term $$ x_j $$ is only about $$ 2\epsilon $$, so the total error is **quadratic in $$ \epsilon $$** instead of linear — a huge improvement.
+
+Kahan summation doesn't eliminate rounding error, but it controls it very effectively. Instead of errors accumulating linearly with the number of terms $$N$$, they grow relative to $$ N^2 \epsilon^2 $$, which is tiny in practice. This makes it a gold standard in high-accuracy numerical computing.
 
 ## Theorem
+
+Suppose a sum $$ S $$ is computed using the following algorithm:
+
+$$
+\begin{aligned}
+S &:= X_1 \\
+C &:= 0 \\
+\text{for } j = 2 \text{ to } N: \quad & \\
+\quad Y &:= X_j - C \\
+\quad T &:= S + Y \\
+\quad C &:= (T - S) - Y \\
+\quad S &:= T
+\end{aligned}
+$$
+
+Then the computed sum $$ S $$ satisfies:
+
+$$
+S = \sum_{j=1}^{N} x_j (1 + \delta_j) + \mathcal{O}(N^2 \epsilon^2) \sum_j |x_j|, \quad |\delta_j| \leq 2\epsilon
+$$
+
+## Proof
+
+In naive summation, define:
+
+$$
+s_1 = x_1, \quad s_i = (s_{i-1} + x_i)(1 + \delta_i)
+$$
+
+Then the computed sum is:
+
+$$
+s_n = \sum_{j=1}^{n} x_j \prod_{k=j}^{n} (1 + \delta_k)
+$$
+
+This leads to large coefficients of rounding error on early terms (e.g. $$ x_1 $$). Let:
+
+$$
+\begin{aligned}
+s_0 &= c_0 := 0 \\
+y_k &= (x_k - c_{k-1})(1 + \gamma_k) \\
+s_k &= (s_{k-1} + y_k)(1 + \delta_k) \\
+c_k &= ((s_k - s_{k-1}) - y_k)(1 + \eta_k)
+\end{aligned}
+$$
+
+Here, $$ \gamma_k, \delta_k, \eta_k $$ are small error terms $$ \leq \epsilon $$.
+
+**First Iteration (k = 1)**
+
+We compute:
+
+$$
+\begin{aligned}
+c_1 &= \left(s_1(1 + \delta_1) - y_1\right)(1 + \eta_1) \\
+&= y_1 \left((1 + \delta_1)(1 + \gamma_1) - 1\right)(1 + \eta_1) \\
+&= x_1(\delta_1 + \gamma_1 + \delta_1 \gamma_1)(1 + \eta_1)
+\end{aligned}
+$$
+
+$$
+s_1 - c_1 = x_1 \left[1 - \delta_1 - \gamma_1 - \delta_1 \gamma_1 + \text{higher-order terms} \right]
+$$
+
+Call the coefficients of $$ x_1 $$ in these expressions $$ C_k $$ and $$ S_k $$.
+
+$$
+C_1 = 2\epsilon + \mathcal{O}(\epsilon^2), \quad S_1 = 1 - \epsilon + 4\epsilon^2 + \mathcal{O}(\epsilon^3)
+$$
+
+**Recurrence Relations**
+
+By ignoring higher-order $$ x_j $$ terms (i.e., $$ j > 1 $$):
+
+$$
+\begin{aligned}
+S_k &= (1 + 2\epsilon + \mathcal{O}(\epsilon^2)) S_{k-1} + (2\epsilon + \mathcal{O}(\epsilon^2)) C_{k-1} \\
+C_k &= (\epsilon + \mathcal{O}(\epsilon^2)) S_{k-1} + (-\epsilon + \mathcal{O}(\epsilon^2)) C_{k-1}
+\end{aligned}
+$$
+
+From these, it can be shown:
+
+$$
+\begin{aligned}
+C_k &= \epsilon + \mathcal{O}(\epsilon^2) \\
+S_k &= 1 - \epsilon + (4k + 2)\epsilon^2 + \mathcal{O}(\epsilon^3)
+\end{aligned}
+$$
+
+Let $$ x_{n+1} = 0 $$, then:
+
+$$
+s_{n+1} = s_n - c_n
+$$
+
+So the coefficient of $$ x_1 $$ in $$ s_n $$ is at most:
+
+$$
+S_n = 1 - \epsilon + (4n + 2)\epsilon^2
+$$
+
+Hence, the total error is bounded by:
+
+$$
+S = \sum_{j=1}^{n} x_j(1 + \delta_j) + \mathcal{O}(n^2 \epsilon^2) \sum_j |x_j|, \quad |\delta_j| \leq 2\epsilon
+$$

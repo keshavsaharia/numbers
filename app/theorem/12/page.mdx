@@ -1,5 +1,4 @@
-
-# Theorem 12
+<Theorem id="12"/>
 
 If subtraction uses a guard digit, and if $$a, b, c$$ are the sides of a triangle ($$a \ge b \ge c$$), then the relative error in computing the area of the triangle as $$(a + (b + c))(c - (a - b))(c + (a - b))(a +(b - c))$$ is at most $$16\epsilon$$, provided $$\epsilon < .005$$.
 
@@ -65,3 +64,8 @@ $$ E = (1 + \eta_1)^2 (1 + \eta_2)(1 + \eta_3)(1 + \eta_4)^2 (1 + \zeta_1)(1 + \
 An upper bound for $$E$$ is $$(1 + 2\epsilon)^6(1 + \epsilon)^3$$, which expands out to $$1 + 15\epsilon + O(\epsilon^2)$$. Some writers simply ignore the $$O(\epsilon^2)$$ term, but it is easy to account for it. Writing $$(1 + 2\epsilon)^6(1 + \epsilon)^3 = 1 + 15\epsilon + \epsilon R(\epsilon)$$, where $$R(\epsilon)$$ is a polynomial in $$\epsilon$$ with positive coefficients, and therefore an increasing function of $$\epsilon$$. Since $$R(.005) = .505$$, $$R(\epsilon) < 1$$ for all $$\epsilon < .005$$, and hence $$E \le (1 + 2\epsilon)^6(1 + \epsilon)^3 < 1 + 16\epsilon$$. 
 
 To get a lower bound on $$E$$, note that $$1 - 15\epsilon - \epsilon R(\epsilon) < E$$, so when $$\epsilon < .005$$, $$1 - 16\epsilon < (1 - 2\epsilon)^6(1 - \epsilon)^3$$. Combining these two bounds yields $$1 - 16\epsilon < E < 1 + 16\epsilon$$, so the relative error is at most $$16\epsilon$$. $$\blacksquare$$
+
+
+<References reference={[
+    'goldberg'
+]}/>

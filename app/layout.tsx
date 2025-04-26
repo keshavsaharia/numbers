@@ -49,6 +49,8 @@ export default function RootLayout({
                         </div>
                     </div>
                 </ThemeProvider>
+                
+                <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
             </body>
         </html>
     )
