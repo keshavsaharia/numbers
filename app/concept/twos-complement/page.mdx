@@ -1,0 +1,13 @@
+## Two's complement
+
+Two's complement is a method for representing both positive and negative whole numbers in a binary number system. Positive numbers are represented intuitively, where each bit represents a power of two, from right to left. 
+
+To store a negative number, one bit must be allocated as a **sign bit**, which is 0 for positive numbers and 1 for negative numbers. In two's complement, a negative number (i.e. where the sign bit is $$1$$) is represented as *inverted digits*, where $$0$$ represents $$1$$ and vice-versa. This unintuitive representation allows a digital computer to use the same circuits for both addition and subtraction.
+
+## Computing two's complement
+
+To get the two's complement of a number, first flip all the bits, so `0101` becomes `1010`. Then you add 1, so `1010 + 1 = 1011`. That result, `1011`, is the integer part of a negative number (i.e. $$-11$$).
+
+It is advantageous to represent integers this way, because the sum of a number and its two's complement will be the correct two's complement result.
+
+The biggest reason for using two's complement is that it allows for efficient arithmetic without special rules for subtraction. It also avoids the problem of having two zeroes (one with a positive sign, and another with a negative sign).
