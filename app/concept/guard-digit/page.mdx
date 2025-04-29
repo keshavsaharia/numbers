@@ -1,8 +1,33 @@
 # Guard digits
 
-TODO
+A **guard digit** is an additional bit used during intermediate floating-point calculations to preserve precision and minimize rounding errors, particularly in operations like subtraction where significant digits may cancel out. Although these digits do not appear in the final stored result, they play a critical role in maintaining numerical stability and correctness in floating-point systems.
 
-- Theorem 4
+## How guard digits work
+
+One or more guard digits can be used in floating-point arithmetic to extend the **significand** (also called mantissa) during internal computations. [IEEE 754](/spec/ieee754) arithmetic uses guard digits to improve accuracy during subtraction of nearly equal numbers, ensure correct rounding, and avoid [catastrophic cancellation](/concept/cancellation).
+
+Typically, hardware implementations use 1 to 3 extra bits: a guard bit, a **round bit**, and a **sticky bit**. These bits are often collectively referred to as **GRS bits**, and aren't part of the final stored floating-point result - they are only for internal use during computation.
+
+### Addition and subtraction
+
+When adding and subtracting floating point numbers of different exponents, smaller significands are shifted right, causing meaningful bits to shift out of range. Guard digits help catch those bits to preserve rounding accuracy.
+
+### Multiplication
+
+The product of two significands of bit length $$n$$ is up to $$2n$$ bits. Extra bits beyond the target precision can be caught in guard digits for rounding.
+
+### Division
+
+Guard digits are used to maintain precision during long division, since division results may extend beyond the significand size. 
+
+## IEEE Standards
+
+In both IEEE standards on floating point arithmetic ([IEEE 754](/numbers/ieee754) and [IEEE 854](/numbers/ieee854)), correct rounding is paramount. IEEE 754 specifies binary formats, permits internal extensions to precision, and encourages the use of GRS bits. IEEE 854 is a more general standard that supports both binary and decimal, leaving details like guard digits up to the implementation.
+
+Both standards do not mandate guard digits, but GRS bits are a practical means to achieve correct rounding.
+
+
+## Theorem 4
 
 The results of this section can be summarized by saying that a guard digit guarantees accuracy when nearby precisely known quantities are subtracted (benign cancellation). Sometimes a formula that gives inaccurate results can be rewritten to have much higher numerical accuracy by using benign cancellation; however, the procedure only works if subtraction is performed using a guard digit. The price of a guard digit is not high, because it merely requires making the adder one bit wider. For a 54 bit double precision adder, the additional cost is less than 2%. For this price, you gain the ability to run many algorithms such as formula (6) for computing the area of a triangle and the expression ln(1 + x). Although most modern computers have a guard digit, there are a few (such as Cray systems) that do not.
 

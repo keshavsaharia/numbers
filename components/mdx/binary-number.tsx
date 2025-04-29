@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import clsx from 'clsx'
+import { Digit } from '../number/digit'
 
 export function BinaryNumber({ unsigned, length, showTotal, showSum }: { 
     unsigned?: boolean, 
@@ -23,24 +24,22 @@ export function BinaryNumber({ unsigned, length, showTotal, showSum }: {
     }
 
     return (<>
-        <NumberContainer padding="pt-4 pb-0" large>
-            { !unsigned && <BinaryLabel color="text-red-600" text="sign" left="-left-2" top/> }
-            { unsigned ? null : <BinaryBit 
+        <div className={clsx('flex flex-wrap gap-1')}>
+            { unsigned ? null : <Digit 
                 key='sign'
-                bit={ signBit || 0 } 
-                setBit={ (value) => setSign(value) } 
-                bg='bg-red-500'
-                large />}
+                digit={ signBit || 0 } 
+                onClick={ () => setSign(signBit === 0 ? 1 : 0) } 
+                size='md'
+                className='text-red-500'/>}
             
-            { bits.map((bit, index) => (<BinaryBit 
+            { bits.map((bit, index) => (<Digit 
                 key={'bit' + index}
-                bit={ bit } 
-                setBit={ (value) => setBit(index, value) } 
-                bg='bg-emerald-500'
-                large />)) }
+                digit={ bit } 
+                onClick={ () => setBit(index, bit == 0 ? 1 : 0) }
+                size='md' />)) }
             { showSum && <BinarySum bits={ bits } sign={ signBit }/> }
             { showTotal && <BinaryTotal bits={ bits } sign={ signBit }/> }
-        </NumberContainer>
+        </div>
     </>)
 }
 

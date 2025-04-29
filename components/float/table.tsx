@@ -39,7 +39,6 @@ export function FP8Table({ fp }: { fp: FP8 }) {
 
     return (
         <div className="w-full overflow-auto">
-            <h1 className="text-xl font-bold mt-8">{ fp.name }</h1>
             <div className="flex">
             <div key='head' className='flex flex-col text-sm'>
                 <div key='corner'>&nbsp;</div>

@@ -1,24 +1,27 @@
 # Binary numbers
 
-Humans represents numbers in **base 10** - that is, with 10 different digits.
+Humans represent numbers in **base 10** - that is, with 10 different digits.
 
-- HumanNumber
+<HumanNumber value={4253}/>
 
-Each digit corresponds to a power of 10. Humans also occassionally write numbers in **base 16**, where the letters `a` through `f` represent the numbers `10` through `15`.
+Each digit corresponds to a power of 10. Humans also occassionally write numbers in **base 16**, where the letters `a` through `f` represent the numbers `10` through `15`. This is commonly seen in web programming as a way to specify a color.
 
-- ColorPicker
+<ColorPicker initialValue='#1ea3eb'/>
 
 Regardless of which human representation you choose, a computer will represent that number in **base 2**, with only the digits 0 and 1. This roughly corresponds to the presence or non-presence of an electrical current.
 
-- BinaryNumber
+<MatrixRain/>
+<br/><br/>
 
-Each digit of a binary number is referred to as a **bit**. 
+## Binary digits
 
-You can experiment with the 8 bit binary number below, by clicking on the bits to change them from 0 to 1.
+Each digit of a binary number is referred to as a **bit**. You will often see binary numbers described in terms of their **bit length**, such as the *8 bit integer* below.
 
 <BinaryNumber unsigned length={ 8 } showTotal showSum/>
 
-Each digit represents a power of 2, just like our human numbering system uses each digit to represent a power of 10. A group of 8 bits is called a **byte**, and a single byte can represent 2<sup>8</sup> (256) different values.
+We call it an **integer** because it can only store whole numbers. Since there is no way to specify a negative number, we would also call this an **unsigned integer**.
+
+A group of 8 bits is called a **byte**, where each byte can represent 2<sup>8</sup> (256) different values. By combining multiple bytes, a number can have a greater range of possible values. 
 
 <BinaryNumber unsigned length={ 16 } showTotal showSum/>
 
@@ -26,4 +29,16 @@ In the example above, we are using 8 bits to represent an **unsigned integer**. 
 
 <BinaryNumber length={ 8 } showTotal showSum/>
 
-Try clicking the sign bit to see how the resulting value changes. If we allowed the sign bit to simply control whether there is a negative sign or not, we would have two binary numbers that both represent zero - `10000000` (negative zero) and `00000000` (positive zero). To avoid ambiguity, along with a variety of other reasons, computers represent negative numbers in [two's complement](https://en.wikipedia.org/wiki/Two%27s_complement). If the sign bit is `1`, then **invert** all bits (i.e. `1` is considered a `0`, and `0` is `1`) and add 1 to the sum to get the negative number. 
+If the sign bit simply controlled the presence or absence of a negative sign (`-`), there would be two binary numbers that both represent zero - $$1000\ldots$$ (negative zero) and $$0000\ldots$$ (positive zero). 
+
+To avoid ambiguity, and to allow the same circuits to be used for both signed and unsigned numbers, computers represent negative numbers in [two's complement](/concept/twos-complement). If the sign bit is `1`, then all bits are **inverted**, so `1` is considered a `0`, and `0` is considered a `1` - the sum is then incremented by 1, and the result is multiplied by -1 to get the negative value. 
+
+## One kilobyte
+
+Just as we express long distances with kilometers instead of meters, we can express large amounts of binary information with prefixes that indicate their order of magnitude. Unlike traditional scientific prefixes which are expressed in powers of 10 (e.g. 1 kilometer is 1000 meters), binary prefixes often refer to the closest power of 2, so a **kilobyte** is technically 1024 bytes ($$2^{10}$$).
+
+Here is what one kilobyte (1024 bytes) of information looks like. This isn't just any kilobyte though - it is *[De rerum natura](https://en.wikipedia.org/wiki/De_rerum_natura)*, the ancient wisdom of [Lucretius](https://en.wikipedia.org/wiki/Lucretius).
+
+- ASCIIViewer - text
+
+Each character of Lucretius' poem is [encoded](/encoding) with a single byte, using a format called [ASCII](/encoding/ascii). This format works well for English letters, but is woefully inadequate for modern text which contains a wide range of characters like emojis and Chinese letters. Most modern systems use encoding formats like [UTF-8](/encoding/utf8) and [UTF-16](/encoding/utf16), which can use multiple bytes to encode each character.

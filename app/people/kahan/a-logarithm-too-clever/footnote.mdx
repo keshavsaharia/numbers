@@ -1,0 +1,142 @@
+FOOTNOTE 2:  In some ways  log2  is more natural for binary arithmetic
+than is the  "natural"  log  based upon  e .  Now compatibility with
+Intel's 8087  designed in  1977  compels hardware/firmware support for
+log2  in  IBM PCs  and clones.  Why doesn't  MATLAB's  LOG2  use it?
+
+Instead its  LOG2  has suffered from two bugs.  A bizarre bug only in
+MATLAB 4.2  on  68040-based Macintoshes  subtracts  2^16 = 65536  from
+log2(x)  if  $$1/2 <= |x| < 1$$.  The second bug persists in  MATLABs 4, 5
+and 6  on  PCs  and  Macs  and probably others.  One manifestation of
+this bug is a difference of  GULPs,  not a few  ulps,  between  1  and
+the computed value of  z = log(2)*log2(1 + eps)/eps  tabulated here:
+
+                    Computers     MATLABs      z
+                    IBM PCs         4.2      0.9995
+                    IBM PCs       5.3, 6.5   1.04
+                    68K Macs      4.2, 5.2   1.105
+                    Power Macs    4.2, 5.2   1.15
+
+LOG10  in  MATLAB 6.5  inherits this bug from  LOG2 .  This drastic
+bug's longevity ought to give somebody pause for serious thought.
+
+Here is a  MATLAB  program to compute  $$y = lg2(x)$$  that should be used
+instead of  y = log2(x) .  Distinguish this usage from $$[y,k] = log2(x)$$
+which resembles  C's  function  frexp  and is free from the second bug.
+
+```matlab
+function  y = lg2(x)
+% LG2  Base-two logarithm
+%  lg2(X) = the base-two logarithm of the elements of  X ,  assuming
+%  them all to be nonnegative,  without the bug in  MATLAB's log2(x)
+%  that loses its relative accuracy as  x  decreases towards  1 .
+%
+%   See also LOG, LOG2, EXP, LOGM.
+
+%   For  IEEE 754 floating-point  and  MATLAB  versions 4.x - 6.x.
+
+%  Constants:
+%  L2  := 1/log(2) rounded to  53 sig. bits,  accurate to  55
+%       = 1.44269504088896339  =  1.71547652B82FE hex
+%  R2  := sqrt(1/2)  rounded to  53 sig. bits,  high by  0.44 ulp
+%       = 0.707106781186547573  =  hex 1.6A09E667F3BCD / 2
+
+if any(imag(x))|any(x < 0)   %... Has complex  lg2  any application?
+        error(' lg2(x)  is provided only for  x >= 0 .'),  end
+[s, k] = log2(x) ;  %...  x = s*2^k ,  1/2 <= s < 1,  like  frexp.
+
+%  A bug in  MATLAB 4.2  on  68040-based  Macintoshes  requires ...**
+    j = (k == -65536) ;  if any(j(:)),  k = k + 65536*j ;  end % ...**
+%  All other versions of  MATLAB  can omit the previous line.   ...**
+
+%  The segregation of  1/4 <= x < 4  is needed to run this program on
+%  computers that cannot accumulate the scalar product  y  below to
+%  64  sig. bits as  IBM PCs  and  68040-based  Macs  can.  On just
+%  these computers a simpler program produces better results sooner.
+    j = (abs(k-0.5) < 2) ;          %... j = (-2 < k < 3)
+    if any(j(:)),  s(j) = x(j) ;  k(j) = 0*j(j) ;  end
+%  Now  1/4 <= s(j) = x(j) < 4  and  k(j) = 0 .  Otherwise ...
+
+j = (~j)&(s < 0.707106781186547573) ;
+if any(j(:)),  s(j) = 2*s(j) ;  k = k-j ;  end
+y = log(s)*1.44269504088896339 + k ;
+
+```
+
+How accurate is my  LG2 ?  It's hard to say without knowing how  LOG
+is implemented since its errors are inherited by  LG2 .  According to
+my tests,  MATLAB's  LOG(x)  errs by at worst about  0.8 ulp  over the
+interval  $$1/4 <= x <= 4$$,  wherein my `LG2(x)` errs by at worst about
+1.5 ulps.  Elsewhere  LG2  errs by at most about  0.7 ulps.  As we have
+seen,  MATLAB's LOG2(x)  can err by  GULPs  as  x  descends to  1 .
+
+Corrections entail changes intended for somebody's benefit;  but every
+change,  no matter how small,  imposes a cost somewhere upon somebody
+else who is entitled at least to grumble ...
+
+        "Why couldn't it have been gotten right in the first place?"
+
+I would prefer to believe that  Eternal Truth  is worth its price no
+matter how small its benefit seems at first,  though the poet who wrote
+
+            " 'Beauty is truth,  truth beauty,' --  that is all
+                Ye know on earth,  and all ye need to know. "
+                ("Ode on a Grecian Urn",  John Keats,  1795-1821)
+
+had no exposure to cost/benefit analyses.  Certainly he glossed over
+the costs of first attending to grubby details to ascertain the  Truth
+or fashion  Beauty,  and then delivering it to deserving destinations.
+
+Attending to those last few grubby details inflates the development
+costs of reliable numerical software so badly as recalls to mind the
+costs of maintaining an old house.  Replacing a worn out wall switch is
+a task that should entail unfastening six screws and refastening them.
+But behind that switch is ancient wiring whose insulation has dried out
+and cracked,  so it must be replaced lest it start a fire.  Access to
+the wiring inside the wall is blocked by a pipe.  Thus the replacement
+of a switch costing a dollar turns into jobs for a plumber,  carpenter,
+electrician,  plasterer and painter,  or else for an exceptionally
+versatile handyman.  A dripping faucet threatens the budget similarly.
+
+We all wish someone else had attended to details well enough that they
+would no longer burden us.  In what working environments can we expect
+some  "someone else"  to succeed?  Not in environments that oblige her
+to cope laboriously and repeatedly with exceptions,  boundary cases and
+gratuitous limits and details that could have been reduced to something
+                "... as simple as possible,  but no simpler"
+                            (Albert Einstein,  1879-1955)
+but weren't by whoever built her environment.  Consequently we endure
+swollen capture-cross-sections for error when trying to write numerical
+software using today's programming languages and development systems.
+
+The best numerical programming environment I have known was  SANE,  the
+Standard Apple Numerical Environment  on old  680x0-based  Macintoshes;
+look at  "Apple Numerics Manual, Second Edition" (1988) Addison-Wesley,
+Reading Mass.  Unfortunately,  in  1992,  just as programmers began to
+express appreciation for  SANE,  it suffered Collateral Damage from the
+CEO's  "Business Decision"  to switch  Macintoshes  onto an  IBM  Power
+PC  processor lacking the  68040's  hardware support for  SANE.  This
+CEO's  "Big Picture"  experience selling carbonated beverages had made
+him disdainful of minutiae that matter too much in computing.  Now at
+Hewlett-Packard  a promising numerical programming environment based on
+Intel's Itanium  processor and the  C99  language  (it's not for a mass
+market)  is struggling into existence.  Its future is uncertain too.
+
+I wish the makers of  MATLAB,  recalling their roots,  would rededicate
+attention to their numerical underpinnings.  Among improvements needed:
+
+
+        Declarable  4-byte,  8-byte  and  (10 or 16)-byte  variables   *
+            but use old  Kernighan-Ritchie C  rather than  Java/Fortran
+            rules for expression-evaluation.
+        Access to  IEEE 754's  flags for trapless exception-handling   *
+        Access to  IEEE 754's  directed roundings as diagnostic aids   *
+        Support for fast  (8 or 10)-byte  64-bit  integer arithmetic
+            because  32-bit  is too narrow for constructing test-data
+            when the accuracy of a floating-point program is under test.
+        Faster and more intelligible interface to  VPA  via  Maple
+
+        Later ...  Support for nascent  Interval Arithmetic  too
+                    Operator Overloading to handle linear space objects
+                    along lines explored by  Dave Meredith's  LINALG
+
+But all that is a story for another day.
