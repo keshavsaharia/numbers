@@ -1,0 +1,14 @@
+# Backpropagation Gradient
+
+$$
+\frac{\partial L}{\partial W^{[l]}} = \delta^{[l]} \cdot (A^{[l-1]})^T
+$$
+
+- $$ L $$: The loss function (e.g., cross-entropy or mean squared error).
+- $$ W^{[l]} $$: The weight matrix of the $$ l $$-th layer.
+- $$ A^{[l-1]} $$: The activations from the previous layer ($$ l-1 $$).
+- $$ \delta^{[l]} $$: The error term (also called "delta") for the current layer $$ l $$, which reflects how much the output of that layer affects the loss.
+- $$ (A^{[l-1]})^T $$: The transpose of the previous layer’s activations, used to align dimensions for matrix multiplication.
+- The expression represents how the loss changes with respect to the weights in a given layer—essential for updating weights during training using gradient descent.
+
+---

@@ -1,0 +1,79 @@
+# Block Floating Point
+
+Block Floating Point (BFP) is a hybrid numerical format that blends the efficiency of fixed-point arithmetic with the dynamic range of floating point. Unlike traditional floating-point representations, where each value stores its own exponent and mantissa, BFP assigns a **shared exponent** to a group (or "block") of values, where each individual value only stores a **mantissa** and sign bit. This format is especially valuable in low-precision deep learning inference, where reducing memory footprint and improving compute throughput are of utmost importance.
+
+## Creating a BFP
+
+In BFP, a vector or matrix is divided into **blocks of fixed size**, such as 8, 16, or 32 elements. Each block computes a shared exponent (usually 4 to 8 bits), which is applied uniformly to all elements in the block. It also includes a set of low-precision mantissas, typically 2 to 8 bits each, and optional sign bits depending on the application and format.
+
+This reduces the per-element bit count significantly. For example, an 8-element BFP4 block with 3-bit mantissas, 1-bit signs, and a single 5-bit shared exponent would use just **37 bits** total, versus 64 bits for 8 FP8 values.
+
+## Interpretation of BFP
+
+Each value in a BFP block is reconstructed as
+
+$$x_i = (-1)^{s_i} \times m_i \times 2^{e_{\text{shared}}}$$
+
+Where $$ x_i $$ is the reconstructed floating-point value, $$ s_i $$ is the sign bit for the $$ i $$-th value (if signed), $$ m_i $$ is the mantissa of the $$i$$-th value, and $$ e_{\text{shared}} $$ is the shared exponent for the block.
+
+The mantissas are typically interpreted as **fixed-point numbers** (e.g., with implicit normalization), and the entire value is then scaled by a common power of two.
+
+## BFP4 Block
+
+Let’s say we have a block of 4 values stored as:
+- **Shared exponent**: 5 (i.e., $$ E = 5 $$)
+- **Signed 3-bit mantissas**: `[+3, -2, +1, 0]`
+
+Each value becomes:
+- $$ x_0 = +3 \cdot 2^5 = 96 $$
+- $$ x_1 = -2 \cdot 2^5 = -64 $$
+- $$ x_2 = +1 \cdot 2^5 = 32 $$
+- $$ x_3 = 0 \cdot 2^5 = 0 $$
+
+These values are quantized representations of floating-point numbers close in magnitude. The shared exponent ensures they are all scaled correctly, while using very little memory.
+
+---
+
+### BFP vs Traditional Floating Point
+
+| Feature         | Traditional FP (e.g., FP32) | BFP                     |
+|----------------|-----------------------------|-------------------------|
+| Exponent Scope | Per value                   | Per block               |
+| Precision       | High (per value)            | Lower, block-specific   |
+| Range           | Wide                        | Medium (shared exponent)|
+| Memory usage    | High (e.g., 32 bits/value)  | Low (e.g., 4–8 bits/value) |
+| Speed on SIMD   | Lower                       | Higher (aligned ops)    |
+
+---
+
+### Applications in ML and Hardware
+
+BFP is widely used in **AI inference accelerators** where performance and bandwidth are constrained:
+- **Google TPU** uses a BFP-like format internally.
+- **Meta’s FP4** quantization (used in LLaMA 2/3 models) leverages shared-exponent techniques.
+- **Intel AMX**, **ARM Ethos**, and other NPUs adopt BFP for GEMM and convolution kernels.
+- NVIDIA’s **FP8** formats (e4m3 and e5m2) also draw from shared-exponent and reduced-precision designs.
+
+---
+
+### Benefits and Trade-Offs
+
+**Pros:**
+- Excellent compression and memory bandwidth savings
+- SIMD/vector-friendly: elements can be packed and processed in parallel
+- Sufficient for many inference workloads where full FP32 isn't needed
+
+**Cons:**
+- Limited dynamic range **within** each block
+- Requires blockwise quantization and dequantization
+- Accuracy drops if values within a block vary too much in magnitude
+
+---
+
+### Summary
+
+**Block Floating Point (BFP)** is a practical compromise between fixed-point efficiency and floating-point flexibility. By applying a shared exponent to groups of low-precision mantissas, BFP enables high-throughput, low-memory computations well suited for modern ML hardware. As neural networks continue to push toward quantization-aware training and ultra-low-precision inference, BFP and its variants (like FP4 with shared exponent) play a key role in scaling AI efficiently.
+
+---
+
+Would you like a diagram of a BFP block or example code for encoding/decoding BFP values?

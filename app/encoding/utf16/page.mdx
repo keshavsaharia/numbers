@@ -1,0 +1,65 @@
+# UTF-16
+
+In programming languages like JavaScript, strings are represented internally as sequences of UTF-16 **code units**. Each code unit is exact 16 bits long, allowing for a total of 65536 possible representable characters. This character set is called the **Basic Multilingual Plane** (BMP), and includes the most common characters like the Latin, Greek, and Cyrillic alphabets. Each code unit can be written in a string with `\u` followed by exactly four hex digits.
+
+```javascript
+// TODO: example
+```
+
+However, the entire Unicode character set is much larger than 65536 characters. These less common characters (emojis, rare Chinese letters, etc) are stored in UTF-16 as **surrogate pairs**, which are pairs of 16-bit code units that represent a single character. 
+
+```javascript
+// TODO: example
+```
+
+To avoid ambiguity, the two parts of the pair must be between `0xD800` and `0xDFFF`, and these code units are not used to encode single-code-unit characters. More precisely, leading surrogates, also called **high-surrogate code units**, have values between `0xD800` and `0xDBFF` inclusive. Trailing surrogates, also called **low-surrogate code units**, have values between `0xDC00` and `0xDFFF` inclusive. 
+
+```javascript
+// TODO: example
+```
+
+Each Unicode character, comprised of one or two UTF-16 code units, is also called a Unicode code point. Each Unicode code point can be written in a string with `\u{xxxxxx}`, where `xxxxxx` represents 1 - 6 hex digits.
+
+```javascript
+// TODO: example
+```
+
+## Lone surrogates
+
+A **lone surrogate** is a 16-bit code unit satisfying one of the following properties:
+
+- It is in the range `0xD800` - `0xDBFF`, inclusive (i.e., is a leading surrogate), but it is the last code unit in the string, or the next code unit is not a trailing surrogate
+- It is in the range `0xDC00` - `0xDFFF`, inclusive (i.e., is a trailing surrogate), but it is the first code unit in the string, or the previous code unit is not a leading surrogate
+
+Lone surrogates do not represent any Unicode character. Although most JavaScript built-in methods handle them correctly, lone surrogates are often not valid values when interacting with other systems — for example, `encodeURI()` will throw a `URIError` for lone surrogates, because URI encoding uses UTF-8 encoding, which does not have any encoding for lone surrogates. 
+
+```javascript
+// TODO: example with encodeURI
+```
+
+Strings not containing any lone surrogates are called **well-formed strings**, and are safe to be used with functions that do not deal with UTF-16 (such as `encodeURI()` or `TextEncoder`). You can check if a string is well-formed with the `isWellFormed()` method, or sanitize lone surrogates with the `toWellFormed()` method.
+
+```javascript
+// TODO: example with isWellFormed
+```
+
+On top of Unicode characters, there are certain sequences of Unicode characters that should be treated as one visual unit, known as a grapheme cluster. The most common case is emojis: many emojis that have a range of variations are actually formed by multiple emojis, usually joined by the &lt;ZWJ&gt; (`U+200D`) character.
+
+```javascript
+// splits into two lone surrogates: ['\ud83d', '\ude04']
+console.log("😄".split(""))
+
+// "Backhand Index Pointing Right: Dark Skin Tone"
+// splits into the basic emoji + skin tone indicator
+console.log([..."👉🏿"]) // ['👉', '🏿']
+
+// "Family: Man, Boy" splits into the "Man" and "Boy" emoji, joined by a ZWJ
+console.log([..."👨‍👦"]) // [ '👨', '‍', '👦' ]
+
+
+// The United Nations flag splits into two "region indicator" letters "U" and "N"
+// All flag emojis are formed by joining two region indicator letters
+console.log([..."🇺🇳"]) // [ '🇺', '🇳' ]
+```
+
+You must be careful which level of characters you are iterating on. For example, `split("")` will split by UTF-16 code units and will separate surrogate pairs. String indexes also refer to the index of each UTF-16 code unit. On the other hand, `[Symbol.iterator]()` iterates by Unicode code points. In general, correctly iterating through grapheme clusters requires careful logic and extensive testing.

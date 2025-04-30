@@ -1,0 +1,41 @@
+# Model parameters
+
+When a model's size is expressed in number of parameters, it refers to the total number of **learnable weights** in the model — the values that are adjusted during training to minimize error and improve performance. In neural networks, parameters are the **weights** between neurons and the **biases** for each neuron. Each parameter is a floating-point number, and together, they define the behavior of the model. The more parameters a model has, the more complex patterns it can potentially learn.
+
+# Simple linear regression model
+
+A simple linear regression model with one input and one output has two parameters (a weight and a bias).
+
+A **simple linear regression** model tries to model the relationship between a single input variable $$x$$ and an output variable $$y$$ by fitting a straight line $$y = wx + b$$, where $$y$$ is the **predicted output**, $$x$$ is the **input**, $$w$$ is the **weight** (i.e. the slope of the line), and $$b$$ is the **bias** (i.e. the y-intercept).
+
+The model is trained by adjusting $$w$$ and $$b$$ to minimize the error between the predicted values and the actual data. The most common error metric is **Mean Squared Error (MSE)**:
+
+$$ \text{MSE} = \frac{1}{n} \sum_{i=1}^{n} (y_i - (wx_i + b))^2 $$
+
+Where $$n$$ is the number of data points, and $$(x_i, y_i)$$ is the $$i$$-th training example. In this model, the two parameters $$w$$ and $$b$$ are the values the model "learns" during training.
+
+- A large language model like GPT-3 has **175 billion parameters**, meaning it has a huge number of internal connections it can adjust to model language patterns.
+
+## Multiple Linear Regression
+
+A **multiple linear regression** model attempts to captures the relationship between an **input vector** $$x$$ (specified as $$x = [x_1, x_2, \dots, x_n]^\top$$) and an output variable $$y$$, by adjusting a **weight vector** $$w = [w_1, w_2, \dots, w_n]^\top $$ and a **bias** $$b$$.
+
+$$ y = w_1x_1 + w_2x_2 + \dots + w_nx_n + b $$
+
+Using **vector notation**, this might be expressed as:
+
+$$y = \mathbf{w}^\top \mathbf{x} + b$$
+
+Just like simple regression, we want to minimize the Mean Squared Error (MSE) across $$m$$ training examples, where $$\mathbf{x}_i$$ is the $$i$$-th training input, and $$y_i$$ is the true output for the $$i$$-th training example:
+
+$$ \text{MSE} = \frac{1}{m} \sum_{i=1}^{m} \left(y_i - (\mathbf{w}^\top \mathbf{x}_i + b)\right)^2 $$
+
+There are $$n$$ weights in this model and 1 bias term, so the total number of parameters is $$n + 1$$. This number grows **linearly** with the number of features.
+
+## Neural networks
+
+A fully-connected layer of a [neural network](/ml/neural-network) with $$n_{\text{in}}$$ input neurons and $$n_{\text{out}}$$ output neurons has $$n_{\text{in}} \times n_{\text{out}} + n_{\text{out}}$$ parameters, accounting for both weights and biases.
+
+## Trade offs
+
+More parameters typically allow the model to represent more complex functions or patterns in data, but they also carry the burden of higher computational cost for training and inference, higher memory usage, and higher risk of overfitting if not trained properly.

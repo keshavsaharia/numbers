@@ -17,6 +17,28 @@ export function decodeFP8(value: number, { mantissa, finite, maxExponent }: FP8)
     return { sign, exp, sig, nan, inf }
 }
 
+export function enumerateFP8(fp: FP8) {
+    const decoded: Array<{ decoded: DecodedFP8, value: number }> = []
+    for (let i = 0 ; i < 256 ; i++) {
+        const d = decodeFP8(i, fp)
+        decoded.push({ 
+            decoded: d, 
+            value: isSubnormalFP8(d) ? subnormalValueFP8(d, fp) : valueFP8(d, fp)
+        })
+    }
+    return decoded
+}
+
+export function fp8isNaN(neg: boolean, exp: number, sig: number, { mantissa, finite, maxExponent }: FP8) {
+    return finite ? (neg && exp == 0 && sig == 0) : (
+        (exp === maxExponent) && 
+        (mantissa == 2 ? sig > 0 : (sig === 2 ** mantissa - 1)))
+}
+
+export function fp8IsInfinity(neg: boolean, exp: number, sig: number, { mantissa, finite, maxExponent }: FP8) {
+    return finite ? false : (mantissa == 2 && exp == maxExponent && sig == 0)
+}
+
 export function isSubnormalFP8(decoded: DecodedFP8) {
     return decoded.exp == 0
 }

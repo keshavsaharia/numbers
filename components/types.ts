@@ -3,6 +3,7 @@
  */
 export interface SectionProps {
     title?: string
+    description?: string
     base?: string
     sections: SectionLink[]
 }
@@ -24,6 +25,7 @@ export interface SectionLink {
     title: string
     description: string
     identifier?: string    // unique identifier
+    alias?: string[]       // aliases for content matching
     path?: string          // relative path from group base
     link?: string           // absolute link
     video?: string

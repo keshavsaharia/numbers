@@ -2,6 +2,13 @@
 
 While the IEEE 754 [single-precision](/format/fp32) (32-bit) and [double-precision](/format/fp64) (64-bit) formats are familiar to most developers, the 16-bit floating-point representation — commonly referred to as **FP16** or **half-precision** — has gained prominence in recent years due to its efficiency advantages in specialized computing domains.
 
+## Mixed precision training
+
+In 2018, a paper titled [Mixed Precision Training](/paper/mixedp_training.pdf), authored by researchers from NVIDIA and Baidu Research, introduced a methodology for training deep neural networks using half-precision (FP16) floating point numbers. This approach was aimed at reducing memory usage and accelerating computation without compromising model accuracy or necessitating changes to [hyperparameters](/ml/hyperparameter).
+
+> <Note>Micikevicius, P., Narang S., et al. (2018). <em>Mixed Precision Training</em>. ICLR 2018.</Note>
+> Modern deep learning training systems use single-precision (FP32) format. In this paper, we address the training with reduced precision while maintaining model accuracy. Specifically, we train various neural networks using IEEE half-precision format (FP16). Since FP16 format has a narrower dynamic range than FP32, we introduce three techniques to prevent model accuracy loss: maintaining a master copy of weights in FP32, loss-scaling that minimizes gradient values becoming zeros, and FP16 arithmetic with accumulation in FP32. Using these techniques we demonstrate that a wide variety of network architectures and applications can be trained to match the accuracy FP32 training. Experimental results include convolutional and recurrent network architectures, trained for classification, regression, and generative tasks. Applications include image classification, image generation, object detection, language modeling, machine translation, and speech recognition. The proposed methodology requires no changes to models or training hyper-parameters.
+
 ## Binary Representation
 
 The FP16 format is defined by the [IEEE 754-2008 standard](/spec/ieee754). It encodes a real number using 16 bits, divided into three fields:

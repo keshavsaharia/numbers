@@ -23,13 +23,13 @@ However, when computed with only $$p$$ digits, the least significant digit of $$
 
 Therefore, the [absolute error](/concept/absolute-error) is $$\beta^{-p + 1} - \beta^{-p} = \beta^{-p}(\beta - 1)$$, and the [relative error](/concept/relative-error) is
 
-$$ \frac{\beta^{-p}(\beta - 1)}{\beta^{-p}} = \beta - 1. $$
+$$ \frac{\beta^{-p}(\beta - 1)}{\beta^{-p}} = \beta - 1$$. &nbsp; $$\blacksquare$$ 
 
-## Discussion
+## Implications
 
-With the base $$\beta = 2$$, the relative error in subtracting two close floating-point numbers can be as large as the result itself. For instance, a relative error of 100% ($$\beta - 1 = 1$$) means all significant digits in the computed result may be incorrect. For decimal systems ($$\beta = 10$$), the relative error can be as high as $$\beta - 1 = 9$$ - nine times the exact value!
+With the base $$\beta = 2$$, the relative error in subtracting two close floating-point numbers can be as large as the result itself. For instance, a relative error of 100% ($$\beta - 1 = 1$$) means every significant digit in the computed result may be incorrect. For decimal systems ($$\beta = 10$$), the relative error can be as high as $$\beta - 1 = 9$$ - nine times the exact value!
 
-To interpret this in terms of digit loss, consider the expression for the number of erroneous digits:  
+To interpret this in terms of digit loss, consider this expression for the number of erroneous digits:  
 
 $$ \log_\beta \left(\frac{1}{\text{relative error}}\right) $$  
 
@@ -37,11 +37,11 @@ Using our earlier example, when $$\beta = 2$$ and the relative error is $$1$$, w
 
 $$ \log_2 \left(\frac{1}{1}\right) = 0 $$  
 
-which implies that *none* of the digits in the result are reliable. Or put differently, all $$p$$ digits can be corrupted when subtracting two nearly equal numbers.
+which implies that *none* of the digits in the result are reliable. This means that all $$p$$ digits can be corrupted when subtracting two nearly equal numbers.
 
 ## Guard Digits
 
-To reduce this problem, floating-point implementations often use a [guard digit](/concept/guard-digit) — an extra digit retained during intermediate steps of subtraction. This extra digit helps preserve accuracy when the result is small due to cancellation.
+To mitigate this problem, floating-point implementations often use a [guard digit](/concept/guard-digit) — an extra digit retained during intermediate steps of subtraction. This extra digit helps preserve accuracy when the result is small due to cancellation.
 
 Consider a subtraction of $$x$$ and $$y$$ with a guard digit, where $$x = 1.010 \times 10^1$$ and $$y = 0.993 \times 10^1$$. The exact difference $$x - y = 0.017 \times 10^1 = 0.17$$ - because one extra digit was preserved before rounding, the result is computed exactly.
 

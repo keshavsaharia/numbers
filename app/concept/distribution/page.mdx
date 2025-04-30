@@ -1,0 +1,7 @@
+# Distribution of numbers
+
+The numbers that can be represented in floating point format are exponentially distributed. This is why floating point arithmetic is generally well-behaved (i.e. maintains a low relative error) when you multiply things. Addition in floating point works best when you add similar numbers. Overflow is almost impossible, but it's easy to get loss of significance.
+
+The numbers that you can represent with fixed point are uniformly distributed. Fixed point is well-behaved when you add things, and it maintains a good absolute error. Loss of significance doesn't happen, but it's easy to get an overflow. 
+
+In both systems it's possible to accumulate error, but under normal circumstances the approximation error should average out. Fixed point makes it easier to reason about the error, floating point is a bit harder, but usually works well in practice.

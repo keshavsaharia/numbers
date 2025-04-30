@@ -1,0 +1,11 @@
+# UTF-8
+
+UTF-8, or **8-bit Unicode Transformation Format**, is the dominant character encoding used on the web and in modern software systems. UTF-8 encodes [Unicode](#unicode) characters into sequences of bytes, while preserving backward compatibility with [ASCII](/encoding/ascii). The efficiency and versatility of UTF-8 have made it the default encoding standard for text in most applications.
+
+## Unicode
+
+Unicode is a character set (not an encoding) which assigns a code point to every character in every language - U+0041 for "A", U+03B1 for Greek alpha (α), U+1F600 for 😀. Unicode can address over 1.1 million characters, from U+0000 to U+10FFFF.
+
+UTF-8 is an encoding format defined by Unicode, where each character is encoded using 1 to 4 bytes. In this way, UTF-8 is a **variable length encoding**, where 
+
+ But we still need a way to serialize or encode those code points into bytes to store in files or transmit over networks. That's where UTF-8 comes in.

@@ -1,33 +1,121 @@
-## Floating point numbers
+import { fp8 } from '@/data/fp8'
 
-Floating point numbers represent numeric values in a binary form of scientific notation ($$a \times b^c$$). Each number consists of three parts:
+# Floating point numbers
 
-- The **sign** - a single bit which indicates whether the number is positive or negative, where `0` is positive and `1` is negative.
-- The **exponent** (written as $$\beta$$ ) - determines the *scale* of the number (how big or small it is). 
-- The **significand** (written as $$\rho\rho\rho\ldots\rho$$) determines the *precision* of the number (the actual digits), and is often referred to as the **mantissa**. 
+Floating point numbers represent numeric values in a form of scientific notation ($$a \times b^c$$). Each number is actually three numbers stored within a certain bit length.
 
-JavaScript uses [64-bit IEEE 754 double precision format](/numbers/quantize/fp64) for all numbers. This means that each 64 bit number uses 1 bit for the sign, 11 bits for the exponent, and 52 bits for the significand. 
+<FP8Editor instructions="Try editing the 8 bit floating point number below." fp8={ fp8.e4m3 }/>
 
-<FloatingPointNumber title="FP64" signed base={ 2 } exponent={ 11 } significand={ 52 }/>
+Let's try to first understand this intuitively. The <span className="font-bold text-green-500">exponent</span> is really just an interval between two successive powers of 2, like $$[1 \ldots 2]$$, $$[2 ... 4]$$, and so on. The <span className="font-bold text-blue-500">mantissa</span> (also called the <span className="font-bold text-blue-500">significand</span>) is the relative offset within this interval, and the <span className="font-bold text-red-500">sign</span> bit controls the presence of a negative sign (`-`). 
 
-The equation for computing a decimal value from the binary representation above is
+Try moving the slider along the number line below to see how the sign, exponent, and mantissa change for numbers in the interval $$[-2^5, 2^5]$$.
 
-<div className="text-center text-xl">
-    $$value = -1^{sign} \times 1.significand \times 2^{exponent - 1023}$$
-</div>
+<FP8Editor instructions="Try editing the 8 bit floating point number below." fp8={ fp8.e4m3 } slider/>
 
-### Floating point intuition
+Just as [binary integers](/learn/binary) can be **incremented** to the next binary integer, adding one to a floating-point number's *binary representation* produces the *next* floating point number, which is not necessarily the number plus one.
 
-Let's try to first understand this intuitively. The exponent is really just an interval between two successive powers of 2, like $$[1 \ldots 2]$$, $$[2 ... 4]$$, and so on. The significand is simply the offset within this interval. To see what this looks like, try entering values below to see their floating point decomposition, or click along the number line to see the sign, exponent, and significand change.
+As a floating point number gets larger, it "floats" to the next interval, and as it gets smaller, it "floats" to the previous interval. Intervals closer to zero are "more dense", in the sense that the mantissa can provide a more precise number along that interval. Intervals farther from zero are "more sparse", where it becomes increasingly likely that the mantissa will not provide enough resolution to precisely represent a particular number.
 
-<FloatingPointIntuition signed base={ 2 } exponent={ 11 } significand={ 52 }/>
+## Floating point formats
 
-As a floating point number gets larger, it "floats" to the next interval, and as it gets smaller, it "floats" to the previous interval. Intervals closer to zero are "more dense", in the sense that the significand provides a more precise number along that interval.
+The **floating point format** shown here is named `E4M3`, because it allocates 4 bits for an exponent and 3 bits for a mantissa. This format is usually only found in highly specialized [machine learning](/format/fp8) applications, but is conceptually similar to the floating point formats that software developers typically interact with ([32 bit](/format/fp32) and [64 bit](/format/fp64)).
 
-The significand is being displayed as a number, but it actually represents the sequence of binary digits of a **normalized value** which takes the form $$1.\rho\rho\ldots\rho$$. When we know the first digit is always a 1, we can actually get an extra bit of precision for free - this is called the [hidden bit trick](/numbers/hidden-bit-trick). 
+Since there are only 256 possible values for any `E4M3` number, it is easy to visualize the distribution of representable values in a table.
 
-You will often see floating point numbers written in scientific notation ($$a \times b^c$$), but as you can see, this does not indicate a standard multiplication operation. 
+<FP8Table fp={ fp8.e4m3 }/>
+
+Notice how the representable values for a floating point number are "denser" around 0, and exponentially less dense in higher intervals. This observation is equally applicable to larger floating point formats. 
+
+Since the best achievable precision depends on the magnitude of the number, the accuracy of floating point computations is often expressed in terms of [ulps](/concept/ulp) - an error metric which accounts for the density of representable numbers around a computed result. For example, if you were to compute $$20^2$$ with `E4M3` floating point numbers, there is no possible binary sequence to provide the exact answer $$400$$, but how would you express the accuracy of the nearest approximations in this case ($$384$$ or $$416$$)?
+
+<FloatDistribution fp={ fp8.e4m3 } bins={ 100 }/>
+
+This particular format also allows two possible representations of zero (`00000000` and `10000000`) and two possible representations of `NaN` (not a number). Some floating point formats also define special values to represent positive and negative `Infinity`. One criteria for considering a floating point format to be [IEEE 754 compliant](/spec/ieee754) is whether it can represent `NaN`, `+Infinity`, and `-Infinity`. 
+
+<FP8Table instructions="Follows IEEE 754 conventions for representation of special values." fp={ fp8.e5m2 }/>
+
+There are certain small integer values like `17` that cannot be represented by this floating point format. We can represent `16` as `01011000`, but the next binary digit `01011001` has a **floating point approximation** of `18`. Even if you use a larger floating point format, like the [64 bit](/format/fp64) format in your web browser, you will eventually reach a **maximum safe integer**.
+
+```javascript
+console.log(2 ** 53)       // 9007199254740992
+console.log(2 ** 53 + 1)   // 9007199254740992 - same!
+```
+
+Notice that $$2^{53}$$ is the maximum safe integer for a floating point format which allocate 52 bits for the mantissa. This lends to the intuition that $$2^{\text{mantissa} + 1}$$ is an approximate threshold beyond which a floating point format will lose integer precision.
+
+```javascript
+// For compatibility with older JavaScript runtimes which use 32 bit numbers
+console.log(Number.MAX_SAFE_INTEGER)
+console.log(Number.MIN_SAFE_INTEGER)
+
+// Maximum and minimum representable values are many orders of magnitude higher
+console.log(Number.MAX_VALUE)
+console.log(Number.MIN_VALUE)
+```
+
+Depending on the application, a machine learning developer might choose a [more specialized](/format/mxfp8/e5m2fnuz) 8 bit floating point format like `E5M2FNUZ`, which uses 5 bits for the exponent, 2 bits for the mantissa, and defines itself as **finite** (`FN`) with **unsigned zeroes** (`UZ`).
+
+<FP8Table fp={ fp8.e5m2fnuz }/>
+<br/><br/>
+<MatrixRain/> 
+
+## Mathematical notation
+
+It is helpful to understand how to express floating point numbers in mathematical notation if you plan to formally reason about floating point computations.
+
+- The **sign** ($$s$$) is a single bit which indicates whether the number is positive or negative, where `0` is positive and `1` is negative. This is usually expressed as $$-1^s$$, since $$-1^0 = 1$$ and $$-1^1 = -1$$.
+
+TODO: number line intuition for sign bit
+
+- The **exponent** ($$e$$) - determines the *scale* of the number (how big or small it is). When the exponent is `0`, the value is referred to as a **subnormal number**, and is computed in a slightly different way.
+
+TODO: number line intuition for exponent
+
+- The **mantissa** ($$m$$) determines the *precision* of the number (the actual digits), and is often referred to as the **significand**. In [numerical analysis](/theorem), it is often expressed as the sequence of binary digits $$\rho\rho\rho\ldots\rho$$ after the decimal point. 
+
+  For subnormal numbers ($$e = 0$$), the mantissa represents the fractional part of $$0.\rho\rho\rho\ldots\rho$$, which lies somewhere in the interval $$[0, 1)$$. For all other exponents $$e > 0$$, the mantissa represents the fractional part of $$1.\rho\rho\rho\ldots\rho$$, which lies in the interval $$[1, 2)$$. One reason for this is a [hidden bit trick](/concept/hidden-bit-trick) that will be elaborated on later.
+
+- The **bias** (written as $$\text{bias}$$) is subtracted from the exponent, so positive and negative exponents can both be stored with an [unsigned integer](/learn/binary).
+
+For [this particular format](/format/mxfp8/e4m3), where $$\text{bias} = 7$$, the represented value might be formally expressed as
+
+$$\text{E4M3}(s, e, m) = \begin{cases} \text{NaN} & \text{for } e = 2^4 - 1, m = 2^3 - 1 \\ -1^s \times (1 + \frac{m}{2^3}) \times 2^{(e - \text{bias})} & \text{for } e > 0 \\ -1^s \times (\frac{m}{2^3}) \times 2^{(1 - \text{bias})} & \text{for } e = 0\end{cases}$$
+
+The widely-used [64 bit floating point format](/format/fp64) allocates 11 bits for the exponent and 52 bits for the mantissa, with $$\text{bias} = 1023$$. The represented value is calculated as:
+
+$$\text{FP64}(s, e, m) = \begin{cases} \text{NaN} & \text{for } e = 2^{11} - 1, m > 0 \\ -1^s \times \text{Infinity} & \text{for } e = 2^{11} - 1, m = 0 \\ -1^s \times (1 + \frac{m}{2^{52}}) \times 2^{(e - \text{bias})} & \text{for } e > 0 \\ -1^s \times (\frac{m}{2^{52}}) \times 2^{(1 - \text{bias})} & \text{for } e = 0\end{cases}$$
+
+In [numerical analysis](/theorem) of floating point numbers, the **base** (written as $$\beta$$) usually refers to $$2$$, but [IEEE 854](/spec/ieee854) also allows for base 10 to be used. There is also a special constant $$\epsilon$$ which refers to [machine epsilon](/concept/epsilon) - a worst case relative error for a single rounding operation. 
+
+> <Note>
+>   An example of a numerical analysis theorem from [David Goldberg's](/person/goldberg) seminal work [What Every Computer Scientist Should Know About Floating Point Arithmetic](/paper/goldberg_IEEE754.pdf), published in 1991.
+> </Note>
+> The rounding error incurred when using the following formula to compute the area of a triangle:
+> <div>
+> $$ A = \frac{\sqrt{(a + (b + c))(c - (a - b))(c + (a - b))(a + (b - c))}}{4}, a \ge b \ge c $$
+> </div>
+> 
+> is at most $$11\epsilon$$, provided that subtraction is performed with a guard digit, $$e \le .005$$, and square roots are computed to within $$\frac{1}{2}$$ >1 [ulp](/concept/ulp).
+
+
+## Relative error
+
+You can edit the bits, exponent, and mantissa of a 64 bit floating point number below to get a sense of how much precision this actually provides. 
+
+<FloatEditor/>
+
+This is often referred to as a **double precision** floating point number. The **single precision** floating point format allocates 8 bits for the exponent and 23 bits for the mantissa, which still provides fairly high precision with half the memory usage. 
+
+## Floating point boundaries
+
+The significand is being displayed as a number, but formal mathematical proofs often reason about the significand as a sequence of binary digits of a **normalized value** which takes the form $$1.\rho\rho\ldots\rho$$, or $$0.\rho\rho\ldots\rho$$ for subnormal values. When we know the first digit is always a 1, we can actually get an extra bit of precision for free - this is called the [hidden bit trick](/numbers/hidden-bit-trick). 
+
+You will often see floating point numbers written in scientific notation ($$a \times b^c$$), but as you can see, this does not indicate a standard multiplication operation.
 
 ### Floating point proofs
 
 In floating point arithmetic and [associated proofs](/numbers/analysis), a floating point number is typically written as $$ \pm \rho\rho\rho\ldots\rho \times \beta^e$$, where $$\rho$$ represents digits of the significand, $$\beta$$ is the base, and $$e$$ is the exponent. 
+
+## For engineers
+
+Understanding the nuances of floating point numbers is especially helpful when designing [machine learning](/for/machine-learning) systems. 
