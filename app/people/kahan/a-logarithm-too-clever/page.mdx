@@ -58,7 +58,7 @@ This suggests that MATLAB's `log10` was optimized for speed (avoiding expensive 
 
 ## The table maker's dilemma
 
-> Why can't $$Y^W$$ be rounded within half an ulp like $$SQRT$$?  Because nobody knows how much computation it would cost to resolve what I long ago christened "The Table-Maker's Dilemma". Here is an instance of it derived from phenomena descried by [D.H. Lehmer](/people/lehmer) in the early  1940s:
+> Why can't $$Y^W$$ be rounded within half an ulp like $$SQRT$$?  Because nobody knows how much computation it would cost to resolve what I long ago christened "The Table-Maker's Dilemma". Here is an instance of it derived from phenomena descried by [D.H. Lehmer](/person/lehmer) in the early  1940s:
 
 > Let's try to compute `C := cosh(pi*sqrt(163))/8 - (2^53 - 1)` correctly rounded to Matlab's working precision of  53 sig. bits using binary floating-point variables 8 bytes wide.  Matlab's versions 3.5, 4.2, 5.3 and 6.5 on  Intel-based  PCs, and versions 3.5, 4.2 and 5.2 on both Power-Macs and old 68040-based Macs, all produce the integer
 result `C = 7401389035307025` though they display it differently. Its last two digits `"25"` are wrong. The error comes mostly from roundoff in the argument `pi*sqrt(163)` passed to `cosh(...)`. I know Matlab's C is wrong because it differs from the result computed by my Fortran program that used the PC's extra-precise arithmetic registers (10

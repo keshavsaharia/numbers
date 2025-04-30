@@ -1,8 +1,8 @@
 # Brain Floating Point for Robust Low-Precision Computing
 
-The **bfloat16 (BF16)** format is a 16-bit floating-point representation designed for machine learning and numerical computing. Unlike the IEEE 754 half-precision (FP16) format, BF16 prioritizes **range** over **precision**, making it especially effective for deep learning applications where values often span many orders of magnitude.
+The **bfloat16 (BF16)** format is a 16-bit floating-point representation designed for machine learning and numerical computing. Unlike the [IEEE 754](/spec/ieee754) half-precision ([FP16](/format/fp16)) format, BF16 prioritizes range over precision, with a much higher proportion of bits allocated toward the exponent as compared to other floating point formats.
 
-Originally developed by Google for use in Tensor Processing Units (TPUs), BF16 has since gained widespread support across CPUs, GPUs, and AI accelerators. This article examines the structure, mathematical properties, practical benefits, and implementation considerations of BF16 from a software engineering perspective.
+BF16 was originally developed by [Google](https://cloud.google.com/blog/products/ai-machine-learning/bfloat16-the-secret-to-high-performance-on-cloud-tpus) for use in Tensor Processing Units (TPUs). It has since gained widespread support across CPUs, GPUs, and AI accelerators, and is close to being a drop-in replacement for [FP32](/format/fp32) in specialized machine learning applications.
 
 ## Binary structure
 

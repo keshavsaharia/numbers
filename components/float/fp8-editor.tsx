@@ -7,6 +7,9 @@ import clsx from 'clsx'
 import { fp8 as fp8s, FP8 } from '@/data/fp8'
 import { fp8IsInfinity, fp8isNaN } from './fp8'
 
+import { Label } from "./label"
+import { Slider } from "./slider"
+
 type Bit = 0 | 1
 const inverse = (bit: Bit): Bit => (bit === 0 ? 1 : 0)
 
@@ -45,9 +48,9 @@ export function FP8Editor({
         setExpInput(expValue.current.toString())
     }
 
-    function inputExpValue(input: string) {
-        setExpInput(input)
-        let parsed = parseInt(input)
+    function inputExpValue(input: string | number) {
+        setExpInput(input.toString())
+        let parsed = parseInt(input.toString())
         if (! isNaN(parsed)) {
             const bounded = Math.max(0, Math.min(parsed, 2 ** fp8.exponent - 1))
             expValue.current = bounded
@@ -72,9 +75,9 @@ export function FP8Editor({
         computeSig()
     }
 
-    function inputSigValue(input: string) {
-        setSigInput(input)
-        let parsed = parseInt(input)
+    function inputSigValue(input: string | number) {
+        setSigInput(input.toString())
+        let parsed = parseInt(input.toString())
         if (! isNaN(parsed)) {
             const bounded = Math.max(0, Math.min(parsed, range - 1))
             sigValue.current = bounded
@@ -85,6 +88,46 @@ export function FP8Editor({
             if (parsed != bounded)
                 setSigInput(bounded.toString())
         }
+    }
+
+    // Find the closest floating point number
+    function sliderChange(value: number, neg: boolean = false) {
+        if (value < 0) {
+            setSign(1)
+            sliderChange(value * -1, true)
+        }
+        else if (value == 0) {
+            setSign(0)
+            inputExpValue(0)
+            inputSigValue(0)
+        }
+        else {
+            let e = 0
+            while (2 ** e <= value) {
+                e++
+            }
+            if (e > 0) e--;
+            if (! neg) setSign(0)
+            const interval = (2 ** (e + 1) - 2 ** e)
+            let res = Math.floor((value - 2 ** e) * fp8.range / interval)
+            inputExpValue(e + fp8.bias)
+            inputSigValue(res)
+        }
+    }
+
+    function isInfinity() {
+        return fp8IsInfinity(sign == 1, expValue.current, sigValue.current, fp8)
+    }
+
+    function isNotANumber() {
+        return fp8isNaN(sign == 1, expValue.current, sigValue.current, fp8)
+    }
+
+    function computeValue() {
+        return (expValue.current == 0 ? 
+            (sign == 1 ? -1 : 1) * (sigValue.current / range) * Math.pow(2, (1 - fp8.bias))  : // subnormal
+            (sign == 1 ? -1 : 1) * (1 + sigValue.current / range) * Math.pow(2, (expValue.current - fp8.bias))
+        )
     }
 
     return (<Interactive instructions={instructions}>
@@ -156,30 +199,30 @@ export function FP8Editor({
                     <span className='text-gray-700 dark:text-gray-300'>2<sup className='font-bold'>{ fp8.mantissa }</sup></span>
                 </span>
                 <span className='text-3xl -mt-2 font-light'>)</span>
-                <sup>(
+                <span className="px-1">&times;</span>2
+                <sup className="mt-2">(
                     <span className='text-green-500'>{ expValue.current == 0 ? 1 : expValue.current }</span>
                     <span>&nbsp;-&nbsp;</span>
                     <span className='text-gray-700 dark:text-gray-300 font-bold'>{ fp8.bias }</span>
                 )</sup>
             </MathText>
-            <MathText color='text-gray-500 text-sm pt-2 px-1'>≈</MathText>
-            <MathText color='text-gray-700 dark:text-gray-300'>{ 
+            <MathText color='text-gray-500 text-sm pt-2 px-1'>=</MathText>
+            <MathText color='text-gray-700 dark:text-gray-300'>{ sign == 1 ? '-' : '' }{ 
                 ((expValue.current == 0 ? 0 : 1) + (sigValue.current / range)).toFixed(5).replace(/\.?0+$/, '') 
             }
-            <sup className='text-gray-700 dark:text-gray-300'>{ expValue.current - fp8.bias }</sup>
+            <span className="px-1">&times;</span>
+            2<sup className='text-gray-700 dark:text-gray-300'>{ expValue.current - fp8.bias }</sup>
             </MathText>
-            <MathText color='text-gray-500 text-sm pt-2 px-1'>≈</MathText>
+            <MathText color='text-gray-500 text-sm pt-2 px-1'>=</MathText>
             <MathText color='text-gray-700 dark:text-gray-300'>{
-                (fp8IsInfinity(sign == 1, expValue.current, sigValue.current, fp8) ? 'Infinity' :
-                (fp8isNaN(sign == 1, expValue.current, sigValue.current, fp8) ? 'NaN' : (
-                    (expValue.current == 0 ? 
-                        (sign == 1 ? -1 : 1) * (sigValue.current / range) * Math.pow(2, (1 - fp8.bias))  : // subnormal
-                        (sign == 1 ? -1 : 1) * (1 + sigValue.current / range) * Math.pow(2, (expValue.current - fp8.bias))
-                    ).toFixed(8)
-                ))).replace(/\.?0+$/g, '')
+                (
+                    isInfinity() ? 'Infinity' : (
+                    isNotANumber() ? 'NaN' : 
+                    computeValue().toFixed(8))
+                ).replace(/\.?0+$/g, '')
             }</MathText>
         </div>
-        
+        { slider && <FloatSlider value={ computeValue() } onChange={ sliderChange }/> }
     </Interactive>)
 }
 
@@ -187,4 +230,44 @@ function MathText({ color, children }: React.PropsWithChildren & { color: string
     return (
         <span className={clsx(color, 'pt-1 text-lg font-mono')}>{ children }</span>
     )
+}
+
+function FloatSlider({ max = 32, step = 1, value, onChange }: { 
+    value: number 
+    max?: number
+    step?: number
+    onChange: (value: number) => any
+}) {
+  const ticks = [...Array(Math.ceil((max * 2 + 1) * step))].map((_, i) => (i * step - max));
+  const powersOfTwo = new Set([...new Array(8)].map((_, i) => 2 ** i))
+
+  return (
+    <div className="space-y-4 min-w-[300px] mt-6">
+      <div>
+        <Slider defaultValue={[ value ]} min={-max} max={max} aria-label="Slider with ticks"
+            onValueChange={ (e) => {
+                onChange(e[0])
+            }} />
+        <span
+          className="mt-3 flex w-full items-center justify-between gap-1 px-2.5 text-xs font-medium text-muted-foreground"
+          aria-hidden="true"
+        >
+          {ticks.map((i) => {
+            const highlight = i > 0 ? powersOfTwo.has(i) : ((i < 0) ? powersOfTwo.has(-i) : true)
+
+            return (
+                <span key={i} className="flex w-0 flex-col items-center justify-center gap-2">
+                <span
+                    className={clsx("h-1 w-px bg-zinc-400 dark:bg-zinc-600", !highlight && "h-0.5")}
+                />
+                <span className={clsx(!highlight && "opacity-0")}>
+                    {i}
+                </span>
+                </span>
+            ) 
+          })}
+        </span>
+      </div>
+    </div>
+  );
 }

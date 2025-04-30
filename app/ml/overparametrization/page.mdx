@@ -1,0 +1,9 @@
+# Overparametrization
+
+Overparameterization refers to a situation where a model has more parameters than are strictly necessary to fit the training data. In practice, an overparametrized model often has many more parameters than necessary, and is especially common in [deep learning](/ml/deep-learning) where models can have millions or even billions of parameters.
+
+## Example
+
+Suppose you have a dataset with one thousand examples, each with ten features. If your model has ten million parameters, it has vastly more capacity than needed to train on such a small set of examples, and may suffer from poor performance since it is *memorizing rather than generalizing*.
+
+Surprisingly, overparameterized models often perform well if trained properly, thanks to techniques like [regularization](/ml/regularization) and [early stopping](/ml/early-stopping), and [synthetic data](/ml/synthetic-data). In deep learning, overparameterization can actually help optimization by making the loss landscape smoother. However, without the right controls, these models can **overfit**, learning noise and spurious patterns in the training data that hurt performance on unseen data.

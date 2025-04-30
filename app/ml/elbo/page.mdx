@@ -1,0 +1,12 @@
+
+# Expectation of the Log-Likelihood in Variational Inference (ELBO)
+
+$$
+\mathcal{L}(q) = \mathbb{E}_{q(z)}[\log p(x, z)] - \mathbb{E}_{q(z)}[\log q(z)]
+$$
+
+- $$ \mathcal{L}(q) $$: The Evidence Lower Bound (ELBO), which is optimized in variational inference.
+- $$ \mathbb{E}_{q(z)}[\cdot] $$: The expected value under the approximate posterior distribution $$ q(z) $$.
+- $$ \log p(x, z) $$: The joint log-probability of observed data $$ x $$ and latent variables $$ z $$.
+- $$ \log q(z) $$: The log of the approximate posterior.
+- The goal of this equation is to approximate the true posterior $$ p(z|x) $$ by maximizing the ELBO with respect to $$ q(z) $$. This balances model fit (how well $$ q(z) $$ explains $$ p(x, z) $$) with complexity (how different $$ q(z) $$ is from $$ p(z|x) $$).

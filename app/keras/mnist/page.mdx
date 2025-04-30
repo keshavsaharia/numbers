@@ -1,0 +1,108 @@
+# MNIST with Keras
+
+This Python script trains a [Convolutional Neural Network](/ml/cnn) (CNN) using [Keras](/keras) to recognize handwritten digits from the [MNIST](/ml/mnist) dataset. The MNIST dataset contains 60,000 training images and 10,000 testing images of handwritten digits 0 through 9, each stored in $$28 \times 28$$ grayscale pixels (i.e. $$28 \times 28 = 784 \text{ numbers}$$). 
+
+This is an illustrative example of loading and preprocessing data, normalizing pixel values to the interval $$[0, 1]$$, and reshaping image data to include a channel dimension for compatibility with convolutional layers. You will commonly find yourself using similar techniques as the ones here, such as converting labels to [one-hot encoded vectors](/ml/one-hot-vector) for classification, and constructing a sequential CNN model with layers designed to extract features from the images while reducing dimensionality. 
+
+## Data preparation
+
+You will need to [install Keras](https://keras.io/getting_started/) to follow along with this tutorial. 
+
+```python
+# mnist_convnet.py
+import numpy as np
+import keras
+from keras import layers
+from keras.utils import to_categorical
+```
+
+There are ten possible digits that can be classified, and each digit is represented by a $$28 \times 28$$ pixel grayscale image.
+
+```python
+# mnist_convnet.py
+num_classes = 10
+input_shape = (28, 28, 1)
+```
+
+The `mnist.load_data()` function returns tuples of training and test data.
+
+```python
+# Load the data and split it between train and test sets
+(x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
+```
+
+First we normalize the image data to the range $$[0, 1]$$ for better training performance.
+
+```python
+x_train = x_train.astype("float32") / 255
+x_test = x_test.astype("float32") / 255
+```
+
+This next step is required for `Conv2D` layers, where we use `np.expand_dims` to reshape the images so there is a channel dimension, by adding a new dimension at the end (axis `-1`) of the `x_train` array. The original shape of `x_train` is $$(60,000, 28, 28)$$ (sixty thousand images that are each $$28 \times 28$$ pixels), but Keras expects each image to have a shape like $$(height, width, channels)$$. Since these are grayscale images, they only have one channel, unlike color images which have three (red, green, and blue). By adding an extra dimension, we reshape the data to $$(60,000, 28, 28, 1)$$, which makes it compatible with the convolution layers which expect a "3D" image specification.
+
+```python
+x_train = np.expand_dims(x_train, -1)
+x_test = np.expand_dims(x_test, -1)
+```
+
+This next step converts class labels to [one-hot encoded vectors](/ml/one-hot-vector), so $$3$$ would become $$[0,0,0,1,0,0,0,0,0,0]$$ and $$0$$ would become $$[1, 0, 0, \ldots]$$. A well-trained model should be able to input an arbitrary $$28 \times 28$$ image and generate an output vector which is closest in distance to the one-hot vector of the correct classification.
+
+```python
+y_train = to_categorical(y_train, num_classes)
+y_test = to_categorical(y_test, num_classes)
+```
+
+## Training
+
+Now that the data has been prepared, it's finally time to start training! We will start by defining a `batch_size`, which determines the number of training examples the model sees in each training batch. We will also define `epochs`, which determines the number of times the model will see the entire dataset.
+
+```python
+batch_size = 128
+epochs = 3
+```
+
+Now we can define our model with `keras.Sequential`, which constructs a CNN model with the given ordering of layers.
+
+```python
+model = keras.Sequential(
+    [
+        layers.Input(shape=input_shape),                            # Input layer matching image shape
+        layers.Conv2D(32, kernel_size=(3, 3), activation="relu"),   # First convolutional layer (32 filters, 3x3 kernel)
+        layers.MaxPooling2D(pool_size=(2, 2)),                      # Downsamples the feature map
+        layers.Conv2D(64, kernel_size=(3, 3), activation="relu"),   # Second convolutional layer (64 filters)
+        layers.MaxPooling2D(pool_size=(2, 2)),                      # Second pooling layer
+        layers.Flatten(),                                           # Flattens 2D feature maps into 1D vector
+        layers.Dropout(0.5),                                        # Randomly drop 50% of activations to prevent overfitting
+        layers.Dense(num_classes, activation="softmax"),            # Output layer: 10 units, one for each class
+    ]
+)
+```
+
+Let's display the model architecture and compile it with the specified loss function, optimizer, and evaluation metric.
+
+- TODO: Adam optimizer (adaptive learning rate)
+
+```python
+model.summary()
+
+model.compile(
+    loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"]
+)
+```
+
+Finally, let's evaluate the model on the test data.
+
+```python
+model.fit(
+    x_train, y_train, 
+    batch_size=batch_size, 
+    epochs=epochs, 
+    validation_split=0.1
+)
+
+score = model.evaluate(x_test, y_test, verbose=0)
+print("Test loss:", score[0])
+print("Test accuracy:", score[1])
+```
+
+- TODO: component to show terminal output

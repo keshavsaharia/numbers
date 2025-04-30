@@ -1,0 +1,19 @@
+# Early Stopping
+
+**Early stopping** is a form of implicit regularization where training is halted before convergence if the model's performance on a validation set begins to degrade. This technique prevents overfitting by limiting how long the model can optimize itself on the training data. You can think of early stopping as "regularization by monitoring training performance".
+
+## Motivation
+
+In many optimization settings, especially with overparameterized models, the training loss $$\mathcal{L}_{\text{train}}$$ continues to decrease even after the model starts to overfit. However, the **validation loss** $$\mathcal{L}_{\text{val}}$$ will begin to increase as the model starts memorizing noise or idiosyncrasies in the training data.
+
+Early stopping works by first splitting the dataset into training and validation sets. The loss (or accuracy) is measured on the validation set at each [epoch](/ml/epoch) $$t$$, and training is stopped when the validation performance no longer improves for a certain number of epochs (called the **patience** $$p$$).
+
+Suppose $$\mathcal{L}_{\text{val}}^{(t)}$$ is the validation loss at epoch $$t$$ - then training stops at epoch $$T$$ when $$\mathcal{L}_{\text{val}}^{(T)} > \min_{t < T} \mathcal{L}_{\text{val}}^{(t)} \quad$$ for $$p$$ consecutive epochs.
+
+One main advantage of this regularization technique is that there is no need to modify the loss function. It is useful for preventing overfitting without adding extra constraints on the model parameters, and is particularly effective when training is expensive and continued epochs provide diminishing returns.
+
+## Considerations
+
+Early stopping can be viewed as a form of **capacity control**, similar to limiting the number of steps in gradient descent. In linear models with [convex loss](/ml/convex-loss), early stopping can actually approximate [L2 regularization](/regularization/l2)! It acts as a kind of implicit bias toward simpler solutions, by not allowing the optimizer to fully exploit the model's capacity.
+
+However, the choice of patience $$p$$ and **validation frequency** are new hyperparameters, and there must be a non-trivial validation set to work effectively (i.e. it must be representative of unseen data).

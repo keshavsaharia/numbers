@@ -88,3 +88,12 @@ export function code({ children }: React.PropsWithChildren) {
         </code>
     )
 }
+
+
+export function Note({ children, className }: React.PropsWithChildren & { className?: string }) {
+    return (<>
+        <small className={clsx('block text-sm text-gray-500 mb-2', className)}>
+            { children }
+        </small>
+    </>)
+}

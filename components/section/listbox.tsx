@@ -9,13 +9,16 @@ import Link from 'next/link'
 
 import { getUrl } from './util'
 
-export function SectionListBox({ title, base, sections }: SectionProps) {
+export function SectionListBox({ title, description, base, sections }: SectionProps) {
 
     return (
         <motion.section variants={VARIANTS_SECTION} transition={TRANSITION_SECTION}>
-            <h3 className="mb-5 text-xl font-bold">
+            { title && <h3 className="mb-5 text-xl font-bold">
                 { title }
-            </h3>
+            </h3> }
+            { description && <p className='text-md text-gray-700 dark:text-gray-300 font-normal mb-4'>
+                { description }
+            </p> }
 
             <div className="flex flex-col space-y-2">
                 { sections.map(({ link, path, title, description, identifier, tags }) => {

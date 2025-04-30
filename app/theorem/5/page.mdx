@@ -35,5 +35,5 @@ $$xy = x_h y_h + x_h y_i + x_i y_h + x_i y_i$$
 If $$x$$ and $$y$$ have $$\rho$$ bit significands, the summands will also have $$\rho$$ bit significands provided that $$x_i, x_h, y_h, y_i$$ can be represented using $$\frac{\rho}{2}$$ bits. When $$\rho$$ is even, it is easy to find a splitting. The number $$x_0.x_1 \ldots x_{\frac{\rho}{2} - 1}$$ can be written as the sum of $$x_0.x_1\ldots x_{\frac{\rho}{2} - 1}$$ and $$0.0\ldots0x_{\frac{\rho}{2}}\ldots x_{\rho - 1}$$. When $$\rho$$ is odd, this simple splitting method does not work. However, an extra bit can be gained by using negative numbers. For example if $$\beta = 2, \rho = 5, and x = .10111$$, $$x$$ can be split as $$x_h = .11 and x_i = -.00001$$. There is more than one way to split a number. A splitting method that is easy to compute is due to Dekker [1971], but it requires more than a single guard digit.
 
 <References reference={[
-    
+    'goldberg'
 ]}/>

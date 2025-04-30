@@ -16,9 +16,9 @@ export function Header() {
           preset="fade"
           per="char"
           className="text-zinc-500"
-          delay={0.5}
+          delay={0.2}
         >
-          "how numbers are stored in computers"
+          "how numbers are stored and used in computers"
         </TextEffect>
       </div>
     </header>

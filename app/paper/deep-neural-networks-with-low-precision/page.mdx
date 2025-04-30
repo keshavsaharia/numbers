@@ -1,0 +1,23 @@
+# Training Deep Neural Networks With Low Precision Multiplications
+
+[Paper](/paper/deepnn_lowpm.pdf)
+
+[Gupta et al](/paper/deepnn_lownump.pdf)
+
+​The paper "Training Deep Neural Networks with Low Precision Multiplications" by [Matthieu Courbariaux](https://scholar.google.ca/citations?user=Q8K3FjQAAAAJ&hl=en), [Jean-Pierre David](https://scholar.google.com/citations?user=yVubPz4AAAAJ&hl=en), and [Yoshua Bengio](https://en.wikipedia.org/wiki/Yoshua_Bengio) explores the feasibility of training deep neural networks using reduced-precision arithmetic, aiming to enhance computational efficiency and reduce hardware resource consumption.
+
+## Motivation
+
+Multipliers are among the most resource-intensive components in digital hardware implementations of deep neural networks. Reducing the precision of these multiplications can lead to significant savings in power and area, which is particularly beneficial for deploying models on resource-constrained devices.
+
+## Methodology
+
+The authors trained Maxout networks—a type of neural network architecture—on three benchmark datasets: MNIST, CIFAR-10, and SVHN. They experimented with three numerical formats: floating point, fixed point, and dynamic fixed point, to assess the impact of reduced precision on training performance.
+
+## Findings
+
+The study found that very low precision is sufficient not only for running trained networks but also for training them. Specifically, they achieved near state-of-the-art results using 10-bit precision for computing activations and gradients, and 12-bit precision for storing updated parameters.
+
+## Implications
+
+At the time of its publishing, this paper suggested that training deep neural networks with low-precision multiplications was viable, potentially allowing for more efficient hardware implementations without significant compromises in model accuracy. This suggestion turned out to be resoundingly correct, highly profitable for companies like NVIDIA, and even managed to influence the stock market nearly a decade later with the release of [DeepSeek R1 FP4](https://huggingface.co/nvidia/DeepSeek-R1-FP4), which uses only four bits for each floating point number!

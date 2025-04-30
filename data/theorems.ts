@@ -1,7 +1,8 @@
 import { SectionGroup } from '@/components/types'
 
 export default {
-    title: 'Floating point theorems',
+    title: 'Numerical analysis of floating point arithmetic',
+    description: `Detailed explanations of the theorems presented in David Goldberg\'s seminal 1991 paper "What Every Computer Scientist Should Know About Floating Point Arithmetic", with code examples and visualizations for the less mathematically-inclined.`,
     base: '/theorem',
     sections: [
         {

@@ -1,0 +1,52 @@
+# Regularization
+
+Regularization improves generalization by constraining the hypothesis space. It's especially critical in [overparameterized](/ml/overparametrization) settings, where many different parameter configurations can perfectly fit the training data, but only a subset of them will generalize well. 
+
+Regularization refers to a set of techniques used to prevent **overfitting** by adding a penalty term to the [loss function](/ml/loss-function). This discourages the model from fitting the training data too closely by controlling the complexity of the model, particularly the size of its parameters.
+
+## Standard loss function
+
+Given a dataset of $$m$$ examples $$\{(\mathbf{x}_i, y_i)\}_{i=1}^m$$, and a prediction function $$f(\mathbf{x}; \boldsymbol{\theta})$$ parameterized by $$\boldsymbol{\theta}$$, we aim to minimize a loss function $$\mathcal{L}$$. In [regression](/ml/regression), we often use the **Mean Squared Error (MSE)**:
+
+$$\mathcal{L}_{\text{MSE}}(\boldsymbol{\theta}) = \frac{1}{m} \sum_{i=1}^{m} \left( y_i - f(\mathbf{x}_i; \boldsymbol{\theta}) \right)^2$$
+
+With regularization, we modify the loss to include a penalty term $$\Omega(\boldsymbol{\theta})$$:
+
+$$
+\mathcal{L}_{\text{reg}}(\boldsymbol{\theta}) = \mathcal{L}(\boldsymbol{\theta}) + \lambda \, \Omega(\boldsymbol{\theta})
+$$
+
+Where $$\lambda \geq 0$$ is the **regularization strength** — a [hyperparameter](/ml/hyperparameter) that controls the trade-off between data fit and parameter size - and $$\Omega(\boldsymbol{\theta})$$ is a **regularization function**, commonly based on the [norm](/ml/norm) of $$\boldsymbol{\theta}$$.
+
+<SectionListBox title="Regularization techniques" sections={[
+    {
+        title: 'L2 Regularization',
+        description: 'Penalizes large weights and encourages smaller, more evenly distributed values.',
+        link: '/regularization/l2'
+    },
+    {
+        title: 'L1 Regularization',
+        description: 'Promotes sparsity by encouraging some weights to become exactly zero.',
+        link: '/regularization/l1'
+    },
+    {
+        title: 'Dropout',
+        description: 'Promotes redundancy and robustness by randomly setting weights to zero during training.',
+        link: '/regularization/dropout'
+    },
+    {
+        title: 'Early Stopping',
+        description: 'Limits how long the model can optimize itself on the training data.',
+        link: '/regularization/early-stopping'
+    }
+]}/>
+
+
+
+## Impact
+
+The addition of a regularization term modifies the gradient during optimization. For example, in gradient descent with [L2 regularization](/ml/regularization/l2), the weight update becomes:
+
+$$ \theta_j \leftarrow \theta_j - \eta \left( \frac{\partial \mathcal{L}}{\partial \theta_j} + \lambda \theta_j \right) $$
+
+Here, the term $$\lambda \theta_j$$ acts like a "friction" that resists the growth of parameters. There are a range of possible techniques to achieve the same outcome, or optimize model weights for a particular [floating point format](/format).

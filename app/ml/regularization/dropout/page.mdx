@@ -1,0 +1,11 @@
+# Dropout
+
+**Dropout** is a **stochastic** technique where individual neurons are randomly **deactivated** (set to zero) during training with a probability $$p$$. This prevents the network from relying too heavily on any one feature or pathway, promoting redundancy and robustness. Unlike L2 and L1 regularization, it operates directly on weights during training and can be thought of intuitively as "regularization by random omission".
+
+During training, given a vector of weights $$\mathbf{h} \in \mathbb{R}^n$$ from a given layer, dropout applies an element-wise binary mask $$\mathbf{r} \sim \text{Bernoulli}(1 - p)$$, where each element $$ r_i \in \{0, 1\} $$ independently $$ \tilde{\mathbf{h}} = \mathbf{r} \odot \mathbf{h} $$, where $$\odot$$ denotes element-wise multiplication. Essentially, each neuron is zeroed out with probability $$p$$.
+
+Dropout is not applied during inference time, but the activations are scaled by $$1 - p$$ to account for the fact that more neurons are likely to be active. Alternatively, some implementations scale the outputs during training instead of at test time - a method called **inverted dropout**.
+
+Dropout can be viewed as a form of **ensemble learning**: at each training step, a different **sub-network** (a subset of the full model) is trained. The full network at test time effectively averages the predictions of an exponential number of these sub-networks. This leads to better generalization and mitigates overfitting, especially in larger networks.
+
+Unlike L1/L2 regularization, dropout does not modify the loss function explicitly. However, it introduces noise into the optimization process, which acts as an implicit regularizer. It can reduce **co-adaptation** between neurons, forcing each one to learn more robust features that don't depend on others being present.
