@@ -31,7 +31,6 @@ export function FloatDistribution({ fp, bins = 100 }: { fp: FP8, bins?: number }
         <div className='rounded-md flex w-full overflow-hidden'>
             { bin.map((b, i) => {
                 const scaled = Math.min(255, Math.floor(255.0 * b.v.length / maxBin))
-                console.log('scaled', scaled)
                 return (<span
                     key={ 'bin' + i }
                     style={{ 
