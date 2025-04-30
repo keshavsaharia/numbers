@@ -7,7 +7,6 @@ import clsx from 'clsx'
 import { fp8 as fp8s, FP8 } from '@/data/fp8'
 import { fp8IsInfinity, fp8isNaN } from './fp8'
 
-import { Label } from "./label"
 import { Slider } from "./slider"
 
 type Bit = 0 | 1

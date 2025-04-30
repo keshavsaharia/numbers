@@ -1,3 +1,5 @@
+'use client'
+
 import { Range, Root, Thumb, Track } from '@radix-ui/react-slider'
 import Color from 'color'
 import clsx from 'clsx'
@@ -23,9 +25,7 @@ interface ColorPickerContextValue {
   setMode: (mode: string) => void;
 }
 
-const ColorPickerContext = createContext<ColorPickerContextValue | undefined>(
-  undefined
-);
+const ColorPickerContext = createContext<ColorPickerContextValue | undefined>(undefined);
 
 export const useColorPicker = () => {
   const context = useContext(ColorPickerContext);

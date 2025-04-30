@@ -1,3 +1,5 @@
+'use client'
+
 import { FP8 } from '@/data/fp8'
 import { enumerateFP8 } from './fp8'
 import { Interactive } from '../number/interactive'

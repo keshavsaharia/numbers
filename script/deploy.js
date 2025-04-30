@@ -39,7 +39,7 @@ async function run() {
 async function build() {
     console.log('Compiling Next.JS build')
     try {
-        const result = execSync('npm run build', { 
+        const result = execSync('next build', { 
             cwd: __source,
             env: {
                 ...process.env,

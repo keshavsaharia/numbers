@@ -1,4 +1,4 @@
-"use client";
+'use'
 
 import * as SliderPrimitive from "@radix-ui/react-slider";
 import * as React from "react";
@@ -10,6 +10,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "./tooltip";
+import { Fragment, useCallback, useEffect, useState } from "react";
 
 export const Slider = React.forwardRef<
   React.ElementRef<typeof SliderPrimitive.Root>,
@@ -18,12 +19,12 @@ export const Slider = React.forwardRef<
     tooltipContent?: (value: number) => React.ReactNode;
   }
 >(({ className, showTooltip = false, tooltipContent, ...props }, ref) => {
-  const [showTooltipState, setShowTooltipState] = React.useState(false);
-  const [internalValue, setInternalValue] = React.useState<number[]>(
+  const [showTooltipState, setShowTooltipState] = useState(false);
+  const [internalValue, setInternalValue] = useState<number[]>(
     (props.defaultValue as number[]) ?? (props.value as number[]) ?? [0],
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (props.value !== undefined) {
       setInternalValue(props.value as number[]);
     }
@@ -40,13 +41,13 @@ export const Slider = React.forwardRef<
     }
   };
 
-  const handlePointerUp = React.useCallback(() => {
+  const handlePointerUp = useCallback(() => {
     if (showTooltip) {
       setShowTooltipState(false);
     }
   }, [showTooltip]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (showTooltip) {
       document.addEventListener("pointerup", handlePointerUp);
       return () => {
@@ -95,7 +96,7 @@ export const Slider = React.forwardRef<
         <SliderPrimitive.Range className="absolute bg-blue-300 dark:bg-blue-700 data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full" />
       </SliderPrimitive.Track>
       {internalValue?.map((value, index) => (
-        <React.Fragment key={index}>{renderThumb(value)}</React.Fragment>
+        <Fragment key={index}>{renderThumb(value)}</Fragment>
       ))}
     </SliderPrimitive.Root>
   );

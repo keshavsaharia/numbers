@@ -1,3 +1,5 @@
+'use client'
+
 import { Interactive } from '../number/interactive'
 
 export function FloatEditor({ 

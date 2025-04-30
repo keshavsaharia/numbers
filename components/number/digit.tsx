@@ -1,3 +1,5 @@
+'use client'
+
 import clsx from 'clsx'
 
 export function Digit({ digit, size = 'lg', className, onClick }: { 
