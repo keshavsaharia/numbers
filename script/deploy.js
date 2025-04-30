@@ -38,14 +38,21 @@ async function run() {
  */
 async function build() {
     console.log('Compiling Next.JS build')
-    const result = execSync('npm run build', { 
-        cwd: __source,
-        env: {
-            ...process.env,
-            NEXT_PUBLIC_BASE_URL: 'https://' + BUCKET
-        },
-        stdio: 'ignore'
-    })
+    try {
+        const result = execSync('npm run build', { 
+            cwd: __source,
+            env: {
+                ...process.env,
+                NEXT_PUBLIC_BASE_URL: 'https://' + BUCKET
+            },
+            stdio: 'ignore'
+        })
+    }
+    catch (error) {
+        console.log('NextJS error', error.toString())
+        console.log(error)
+        process.exit(1)
+    }
     console.log('Done compiling')
 }
 
