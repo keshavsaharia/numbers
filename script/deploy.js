@@ -44,8 +44,7 @@ async function build() {
             env: {
                 ...process.env,
                 NEXT_PUBLIC_BASE_URL: 'https://' + BUCKET
-            },
-            stdio: 'ignore'
+            }
         })
     }
     catch (error) {
