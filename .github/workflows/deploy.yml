@@ -24,9 +24,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '23.7.0'
-  
+
       - name: Install dependencies
         run: npm install
+      
+      - name: Install Linux dependencies
+        run: npm install --save @tailwindcss/oxide-linux-x64-gnu lightningcss-linux-x64-gnu
 
       - name: Run deploy script
         run: node script/deploy.js
