@@ -24,10 +24,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '23.7.0'
-
-      - name: Install Next.JS
-        run: npm install -g next
-
+  
       - name: Install dependencies
         run: npm install
 
