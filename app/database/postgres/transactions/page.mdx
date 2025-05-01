@@ -1,0 +1,29 @@
+# Transactions
+
+Transactions in PostgreSQL are the foundation of its [ACID](/concept/acid) (Atomicity, Consistency, Isolation, Durability) guarantees. Internally, transactions are managed using a combination of transaction IDs (called `XID`s), visibility rules, commit logs, and undo semantics provided by MVCC. Each transaction in PostgreSQL is assigned a unique 32-bit `XID`, which is used to determine the visibility of tuples created, modified, or deleted by that transaction. This mechanism underpins how concurrent transactions interact with the database and each other.
+
+## Starting a transaction
+
+When a transaction begins, PostgreSQL assigns it an XID and takes a snapshot of the system's transactional state. This snapshot records the XIDs of all running transactions, and defines which tuples are visible to the new transaction. 
+
+Throughout its lifetime, the transaction uses this snapshot to determine visibility without being affected by concurrent changes. This enables PostgreSQL to provide various isolation levels, like **Read Committed** and **Repeatable Read**, by controlling how snapshots are used and how visibility is enforced during query execution.
+
+## Changes within a transaction
+
+Changes made within a transaction are not visible to other transactions until the transaction commits. Until that point, new tuples inserted by the transaction have their `xmin` set to the current XID, and tuples it deletes or updates will have their `xmax` set to the same XID. These markers ensure that the uncommitted changes are invisible to other sessions. 
+
+When a transaction commits, PostgreSQL records the commit in a lightweight on-disk structure called the **commit log** (`CLOG` or `pg_xact`). This log maintains a bitmap indicating the status (committed, aborted, or in-progress) of each XID. Visibility checks during queries often involve consulting this log to determine whether a tuple's XID has committed or not.
+
+## Subtransactions
+
+PostgreSQL supports **subtransactions**, which allow nested blocks of work to be rolled back independently without affecting the outer transaction. These are especially useful in procedural code or when using savepoints. Internally, subtransactions are tracked using a separate identifier (`subXID`), and their relationship to parent transactions is maintained to ensure visibility and rollback are handled correctly.
+
+## Rollback
+
+Rollback in PostgreSQL is implicit for uncommitted transactions that crash or are terminated, and explicit via the `ROLLBACK` command. Rather than reverting in-place changes, PostgreSQL relies on MVCC to simply discard tuple versions created by uncommitted or aborted transactions. The presence of tuples with uncommitted `xmin` or `xmax` marks them as invisible, and they are later cleaned up by `VACUUM`.
+
+Because XIDs are 32-bit integers, they can wrap around after approximately 4 billion transactions. To prevent catastrophic data corruption due to wraparound, PostgreSQL uses **freezing** to mark tuples with a special "frozen" XID, indicating they are permanently visible. This process is managed by [autovacuum](/database/postgres/vacuuming), and is critical for long-term database integrity.
+
+## Write ahead logging
+
+Transaction management in PostgreSQL is tightly integrated with the **Write-Ahead Logging** ([WAL](/database/postgres/wal)) system. Every transactional change generates WAL records, which are written before changes are flushed to the data files. This ensures durability: if the database crashes after a transaction commits, PostgreSQL can replay the WAL to recover a consistent state. The combination of WAL and MVCC allows PostgreSQL to support concurrent, durable transactions with minimal locking.

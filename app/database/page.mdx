@@ -1,0 +1,8 @@
+# Databases
+
+At their core, databases are structured collections of numbers. Every piece of data—whether it's a username, a timestamp, a decimal price, or a binary blob—is ultimately represented in numerical form. Strings are encoded as sequences of bytes, timestamps as integers or floats, and boolean flags as single bits. Even complex data structures like JSON documents or spatial coordinates resolve down to a series of numeric encodings stored on disk or in memory.
+
+The way numbers are stored, indexed, compressed, and compared in a database system has a direct impact on performance, precision, and even correctness. For instance, floating-point rounding errors can introduce subtle bugs in range queries. The choice between fixed-point and floating-point representation affects how financial data is stored and retrieved. Sorting large datasets relies on lexicographical or binary comparison of encoded numbers. And query optimizers often depend on cardinality estimates derived from histograms and statistical models.
+
+It is useful for system designers to see databases not just as tools for storing data, but as finely tuned numerical machines that are deeply reliant on number theory and encoding schemes.
+

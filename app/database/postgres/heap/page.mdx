@@ -1,0 +1,25 @@
+# Heap
+
+The **heap** refers to the on-disk structure used to store table data. Each table in PostgreSQL is backed by a heap file - an unordered collection of fixed-size pages (typically 8KB) that hold **heap tuples**, which represent individual rows. 
+
+The heap is not a heap in the traditional data structure sense; rather, it's a simple append-based storage layout without inherent ordering or clustering. It is optimized for PostgreSQL's [MVCC](/database/postgres/mvcc) model, where updates and deletes result in versioned row copies rather than in-place modifications.
+
+## Line pointers
+
+Each page in the heap contains a page header followed by an array of **line pointers**, which reference the actual tuple data stored elsewhere on the page. These line pointers make it possible to implement in-place tuple replacement without rewriting the entire page layout, which is important for managing updated or deleted rows. The tuples themselves contain user data, MVCC metadata (`xmin`, `xmax`, etc.), and system fields such as `ctid`, which uniquely identifies the physical location of a row in the form (block number, offset).
+
+Because PostgreSQL uses MVCC, the heap often contains **multiple versions of the same logical row**. When a row is updated, the old version remains in the heap, and a new version is inserted into the same or a different page. The old tuple is marked as obsolete by setting its `xmax` to the updating transaction's ID, while the new version's `xmin` is set to the same. This enables consistent reads for transactions operating under different snapshots, but also leads to accumulation of **dead tuples** that are no longer visible to any active transaction.
+
+## Vacuuming
+
+To prevent heap bloat, PostgreSQL relies on the [`VACUUM` process](/database/postgres/vacuuming) to identify and remove dead tuples. When a tuple becomes definitively obsolete (i.e. all active snapshots have moved past it), `VACUUM` can mark its space as reusable. However, space is not immediately reclaimed at the file system level, but rather simply made available for future insertions within the same heap pages. For full space recovery and physical reordering, `VACUUM FULL` rewrites the entire heap file.
+
+## Clustering
+
+Heaps in PostgreSQL are inherently **unclustered**, meaning data is stored in the order it is inserted, unless explicitly reorganized via the `CLUSTER` command. This lack of physical order can lead to performance degradation for certain access patterns, especially when combined with tuple versioning and fragmentation. Indexes are typically used to compensate for the lack of ordering, but sequential scans on bloated heaps can still be costly. Periodic vacuuming and table reorganization are necessary to maintain performance over time.
+
+Each heap table is composed of a primary file (named by the table's `relfilenode`) and possibly a set of TOAST tables if the row contains large variable-length fields. PostgreSQL uses TOAST (The Oversized-Attribute Storage Technique) to move large values out of the main heap and into auxiliary tables, allowing the heap to maintain compact and fixed-size tuple structures while supporting large values like multi-MB JSON or text fields.
+
+## Visibility maps
+
+At the block level, PostgreSQL maintains a **visibility map** and **free space map** for each heap. The visibility map tracks whether all tuples in a page are visible to all transactions, enabling index-only scans. The free space map tracks how much room is available in each page, helping the executor quickly find pages to insert new tuples without scanning the entire table.

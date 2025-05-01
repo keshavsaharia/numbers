@@ -1,0 +1,25 @@
+# PostgreSQL
+
+PostgreSQL is a widely-used open-source relational database that offers an easy playground for examining how number representations affect data storage, query performance, and internal mechanics. Behind its declarative SQL interface lies a complex system deeply tied to how it encodes, stores, and manipulates numbers.
+
+## Data Types
+
+PostgreSQL supports a wide array of numeric types: `integer`, `bigint`, `real`, `double precision`, `numeric`, and more. These types determine byte-level storage formats, CPU usage, and precision guarantees. For instance, `numeric` uses a variable-length packed decimal representation that avoids floating-point error, ideal for financial calculations. In contrast, `double precision` offers performance and range at the cost of potential rounding error.
+
+Strings (i.e. `text` types) are stored with variable-length encodings like UTF-8, and indexing them with B-trees or GIN involves hashing or lexicographic numeric comparisons of those encoded byte sequences.
+
+## Pages, Tuples, and Alignment
+
+PostgreSQL stores data in 8 KB pages of **tuples**, which are its internal representations of rows. Each tuple starts with a header including metadata like `xmin` and `xmax`, which are transaction IDs - unsigned 32-bit integers that are used in PostgreSQL's Multi-Version Concurrency Control (MVCC) system. This integer-based system governs visibility and concurrency without locking, but also introduces quirks like transaction ID wraparound, where the finite number space of a 32-bit integer becomes a cyclic ring.
+
+Integers and floats are aligned according to architecture rules to maximize CPU cache efficiency. This means the physical layout of a row isn't always an exact match with its logical schema — it may include unused padding bytes to maintain proper alignment, impacting storage size and performance.
+
+## Indexing and Sorting
+
+Indexes are a pure expression of number manipulation. A B-tree index in PostgreSQL is a binary structure that stores keys in order using the type's comparison function. For numbers, this is usually straightforward, but for types like `numeric`, comparisons are more expensive due to arbitrary precision. That's why indexing `numeric` fields can be slower than `int` or `float` equivalents.
+
+PostgreSQL's statistics system also relies on numerical analysis. Each column has histograms, most-common-values lists, and null fraction estimates, which are numeric summaries used by the query planner to predict row counts and choose optimal plans. These predictions affect everything from whether to use an index to whether to sort in memory or on disk.
+
+## WAL, Replication, and Checkpoints
+
+Even write-ahead logging (WAL) and replication revolve around numbers: Log Sequence Numbers (LSNs) are 64-bit integers representing byte offsets in the WAL stream. PostgreSQL's recovery and replication mechanisms use LSNs to determine where to resume reading or writing, and these numbers must be compared, stored, and manipulated efficiently across various storage layers and time windows.

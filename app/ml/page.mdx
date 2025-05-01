@@ -5,22 +5,33 @@ export const metadata = {
 
 # Machine learning
 
-There are a wide variety of [online courses](/courses)
+There's no shortage of [machine learning courses](/ml/courses) out there, and that's why this one takes a different approach. This is a practical resource for experienced software developers who want to understand how machine learning algorithms work internally. Many of the coding examples are JavaScript programs that can be run directly in your web browser, and operate on real-world data.
 
 ## Mathematical notation
 
-Understanding mathematical notation is essential to understanding machine learning. It provides a precise and compact language for expressing complex concepts, models, and algorithms. Key ideas such as gradient descent, loss functions, matrix operations, and probability distributions are most clearly and rigorously described in mathematical notation. 
+Understanding mathematical notation is essential to understanding machine learning. It provides a precise and compact language for expressing complex concepts, models, and algorithms. Key ideas such as gradient descent, loss functions, matrix operations, and probability distributions are most clearly and rigorously described in mathematical notation. Without understanding this notation, you will be unable to read research papers or effectively reason about machine learning algorithms.
 
-However, I am acutely aware of the widespread allergy to mathematical notation, so I have attempted to supplement mathematical notation wherever possible with human-readable explanations of each relevant term.
+However, I am acutely aware of the widespread allergy to mathematical notation, so I have attempted to augment it with human-readable explanations of each relevant term. Try hovering over the algorithm below to see how to examine each term.
 
 <div className="flex align-middle justify-center text-3xl">
-$$ \frac{\partial L}{\partial W^{[l]}}$$ 
-$$=$$ $$\delta^{[l]}$$
+<MathTooltip tooltip={<>
+    <strong>How much the loss function changes</strong>
+    when we make a small change to the weights of a neural network layer.
+</>}>
+$$ \frac{\partial L}{\partial W^{[l]}}$$
+</MathTooltip>
+$$=$$ 
+<MathTooltip tooltip={<>
+    <strong>The error signal for the layer</strong>
+    Shows how much each neuron contributed to the total loss.
+</>}>
+$$\delta^{[l]}$$
+</MathTooltip>
 $$\cdot$$
+<MathTooltip tooltip='A transposition of the previous layer, where outputs are rearranged to properly compute how much each output contributed to the total loss.'>
 $$(A^{[l-1]})^T$$
+</MathTooltip>
 </div>
-
-If mathematical notation is a foreign language to you, but you have the motivation to learn it, you can do so in the same way as you would learn any other language - by immersion. Without mathematical notation, you will also be unable to read research papers or effectively reason about machine learning algorithms.
 
 ## Outline
 

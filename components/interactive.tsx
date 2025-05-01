@@ -3,3 +3,6 @@ export { FP8Editor } from './float/fp8-editor'
 export { FP8Table } from './float/table'
 export { ColorPickerNumber as ColorPicker } from './number/color'
 export { FloatDistribution } from './float/distribution'
+
+// Math equations
+export { MathTooltip } from './math/tooltip'

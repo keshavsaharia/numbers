@@ -1,0 +1,70 @@
+# ClickHouse
+
+ClickHouse is a high-performance column-oriented database management system designed for real-time analytics on large volumes of data. While its speed and efficiency have made it popular in production environments, its internal architecture is a masterclass in systems design. 
+
+This is a deep dive into the internals of ClickHouse, which attempts to trace an optimal learner's path through the source code to uncover how its core components work. We'll explore the data structures, algorithms, and design principles that make it one of the fastest OLAP databases in the world, and a brilliant contribution to the open-source ecosystem. Whether you're a systems engineer, database developer, or open-source contributor, this will hopefully equip you with a detailed understanding of how ClickHouse operates from the inside out.
+
+
+- Architecture
+
+1. **Introduction to ClickHouse Architecture**
+   - High-level overview of ClickHouse
+   - Core principles and design goals
+   - Key components and how they interact
+   - Build system and codebase structure
+
+2. **Storage Engine Internals**
+   - MergeTree family overview
+   - How data is written and stored on disk
+   - Indexing strategies
+   - Code walkthrough: `StorageMergeTree.cpp`, `MergeTreeDataPart.cpp`
+
+3. **Query Execution Pipeline**
+   - Parsing, planning, and execution
+   - The pipeline of stages: AST → Plan → Interpreter → Pipeline
+   - Code walkthrough: `InterpreterSelectQuery.cpp`, `QueryPipeline.cpp`
+
+4. **Data Compression and Encoding**
+   - Supported codecs and when they’re used
+   - How compression interacts with performance
+   - Code walkthrough: `CompressionCodec.cpp`, `CompressedReadBuffer.cpp`
+
+5. **Vectorized Execution Engine**
+   - Columnar processing model
+   - Vectorized operations on blocks
+   - Code walkthrough: `IProcessor.h`, `Block.cpp`, `Column*.cpp`
+
+6. **Merge and Mutation Mechanics**
+   - Background merges and data consistency
+   - Mutations and TTL management
+   - Code walkthrough: `MergeTreeDataMergerMutator.cpp`, `ReplicatedMergeTree*.cpp`
+
+7. **Distributed Query Execution**
+   - Cluster queries and coordination
+   - Role of `RemoteBlockInputStream` and `DistributedQueryExecutor`
+   - Code walkthrough: `Cluster.cpp`, `DistributedBlockInputStream.cpp`
+
+8. **Caching and Memory Management**
+   - Mark cache, uncompressed cache, and index caches
+   - Memory tracking and limits
+   - Code walkthrough: `MarkCache.cpp`, `Arena.cpp`, `MemoryTracker.cpp`
+
+9. **Replication and Fault Tolerance**
+   - Zookeeper-based coordination
+   - ReplicatedMergeTree and quorum writes
+   - Code walkthrough: `ReplicatedMergeTreeLogEntry.cpp`, `ZooKeeper.cpp`
+
+10. **Extensibility and Plugin Interfaces**
+    - Adding new table engines or functions
+    - The role of factories in extensibility
+    - Code walkthrough: `TableFunctionFactory.cpp`, `AggregateFunctionFactory.cpp`
+
+11. **Performance Tuning and Observability**
+    - Profiling and tracing query execution
+    - System tables and logs
+    - Code walkthrough: `SystemLog.cpp`, `TraceCollector.cpp`
+
+12. **Contributing**
+    - Contributing to ClickHouse
+    - Paths to explore more (e.g., internals of specific functions or engines)
+    - Open research questions in OLAP system design

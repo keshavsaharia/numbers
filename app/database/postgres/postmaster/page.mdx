@@ -1,0 +1,20 @@
+# Postmaster
+
+An important starting point for understanding the internals of PostgreSQL is [postmaster.c](https://github.com/postgres/postgres/blob/master/src/backend/postmaster/postmaster.c), which is nearly five thousand lines of code. 
+
+> This program acts as a clearing house for requests to the POSTGRES system.  Frontend programs connect to the Postmaster, and postmaster forks a new backend process to handle the connection.
+>
+> The postmaster also manages system-wide operations such as startup and shutdown. The postmaster itself doesn't do those operations, mind you --- it just forks off a subprocess to do them at the right times.  It also takes care of resetting the system if a backend crashes.
+> The postmaster process creates the shared memory and semaphore pools during startup, but as a rule does not touch them itself. In particular, it is not a member of the PGPROC array of backends and so it cannot participate in lock-manager operations.  Keeping the postmaster away from shared memory operations makes it simpler and more reliable.  The postmaster is almost always able to recover from crashes of individual backends by resetting shared memory; if it did much with shared memory then it would be prone to crashing along with the backends.
+> When a request message is received, we now `fork()` immediately. The child process performs authentication of the request, and then becomes a backend if successful. This allows the auth code to be written in a simple single-threaded style (as opposed to the crufty "poor man's multitasking" code that used to be needed). More importantly, it ensures that blockages in non-multithreaded libraries like SSL or PAM cannot cause denial of service to other clients.
+
+## PostmasterMain
+
+The [PostmasterMain](https://github.com/postgres/postgres/blob/92ee8a4df5b529efbc2455d7a171054c88b43a33/src/backend/postmaster/postmaster.c#L493) entry point sets up [shared memory](https://github.com/postgres/postgres/blob/92ee8a4df5b529efbc2455d7a171054c88b43a33/src/backend/postmaster/postmaster.c#L530), [signal handling](https://github.com/postgres/postgres/blob/92ee8a4df5b529efbc2455d7a171054c88b43a33/src/backend/postmaster/postmaster.c#L548), and [parses command line options](https://github.com/postgres/postgres/blob/92ee8a4df5b529efbc2455d7a171054c88b43a33/src/backend/postmaster/postmaster.c#L598). It occassionally comes up in [niche bug reports](https://git.postgresql.org/gitweb/?p=postgresql.git;a=commitdiff;h=6c9a83f216a0d6264728f5d372e4ab10cfb60804), but is generally a quite battle-tested entry point.
+
+Postgres users often see this error when attempting to start a database that is already running, or that shut down incorrectly. If you ensure there are no Postgres processes running, it is safe to delete `postmaster.pid`.
+
+```
+pg_ctl: another server might be running; trying to start server anyway... FATAL: lock file 'postmaster.pid' already exists.
+```
+

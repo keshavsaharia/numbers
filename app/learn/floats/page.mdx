@@ -12,9 +12,13 @@ Try moving the slider along the number line below to see how the sign, exponent,
 
 <FP8Editor instructions="Try editing the 8 bit floating point number below." fp8={ fp8.e4m3 } slider/>
 
-Just as [binary integers](/learn/binary) can be **incremented** to the next binary integer, adding one to a floating-point number's *binary representation* produces the *next* floating point number, which is not necessarily the number plus one.
+Just as [binary integers](/learn/binary) can be **incremented** to the next binary integer, adding one to a floating-point number's *binary representation* produces the *next* floating point number, which is not necessarily the number plus one. As a floating point number gets larger, it "floats" to the next interval, and as it gets smaller, it "floats" to the previous interval. 
 
-As a floating point number gets larger, it "floats" to the next interval, and as it gets smaller, it "floats" to the previous interval. Intervals closer to zero are "more dense", in the sense that the mantissa can provide a more precise number along that interval. Intervals farther from zero are "more sparse", where it becomes increasingly likely that the mantissa will not provide enough resolution to precisely represent a particular number.
+- interval viewer
+
+Intervals closer to zero are "more dense", in the sense that the mantissa can provide a more precise fraction of that interval. Intervals farther from zero are "more sparse", where it becomes increasingly likely that the mantissa will not provide enough resolution to precisely represent a particular number.
+
+- density viewer - show all numbers as dots on a number line with zoom in/out feature
 
 ## Floating point formats
 
@@ -24,13 +28,17 @@ Since there are only 256 possible values for any `E4M3` number, it is easy to vi
 
 <FP8Table fp={ fp8.e4m3 }/>
 
-Notice how the representable values for a floating point number are "denser" around 0, and exponentially less dense in higher intervals. This observation is equally applicable to larger floating point formats. 
+Notice how the representable values for a floating point number are most dense around `0`, and exponentially less dense in higher intervals. This observation is equally applicable to any floating point format, regardless of bit length. 
 
-Since the best achievable precision depends on the magnitude of the number, the accuracy of floating point computations is often expressed in terms of [ulps](/concept/ulp) - an error metric which accounts for the density of representable numbers around a computed result. For example, if you were to compute $$20^2$$ with `E4M3` floating point numbers, there is no possible binary sequence to provide the exact answer $$400$$, but how would you express the accuracy of the nearest approximations in this case ($$384$$ or $$416$$)?
+Since the achievable precision depends on the magnitude of the number, accuracy of floating point computations is often expressed in terms of [ulps](/concept/ulp) - an error metric which accounts for the density of representable numbers around a computed result. For example, if you were to compute $$20^2$$ with `E4M3` floating point numbers, there is no possible sequence of 8 bits to represent the exact answer $$400$$, but how would you express the accuracy of the nearest approximations in this case ($$384$$ or $$416$$)?
+
+There are simpler ways to describe error like [relative error](/concept/relative-error) and [absolute error](/concept/absolute-error), but in the case of floating point arithmetic, it's often useful to account for how dense the representable numbers around an expected computation result.
 
 <FloatDistribution fp={ fp8.e4m3 } bins={ 100 }/>
 
-This particular format also allows two possible representations of zero (`00000000` and `10000000`) and two possible representations of `NaN` (not a number). Some floating point formats also define special values to represent positive and negative `Infinity`. One criteria for considering a floating point format to be [IEEE 754 compliant](/spec/ieee754) is whether it can represent `NaN`, `+Infinity`, and `-Infinity`. 
+## Zeroes, `NaN` and `Infinity`
+
+The `E4M3` format also allows two possible representations of zero (`00000000` and `10000000`) and two possible representations of `NaN` (not a number). Some floating point formats also define special values to represent positive and negative `Infinity`. One criteria for considering a floating point format to be [IEEE 754 compliant](/spec/ieee754) is whether it can represent `NaN`, `+Infinity`, and `-Infinity`. 
 
 <FP8Table instructions="Follows IEEE 754 conventions for representation of special values." fp={ fp8.e5m2 }/>
 
@@ -58,6 +66,10 @@ Depending on the application, a machine learning developer might choose a [more 
 <FP8Table fp={ fp8.e5m2fnuz }/>
 <br/><br/>
 <MatrixRain/> 
+
+## Transcendental functions
+
+Suppose you are building a system that calculates a **transcendental function**, which produces an output that cannot be precisely expressed like $$\pi$$ or $$\e$$. 
 
 ## Mathematical notation
 

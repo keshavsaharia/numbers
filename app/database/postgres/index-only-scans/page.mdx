@@ -1,0 +1,47 @@
+# Index-Only Scans
+
+An **index-only scan** is an optimization that allows a query to be answered entirely using an index, without accessing the underlying [heap](/database/postgres/heap) (table) data. This reduces I/O significantly, especially for large tables or queries involving narrow columns that are fully covered by an index. The main prerequisite is that the index contains all the columns needed by the query **and** that PostgreSQL can confirm the corresponding heap tuples are visible to the current transaction.
+
+Under normal index scans, PostgreSQL uses the index to find tuple locations (via `TID`s), then fetches each tuple from the heap to check visibility and retrieve column values. In contrast, an index-only scan skips the heap fetch entirely if it can determine that the index entry points to a tuple that is definitely visible to all transactions - a determination that is made using the [visibility map](/database/postgres/visibility-map) by checking the tuple is marked as **all visible**. 
+
+## Query requirements
+
+For an index-only scan to be possible, the index must contain all the columns referenced in the query's `SELECT` list, `WHERE` clause, and any `ORDER BY` clause. This is often achieved by creating **covering indexes**, which are indexes that explicitly include all necessary columns.
+
+PostgreSQL supports adding non-key columns to B-tree indexes using the `INCLUDE` clause:
+
+```sql
+CREATE INDEX idx_covering ON users (email) INCLUDE (last_login, status);
+```
+
+This index can now be used for queries without needing to visit the heap.
+
+```sql
+SELECT last_login FROM users WHERE email = 'a@example.com';
+```
+
+## The visibility map
+
+The visibility map is a key mechanism for enabling index-only scans. Each bit in the map corresponds to a heap page, and if the bit is set (`all-visible`), PostgreSQL knows that all tuples on that page are visible to all current and future transactions. As long as the map indicates `all-visible` and no concurrent transaction has modified the page, heap access can be skipped.
+
+If the visibility map bit is **not** set, PostgreSQL falls back to a partial heap fetch just to confirm the tuple's visibility. This means index-only scans may still result in some heap access, especially for frequently updated tables or those not vacuumed recently.
+
+## Performance
+
+Index-only scans can dramatically reduce disk I/O, especially for read-heavy analytical workloads where queries use a narrow set of columns. They are also useful with large tables where heap access is expensive, and read-heavy tables where most heap pages are marked all-visible thanks to regular autovacuuming.
+
+However, their benefit diminishes for frequently updated or inserted tables where the visibility map is more likely to render a tuple unreliable. Typical software development processes also involve querying many columns which may not be covered by a single index, and queries that change over time. There are also certain scenarios where index access patterns are not significantly cheaper than heap access, such as a cold cache with many visibility map misses.
+
+Well-tuned autovacuum settings help maintain the visibility map and maximize the effectiveness of index-only scans.
+
+## Monitoring and Debugging
+
+You can detect when PostgreSQL is using an index-only scan by inspecting the query plan.
+
+```sql
+EXPLAIN SELECT email FROM users WHERE last_login > now() - interval '1 day';
+```
+
+If the plan shows `Index Only Scan`, and a low number of `Heap Fetches` in `EXPLAIN (ANALYZE, BUFFERS)`, then PostgreSQL is effectively skipping the heap.
+
+If `Heap Fetches` is non-zero, some of the visibility map bits were not set, and PostgreSQL had to verify tuple visibility by accessing the heap.

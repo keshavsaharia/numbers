@@ -1,0 +1,23 @@
+# The Oversized-Attribute Storage Technique (TOAST)
+
+TOAST is an internal mechanism that allows the database to efficiently store and manage large field values, such as large `TEXT`, `BYTEA`, or `JSON` objects, that do not fit comfortably within a standard 8KB [heap page](/database/postgres/heap). Since PostgreSQL stores table rows (tuples) in fixed-size pages, storing large values inline could lead to excessive page bloat, I/O inefficiencies, and tuple fragmentation. TOAST solves this by automatically offloading large column values to a separate, dedicated storage structure.
+
+## Value insertion
+
+When a tuple is inserted or updated, PostgreSQL evaluates whether any of its attributes exceed a certain size threshold, which is typically around 2KB. If so, the system either applies **in-place compression**, **out-of-line storage**, or both. Compression is performed using the built-in `pglz` algorithm, which attempts to shrink the size of the value without external storage. If the compressed result is still too large to fit in the tuple, PostgreSQL will move the attribute out-of-line into a separate **TOAST table**, and replace the in-tuple value with a reference pointer to the external TOAST record.
+
+Each base table that contains TOASTable columns has an associated TOAST table with its own index, created automatically by PostgreSQL. These TOAST tables are invisible to end users unless explicitly queried from the system catalogs. They follow the same heap/index structure as regular tables and store chunks of the oversized value in fixed-size rows, usually around 2KB each. The reference in the main heap tuple contains enough metadata (including a chunk ID and sequence number) to allow PostgreSQL to reconstruct the full value when needed.
+
+## Value retrieval
+
+Access to TOASTed values is **lazy and on-demand**. For example, if a query does not reference the large column, the TOAST data is never fetched, saving significant I/O. This makes TOAST particularly efficient for use cases where large fields are rarely needed in most queries, such as logging large request payloads, storing documents, or handling user-uploaded files.
+
+## MVCC
+
+TOAST also integrates with PostgreSQL's [MVCC model](/database/postgres/mvcc). Like regular tuples, TOAST records are versioned and subject to visibility rules, vacuuming, and garbage collection. When a row is updated and a new version of the TOASTed column is created, the old TOAST data becomes a dead tuple, later cleaned up by autovacuum. This versioning ensures snapshot consistency, even for large values stored out-of-line.
+
+While TOAST is mostly transparent to application developers, there are operational implications. Queries that access TOASTed values may experience increased I/O latency due to the need to reconstruct data from multiple chunk rows. Additionally, excessive updates to large values can lead to TOAST table bloat if autovacuum does not keep up. Tools like `pgstattuple` and system views like `pg_toast` can be used to monitor and analyze TOAST behavior and space usage.
+
+## Storage modifiers
+
+Developers can influence TOAST behavior through **storage modifiers** like `MAIN`, `EXTERNAL`, `EXTENDED`, and `PLAIN`. These modifiers can be set per column to control whether and how compression or out-of-line storage is applied. For example, `SET STORAGE PLAIN` disables both compression and external storage, which may be useful for performance-critical columns that are guaranteed to stay small.

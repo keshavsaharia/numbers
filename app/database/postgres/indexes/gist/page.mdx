@@ -1,0 +1,60 @@
+# GiST indexes
+
+GiST (Generalized Search Tree) indexes in PostgreSQL provide a highly flexible indexing infrastructure that supports a wide range of data types and query operations beyond the capabilities of traditional B-tree or hash indexes. Instead of relying on total ordering of scalar values, GiST is designed to handle cases where entries may overlap or where data is multidimensional, such as geometric shapes, time ranges, or hierarchical paths. GiST achieves this by allowing PostgreSQL to define custom strategies for comparing, storing, and searching data structures.
+
+### Creating a GiST index
+
+You can create a GiST index with the `USING GIST` clause in the `CREATE INDEX` statement.
+
+```sql
+CREATE INDEX idx_geom ON locations USING GIST (geom);
+```
+
+This creates an index on a geometry column, which can be used for spatial queries like finding overlapping shapes. Similarly, you can use a GiST index on a ranged column.
+
+```sql
+CREATE INDEX idx_time ON bookings USING GIST (booking_period);
+```
+
+Queries such as `booking_period && '[2024-01-01, 2024-01-31]'` can then use the GiST index to quickly identify overlapping intervals.
+
+GiST indexes also enable powerful constraints. With the `btree_gist` extension, you can create exclusion constraints that prevent overlapping ranges or duplicate values in certain combinations. For example, in a room booking system:
+
+```sql
+CREATE EXTENSION btree_gist;
+CREATE TABLE reservations (
+  room_id int,
+  during tsrange,
+  EXCLUDE USING gist (room_id WITH =, during WITH &&)
+);
+```
+
+This ensures that no two reservations for the same room overlap in time.
+
+## GiST internals
+
+Internally, a GiST index is organized as a balanced tree, much like a B-tree. However, its key distinction lies in how it interprets and groups data. Rather than indexing scalar values with strict ordering, each node in a GiST index stores a "bounding predicate"—a summary of the values contained in its subtree. For example, in the case of geometric data, a node might store the bounding box that encloses all shapes beneath it.
+
+This general approach is made possible through a set of operator class functions that define the behavior for a specific data type. When implementing a GiST index for a new type, the developer provides functions such as `consistent`, which tests whether a query might match an entry; `union`, which combines multiple entries into a single summary; and `penalty`, which helps determine how new values are placed within the tree. This abstraction makes GiST suitable for building indexes over a wide variety of structured and spatial data.
+
+## Use cases
+
+GiST indexes are commonly used for data that involves spatial, hierarchical, or range-based semantics. For example, geometric types like points, polygons, and boxes are natively supported and can be queried for spatial relationships such as intersection or containment. Temporal data types—like `tsrange` or `daterange`—also benefit from GiST, enabling fast overlap and containment queries over time intervals.
+
+PostgreSQL extensions build heavily on GiST. [PostGIS](https://postgis.net/) uses it to enable fast geographic and spatial queries, and the [`ltree` module](https://www.postgresql.org/docs/current/ltree.html) uses GiST for path-based queries in hierarchical data. Even full-text search benefits from GiST in some configurations, such as for proximity-based searches or ranking.
+
+You might use a GiST index for a query like `geom && box`, which retrieves all geometries overlapping a certain area, or `event_period && daterange`, which finds all events that overlap a given time window. The power of GiST lies in its ability to prune irrelevant parts of the index tree based on bounding logic specific to the domain.
+
+## Performance
+
+In the right context, GiST indexes can significantly improve query performance by avoiding expensive sequential scans over complex data. They are especially effective when dealing with large or multidimensional datasets, where bounding predicates can be used to quickly eliminate irrelevant rows.
+
+However, this flexibility comes with some trade-offs. GiST indexes tend to be slower than B-tree indexes for simple equality lookups, because they may have to scan multiple paths in the tree due to overlapping index entries. Insertions and updates are more expensive as well, particularly because GiST must maintain balance and bounding summaries for complex data. The penalty and pick-split logic used during insertions can impact both performance and index shape.
+
+Bloat is another consideration. Over time, as data is inserted and deleted, GiST indexes can become inefficient due to fragmentation. Periodic maintenance via `VACUUM`, `REINDEX`, or `pg_repack` can help mitigate this.
+
+## Extensibility and Custom Indexing
+
+One of the defining features of GiST is that it isn't tied to a single use case. Developers can implement new GiST operator classes for custom data types by defining how those types behave in terms of containment, overlap, and distance. This flexibility has made GiST a core building block for many PostgreSQL extensions.
+
+For scalar data, PostgreSQL provides the `btree_gist` extension, which adapts standard B-tree comparisons to the GiST framework. While this doesn't offer performance advantages over real B-trees, it allows features like exclusion constraints to be used on otherwise unsupported types.

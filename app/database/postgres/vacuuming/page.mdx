@@ -1,0 +1,15 @@
+# Routine vacuuming
+
+PostgreSQL databases require a periodic maintenance process known as [vacuuming](https://www.postgresql.org/docs/current/routine-vacuuming.html). The `VACUUM` process is integral to maintaining database health, particularly due to its Multi-Version Concurrency Control ([MVCC](/database/postgres/mvcc)) architecture. When rows are updated or deleted, the old versions are not immediately removed but are instead marked as dead tuples. These dead tuples occupy space and can degrade performance if not managed properly. The `VACUUM` process reclaims this space by removing dead tuples, thus preventing unbounded growth of disk usage and ensuring efficient query performance. ([PostgreSQL: Documentation: 9.4: Routine Vacuuming](https://www.postgresql.org/docs/9.4/routine-vacuuming.html), [PostgreSQL: Documentation: 17: 24.1. Routine Vacuuming](https://www.postgresql.org/docs/17/routine-vacuuming.html))
+
+## Transaction ID wraparound
+
+A critical aspect of `VACUUM` is preventing transaction ID (`XID`) wraparound. PostgreSQL uses 32-bit XIDs, which can wrap around after approximately 4 billion transactions. If not addressed, this wraparound can lead to data becoming invisible or even data loss. To mitigate this, `VACUUM` marks old tuples with a special "frozen" XID, indicating that they are permanently visible and thus immune to wraparound issues. Regular vacuuming ensures that all tuples are frozen before they become too old, maintaining data integrity.
+
+The visibility map is another component maintained by `VACUUM`. It tracks which pages contain only tuples visible to all transactions, allowing `VACUUM` to skip these pages in future runs, thereby optimizing performance. Additionally, the visibility map enables index-only scans by confirming that the data pages need not be accessed if all tuples are visible, reducing I/O overhead.
+
+PostgreSQL includes an autovacuum daemon that automates the vacuuming process. This daemon monitors tables and triggers `VACUUM` operations based on certain thresholds, such as the number of dead tuples or the age of the oldest unfrozen XID. The autovacuum process ensures that routine maintenance occurs without manual intervention, adapting to the workload and activity patterns of the database.
+
+## Full vacuuming
+
+There are two variants of the `VACUUM` command: standard `VACUUM` and `VACUUM FULL`. The standard `VACUUM` operates concurrently with other database activities and reclaims space within the table for reuse. In contrast, `VACUUM FULL` compacts the table by creating a new version without dead space, which can reclaim more disk space but requires an exclusive lock on the table, making it more disruptive to regular operations. Therefore, `VACUUM FULL` is typically reserved for scenarios where significant space recovery is necessary.

@@ -1,0 +1,23 @@
+# Visibility map
+
+The **visibility map** is a per-table auxiliary data structure tracking [heap pages](/database/postgres/heap) that exclusively contain tuples that are visible to all transactions. This seemingly simple bitmap plays a critical role in optimizing performance, particularly by enabling [index-only scans](/database/postgres/index-only-scans) and improving the efficiency of vacuum operations.
+
+## Relation to heap pages
+
+Each bit in the visibility map corresponds to a heap page. If a bit is set, it means every tuple on that page is **all-visible** - that is, each tuple was inserted by a committed transaction and has not been deleted or updated by any uncommitted or active transaction. This guarantees that any future transaction can read from that page without needing to consult the `pg_xact` commit log or perform per-tuple visibility checks. As a result, PostgreSQL can skip heap access altogether during an index-only scan if the visibility map confirms that the referenced heap page is entirely visible.
+
+## Index-only scans
+
+Index-only scans leverage the visibility map to answer queries using only index entries, avoiding expensive heap lookups. This is especially beneficial for read-heavy analytical queries or OLTP workloads involving narrow indexable fields. However, the effectiveness of index-only scans depends directly on the accuracy and coverage of the visibility map—pages not marked as all-visible will force fallback to standard index scans with heap access.
+
+## Vacuuming
+
+In addition to query planning, the visibility map is also critical to **vacuuming efficiency**. When autovacuum or manual `VACUUM` is run, the visibility map allows PostgreSQL to skip heap pages known to contain only visible tuples, since such pages cannot have dead tuples. This dramatically reduces the amount of I/O required for maintenance, especially for large tables with mostly static data. However, to remain effective, the visibility map must be kept up to date, which is handled incrementally by vacuum and during tuple visibility transitions (e.g., commit or abort of inserting/updating transactions).
+
+## The visibility file
+
+The visibility map is stored in a separate file alongside the table's heap file (`relfilenode_vm`). It consists of two bits per page: the **all-visible** bit and the **all-frozen** bit. The all-frozen bit indicates that not only are all tuples visible, but their transaction IDs have been **frozen** to prevent transaction ID wraparound. This is relevant for VACUUM FREEZE operations, where tuples are rewritten with a special `FrozenTransactionId` to avoid future maintenance overhead.
+
+## Write Ahead Logging (WAL)
+
+Although the visibility map is lightweight and automatically maintained, it is not WAL-logged in full detail. This means that after a crash or unclean shutdown, the map may be partially out of sync with the actual heap contents. PostgreSQL handles this by falling back to conservative behavior—re-checking heap tuples or skipping index-only scans—until the visibility map is rebuilt during subsequent vacuum passes.
