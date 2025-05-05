@@ -27,7 +27,7 @@ export interface SectionLink {
     identifier?: string    // unique identifier
     alias?: string[]       // aliases for content matching
     path?: string          // relative path from group base
-    link?: string           // absolute link
+    link?: string          // absolute link
     video?: string
     tags?: string[]
 }

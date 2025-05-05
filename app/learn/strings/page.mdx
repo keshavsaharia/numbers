@@ -1,0 +1,25 @@
+# Strings
+
+A string is a sequence of characters, where each character is represented by one or more numbers. In the early days of computing, each character was represented by a single byte, which could represent 128 different characters. 
+
+<ASCIITable/>
+
+If you wanted to transmit some information between computer systems, you would send a sequence of bytes, where each byte has a single character.
+
+
+
+### Why 7 bits instead of 8?
+
+ASCII was developed in the early 1960s when computing hardware was significantly constrained. Many early computers communicated via teletype machines that used 7-bit characters, and ASCII was designed to be compatible with these existing systems.
+
+In many early computer systems, which were far less reliable than the ones we have today, the 8th bit was reserved for error detection through **parity checking**. In telecommunications, this extra bit helped verify if data was transmitted correctly.
+
+For English text and basic computing needs, 128 characters was considered adequate, as this was enough to include all uppercase and lowercase letters, numbers, punctuation, and control characters.
+
+The limitations of ASCII's 7-bit encoding eventually led to the development of extended ASCII variants and ultimately [Unicode](/string/encoding/unicode), which addresses the need to represent characters from all of the world's writing systems.
+
+## Unicode
+
+## Encodings
+
+link to all string encodings

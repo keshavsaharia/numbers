@@ -1,7 +1,13 @@
 import clsx from 'clsx'
 import { Instructions } from './instruction'
 
-export function Interactive({ padding = 'px-3 py-2', children, instructions }: React.PropsWithChildren & { padding?: string, instructions?: any }) {
+interface InteractiveProps {
+    padding?: string;
+    instructions?: React.ReactNode;
+    children: React.ReactNode;
+}
+
+export function Interactive({ padding = 'px-3 py-2', children, instructions }: InteractiveProps) {
     return (
         <div className={clsx(
             padding, 'rounded-lg',

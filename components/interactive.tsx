@@ -14,3 +14,13 @@ export { MathTooltip } from './math/tooltip'
 
 // Algorithms
 export { BigOComplexityTable } from './algorithms/big-o'
+
+export { ASCIITable } from './string/ascii-table'
+
+// Circuits
+export { BooleanGate } from './circuit/gate'
+export { AdderCircuit } from './circuit/adder'
+export { KarnaughMap } from './circuit/karnaugh'
+
+// Graphs
+export { GridGraph } from './graph/grid'

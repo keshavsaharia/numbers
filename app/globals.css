@@ -24,3 +24,37 @@ mjx-container[jax="SVG"] {
     display: inline-block !important;
     vertical-align: middle;
 }
+
+/* Custom breakpoint definitions */
+@layer base {
+  @media (min-width: 475px) {
+    .xs\: {
+      --breakpoint: xs;
+    }
+  }
+  @media (min-width: 640px) {
+    .sm\: {
+      --breakpoint: sm;
+    }
+  }
+  @media (min-width: 768px) {
+    .md\: {
+      --breakpoint: md;
+    }
+  }
+  @media (min-width: 1024px) {
+    .lg\: {
+      --breakpoint: lg;
+    }
+  }
+  @media (min-width: 1280px) {
+    .xl\: {
+      --breakpoint: xl;
+    }
+  }
+  @media (min-width: 1536px) {
+    .\32xl\: {
+      --breakpoint: 2xl;
+    }
+  }
+}
