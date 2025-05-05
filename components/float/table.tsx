@@ -3,6 +3,7 @@ import { decodeFP8, getBackgroundFP8, getColorFP8, isSubnormalFP8, subnormalValu
 
 import { fp8, FP8 } from '@/data/fp8'
 import { Interactive } from '../number/interactive'
+import { FPFormatName } from './instructions'
 
 interface FP8Props {
     signed?: boolean        // default true
@@ -43,9 +44,7 @@ export function FP8Table({
 
     return (
     <Interactive instructions={<>
-        &nbsp;&nbsp;<span className='font-bold text-zinc-600 dark:text-zinc-400 bg-zinc-800 rounded-md px-2 py-1 font-mono mr-2'>
-            { fp.name }
-        </span> 
+        &nbsp;&nbsp;<FPFormatName name={ fp.name } />
         { instructions }
     </>} padding='pt-2'>
         <div className="w-full overflow-x-scroll pb-2">

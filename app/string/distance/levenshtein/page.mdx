@@ -1,0 +1,47 @@
+# Levenshtein Distance
+
+The Levenshtein distance is a measure of the difference between two strings. It is defined as the minimum number of single-character edits (insertions, deletions, or substitutions) required to change one string into the other.
+
+## Implementation
+
+Here is an implementation of the Levenshtein distance in JavaScript.
+
+```javascript
+function levenshteinDistance(str1, str2) {
+    const m = str1.length;
+    const n = str2.length;
+    const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+
+    for (let i = 0; i <= m; i++) {
+        for (let j = 0; j <= n; j++) {
+            if (i === 0) {
+                dp[i][j] = j;
+            } else if (j === 0) {
+                dp[i][j] = i;
+            } else if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1];
+            } else {
+                dp[i][j] = 1 + Math.min(
+                    dp[i - 1][j],      // deletion
+                    dp[i][j - 1],      // insertion 
+                    dp[i - 1][j - 1]   // substitution
+                );
+            }
+        }
+    }
+
+    return dp[m][n];
+}
+```
+
+## Example
+
+```javascript
+const distance = levenshteinDistance("kitten", "sitting");
+``` 
+
+## Output
+
+```javascript
+console.log(distance); // 3
+``` 

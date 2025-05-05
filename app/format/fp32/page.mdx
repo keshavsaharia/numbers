@@ -1,10 +1,20 @@
-# Single precision format
+import { fp } from '@/data/fp'
 
-FP32 offers a practical balance between range, precision, and memory footprint, making it the default choice for many hardware architectures and software frameworks.
+# Single precision (FP32)
 
-## Format
+Single precision floating point numbers, also known as `FP32`, are a floating point format that uses 32 bits (4 bytes) of storage.
 
-FP32 is a binary format that represents real numbers in 32 bits. These bits are divided into three main components: one bit for the sign, eight bits for the exponent, and twenty-three bits for the fractional part, commonly referred to as the mantissa or significand. This structure allows FP32 to represent both very large and very small numbers, as well as fractional values, all while fitting within just four bytes of memory.
+This format allows for numbers ranging from approximately $$\pm1.18 \times 10^{-38}$$ to $$\pm3.4 \times 10^{38}$$, making it the default choice for many hardware architectures and software frameworks due to its practical balance between range, precision, and memory footprint.
+
+<FloatViewer format={ 'fp32' } fp={ fp.fp32 }/>
+
+## Specification
+
+Here is an informal specification of the `FP32` format, which shows how to calculate a value from the binary representation.
+
+<FloatSpecification fp={ fp.fp32 }/>
+
+`FP32` is a binary format that represents real numbers in 32 bits. These bits are divided into three main components: one bit for the sign, eight bits for the exponent, and twenty-three bits for the fractional part, commonly referred to as the mantissa or significand. This structure allows `FP32` to represent both very large and very small numbers, as well as fractional values, all while fitting within just four bytes of memory.
 
 $$(-1)^sign \times 1.mantissa \times 2^(exponent - 127)$$
 

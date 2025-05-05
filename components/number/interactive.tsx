@@ -13,3 +13,9 @@ export function Interactive({ padding = 'px-3 py-2', children, instructions }: R
         </div>
     )
 }
+
+export function Divider() {
+    return (
+        <hr className='my-4 border-zinc-300 dark:border-zinc-700'/>
+    )
+}

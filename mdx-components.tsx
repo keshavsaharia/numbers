@@ -29,8 +29,15 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     BinaryNumber,
     References,
     pre: pre,
-    Center: center
+    Center: center,
+    wrapper
   }
+}
+
+function wrapper({ children }: React.PropsWithChildren) {
+    return (<div className='max-w-screen-md'>
+        { children }
+    </div>)
 }
 
 function pre({ children }: React.PropsWithChildren) {

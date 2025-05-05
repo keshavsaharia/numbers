@@ -14,11 +14,11 @@ Try moving the slider along the number line below to see how the sign, exponent,
 
 Just as [binary integers](/learn/binary) can be **incremented** to the next binary integer, adding one to a floating-point number's *binary representation* produces the *next* floating point number, which is not necessarily the number plus one. As a floating point number gets larger, it "floats" to the next interval, and as it gets smaller, it "floats" to the previous interval. 
 
-- interval viewer
+<FP8Interval fp={ fp8.e4m3 }/>
 
 Intervals closer to zero are "more dense", in the sense that the mantissa can provide a more precise fraction of that interval. Intervals farther from zero are "more sparse", where it becomes increasingly likely that the mantissa will not provide enough resolution to precisely represent a particular number.
 
-- density viewer - show all numbers as dots on a number line with zoom in/out feature
+<FP8Zoom fp={ fp8.e4m3 }/>
 
 ## Floating point formats
 
@@ -32,7 +32,7 @@ Notice how the representable values for a floating point number are most dense a
 
 Since the achievable precision depends on the magnitude of the number, accuracy of floating point computations is often expressed in terms of [ulps](/concept/ulp) - an error metric which accounts for the density of representable numbers around a computed result. For example, if you were to compute $$20^2$$ with `E4M3` floating point numbers, there is no possible sequence of 8 bits to represent the exact answer $$400$$, but how would you express the accuracy of the nearest approximations in this case ($$384$$ or $$416$$)?
 
-There are simpler ways to describe error like [relative error](/concept/relative-error) and [absolute error](/concept/absolute-error), but in the case of floating point arithmetic, it's often useful to account for how dense the representable numbers around an expected computation result.
+There are simpler ways to describe error like [relative error](/concept/relative-error) and [absolute error](/concept/absolute-error), but in the case of floating point arithmetic, it's often useful to account for the density of representable numbers around an expected result because it grows exponentially sparse for larger numbers.
 
 <FloatDistribution fp={ fp8.e4m3 } bins={ 100 }/>
 
@@ -69,7 +69,99 @@ Depending on the application, a machine learning developer might choose a [more 
 
 ## Transcendental functions
 
-Suppose you are building a system that calculates a **transcendental function**, which produces an output that cannot be precisely expressed like $$\pi$$ or $$\e$$. 
+Suppose you are building a system that calculates a **transcendental function**, which produces an output that cannot be precisely expressed like $$\pi$$ or $$e$$. 
+
+Suppose we want to calculate $$\ln(x)$$ - we could use the [Taylor expansion](https://en.wikipedia.org/wiki/Taylor_series) of $$ln(x)$$ around $$x = 1$$.
+
+$$
+\ln(x) = \sum_{n=1}^{\infty} (-1)^{n+1} \frac{(x-1)^n}{n}
+\quad \text{for} \quad 0 < x \leq 2
+$$
+
+```javascript
+function ln(x, terms = 100) {
+    // Boundary conditions
+    if (x < 0)
+        throw new Error('complex numbers not supported')
+    if (x > 2) 
+        throw new Error('only works for 0 < x <= 2 for now')
+    
+    // Special condition
+    if (x == 0)
+        return -Infinity
+
+    let sum = 0
+    const z = x - 1
+
+    for (let n = 1; n <= terms; n++) {
+        const term = ((-1) ** (n + 1)) * (z ** n) / n
+        sum += term
+    }
+
+    return sum
+}
+```
+
+We can then employ this logarithm identity to generalize this solution for all possible values of $$x$$.
+
+$$ \ln(ab) = \ln(a) + \ln(b) $$
+$$ \ln(x) = \ln\left(\frac{x}{a}\right) + \ln(a) $$
+
+If we choose a value of $$a$$ which is the $$k$$-th power of 2 (i.e. $$a = 2^k$$), then we can simplify this further into an algorithm that only needs to store the precomputed value of $$ln(2)$$.
+
+$$ \ln(x) = \ln\left(\frac{x}{2^k}\right) + \ln(2^k) = \ln\left(\frac{x}{2^k}\right) + k \cdot \ln(2) $$
+
+```javascript
+const LN2 = 0.6931471805599453
+
+function ln(x, terms = 100) {
+    // Boundary conditions
+    if (x < 0)
+        throw new Error('complex numbers not supported')
+    if (x > 2) {
+        let k = 0
+        while (x > 2) {
+            x /= 2
+            k++
+        }
+        return ln(x) + k * LN2
+    }
+    
+    // Special condition
+    if (x == 0)
+        return -Infinity
+
+    let sum = 0
+    const z = x - 1
+
+    for (let n = 1; n <= terms; n++) {
+        const term = ((-1) ** (n + 1)) * (z ** n) / n
+        sum += term
+    }
+
+    return sum
+}
+```
+
+This implementation is intentionally imprecise. Can you improve it?
+
+## Floating Point Number System
+
+A floating point number system $$F$$ is a subset of the real numbers $$\mathbb{R}$$ (i.e. $$F \subset \mathbb{R}$$) where elements have the form $$ y = \pm m \times \beta^{e-t} $$. There are four integer parameters here which characterize any floating point number system:
+- the base $$\beta$$ (sometimes called the radix), which in this case is $$2$$
+- the exponent $$e$$ which lies in an **exponent range** $$e_{min} \leq e \leq e_{max}$$
+- the precision $$t$$, which is subtracted from the exponent $$e$$
+- the significand $$m$$, where $$0 \leq m \leq \beta^t - 1$$
+
+ To ensure a unique representation for each nonzero $$y \in F$$, it is assumed that $$m \geq \beta^{t-1}$$ if $$y \neq 0$$, so that the system is **normalized**. The number $$0$$ is a special case in that it does not have a normalized representation.
+
+The range of the nonzero floating point numbers in $$F$$ is given by $$ \beta^{e_{min}-1} \leq |y| \leq \beta^{e_{max}}(1 - \beta^{-t}) $$. 
+
+Note that an alternative (and more common) way of expressing $$y$$ is:
+
+$$ y = \pm \beta^e \times (d_1 + \frac{d_2}{\beta} + ... + \frac{d_t}{\beta^t}) = \pm \beta^e \times .d_1d_2...d_t $$
+
+where each digit $$d_i$$ satisfies $$0 \leq d_i \leq \beta - 1$$, and $$d_1 \neq 0$$ for normalized numbers. While this "positional" representation is more common, we prefer the more concise first representation, which we usually find easier to work with. The first representation has pedagogical advantages, being entirely integer-based and therefore simpler to grasp. In the positional representation, $$d_1$$ is called the most significant digit and $$d_t$$ the least significant digit.
 
 ## Mathematical notation
 

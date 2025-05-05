@@ -1,5 +1,6 @@
 import clsx from 'clsx'
 import Link from 'next/link'
+import { twMerge } from 'tailwind-merge'
 
 export function a({ children, href }: React.PropsWithChildren & { href: string }) {
     // Rewrite github links
@@ -81,9 +82,14 @@ export function blockquote({ children }: React.PropsWithChildren) {
     )
 }
 
-export function code({ children }: React.PropsWithChildren) {
+// TODO: show keywords in special font, or automatically create into a link
+export function code({ children, className }: React.PropsWithChildren & { className?: string }) {
     return (
-        <code className='text-md text-gray-700 dark:text-gray-300 font-normal my-4'>
+        <code className={clsx(twMerge(
+            'text-md bg-zinc-100 dark:bg-zinc-800 font-normal my-4',
+            'rounded-md px-1 py-0.5',
+            className ?? 'text-gray-900 dark:text-gray-100'
+        ))}>
             { children }
         </code>
     )
@@ -92,7 +98,7 @@ export function code({ children }: React.PropsWithChildren) {
 
 export function Note({ children, className }: React.PropsWithChildren & { className?: string }) {
     return (<>
-        <small className={clsx('block text-sm text-gray-500 mb-2', className)}>
+        <small className={clsx('block text-sm mb-2', className ?? 'text-gray-500')}>
             { children }
         </small>
     </>)

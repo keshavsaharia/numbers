@@ -4,6 +4,7 @@ import './globals.css'
 import { Header } from './header'
 import { Footer } from '../components/footer/footer'
 import { ThemeProvider } from 'next-themes'
+import clsx from 'clsx'
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -28,7 +29,7 @@ const monoFont = Noto_Sans_Mono({
 })
 
 export default function RootLayout({
-  children,
+  children
 }: Readonly<{
   children: React.ReactNode
 }>) {
@@ -42,7 +43,10 @@ export default function RootLayout({
                     defaultTheme="system"
                 >
                     <div className="flex min-h-screen w-full flex-col font-[family-name:var(--font-serif)]">
-                        <div className="relative mx-auto w-full max-w-screen-md flex-1 px-4 pt-20">
+                        <div className={clsx(
+                            "relative mx-auto w-full flex-1 px-4 pt-20",
+                            "max-w-screen-md"
+                        )}>
                             <Header />
                             { children }
                             <Footer />
