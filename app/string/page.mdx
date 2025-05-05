@@ -1,0 +1,55 @@
+# Strings
+
+A string is a sequence of characters, and is a fundamental data type in computer science and programming. Strings are sometimes simply referred to as **text**, but behind the scenes they are really just sequences of numbers.
+
+The formal mathematical definition of a string is a sequence of characters from a finite alphabet, which is a set of symbols. The set of all strings over an alphabet $$\Sigma$$ is denoted as $$\Sigma^*$$.
+
+<Center>
+$$ \Sigma^* = \{ \epsilon, a, aa, ab, ba, abb, \ldots \} $$
+</Center>
+
+The empty string $$\epsilon$$ is a string of length 0.
+
+## ASCII
+
+The American Standard Code for Information Interchange (ASCII) was developed in the early 1960s as a standardized character encoding scheme for communication between different computer systems. Prior to ASCII, there was no uniform way to represent text, leading to compatibility issues across various platforms. 
+
+ASCII was officially published in 1963 by the American National Standards Institute (ANSI), and quickly became the foundation for text representation in computers. It provided a common set of 128 characters, including letters, digits, punctuation marks, and control codes, allowing for standardization in the development of early computer networks. It was a foundational standard that allowed for consistent data exchange and text processing across diverse systems on the early Internet.
+
+## Unicode
+
+Unicode is a universal character encoding standard that provides a unique code point for each character in the world's writing systems. It was developed to overcome the limitations of ASCII, which could only represent 128 characters and lacked support for many languages and special characters.
+
+Unicode was first introduced in 1991 by the Unicode Consortium, and has since become the standard for representing text in a wide range of applications, including web pages, documents, and software. It provides a comprehensive set of characters, including letters, digits, punctuation marks, and special symbols, and supports a wide range of languages and writing systems.
+
+## UTF-8
+
+UTF-8 is a variable-width character encoding standard that uses one to four bytes to represent each character. It was developed to overcome the limitations of ASCII, which could only represent 128 characters and lacked support for many languages and special characters.
+
+UTF-8 was first introduced in 1992 by the Unicode Consortium, and has since become the standard for representing text in a wide range of applications, including web pages, documents, and software. It provides a comprehensive set of characters, including letters, digits, punctuation marks, and special symbols, and supports a wide range of languages and writing systems.
+
+## UTF-16
+
+UTF-16 is a fixed-width character encoding standard that uses two or four bytes to represent each character. It was developed to overcome the limitations of ASCII, which could only represent 128 characters and lacked support for many languages and special characters.
+
+UTF-16 was first introduced in 1996 by the Unicode Consortium, and has since become the standard for representing text in a wide range of applications, including web pages, documents, and software. It provides a comprehensive set of characters, including letters, digits, punctuation marks, and special symbols, and supports a wide range of languages and writing systems.
+
+
+## UTF-32
+
+UTF-32 is a character encoding standard that uses a fixed-width of four bytes (32 bits) for each character. This encoding is part of the Unicode standard and is designed to provide a straightforward and unambiguous representation of text. Unlike variable-width encodings such as UTF-8 and UTF-16, UTF-32 assigns a unique 32-bit code point to each character, which simplifies the process of character indexing and manipulation.
+
+The primary advantage of UTF-32 is its simplicity, as each character is represented by a single code unit, making it easy to calculate the number of characters in a string and access individual characters directly. However, this simplicity comes at the cost of increased memory usage, as UTF-32 requires four bytes for every character, regardless of its complexity or frequency of use. This can lead to inefficient use of storage and bandwidth, especially for texts primarily composed of characters that could be represented with fewer bytes in other encodings.
+
+UTF-32 is often used in internal processing where fixed-width encoding is beneficial, such as in certain programming environments and APIs. However, due to its high memory consumption, it is less commonly used for data storage or transmission over networks, where more space-efficient encodings like UTF-8 are preferred.
+
+## UTF-EBCDIC
+
+UTF-EBCDIC is a character encoding system designed to map Unicode characters to the Extended Binary Coded Decimal Interchange Code (EBCDIC) character set. EBCDIC is an 8-bit character encoding used primarily on IBM mainframe and midrange computer systems. UTF-EBCDIC was developed to facilitate the use of Unicode on systems that traditionally use EBCDIC, allowing for a more seamless integration of modern text processing capabilities.
+
+Unlike other Unicode Transformation Formats (UTFs) such as UTF-8, UTF-16, and UTF-32, which are designed for general use across various platforms, UTF-EBCDIC is specifically tailored for environments where EBCDIC is the native character set. It provides a way to encode Unicode characters in a manner that is compatible with EBCDIC's structure, ensuring that text data can be processed and stored efficiently on EBCDIC-based systems.
+
+UTF-EBCDIC is not as widely used as other UTFs due to its specialized nature and the declining prevalence of EBCDIC systems. However, it remains an important tool for organizations that rely on legacy IBM systems and need to support Unicode text processing. The encoding involves a complex mapping process that aligns Unicode code points with EBCDIC code points, taking into account the unique characteristics of the EBCDIC character set.
+
+The primary advantage of UTF-EBCDIC is its ability to bridge the gap between modern Unicode text processing and traditional EBCDIC systems, enabling the use of a wide range of characters and symbols in environments where EBCDIC is still in use. However, its complexity and limited applicability mean that it is not a common choice for new applications or systems.
+

@@ -104,8 +104,8 @@ export function FPExponentRange({ fp }: { fp: FP | FP8 }) {
 export function SpecificationMetric({ name, value, units }: { name: string, value: string | number, units?: string }) {
     return (
         <div>
-            <p className='text-sm text-zinc-600 dark:text-zinc-400'>{ name }</p>
-            <p className='text-xl font-bold text-zinc-800 dark:text-zinc-200'>{ value } { units }</p>
+            <div className='text-sm text-zinc-600 dark:text-zinc-400'>{ name }</div>
+            <div className='text-xl font-bold text-zinc-800 dark:text-zinc-200'>{ value } { units }</div>
         </div>
     )
 }
@@ -136,17 +136,17 @@ export function CaseText({ variable, operator, value, comment }: {
     comment?: string
 }) {
     return (<>
-        <p className='font-mono'>
+        <div className='font-mono'>
             <CodeText className={{
                 e: 'text-green-500',
                 m: 'text-blue-500'
             }[variable]}>
                 { variable }
             </CodeText> { operator } { value }
-        </p>
-        <p className='text-sm font-sans text-zinc-600 dark:text-zinc-400'>
+        </div>
+        <div className='text-sm font-sans text-zinc-600 dark:text-zinc-400'>
             { comment }
-        </p>
+        </div>
     </>)
 }
 
@@ -156,7 +156,7 @@ export function WithTwoCases({ children, left, right, top }: { children?: React.
     top?: boolean
 }) {
     return (
-        <p className={clsx(
+        <div className={clsx(
             'text-center relative',
             'mb-4 pb-6', top && 'pt-4 mt-4' // spacing for top line
         ) }>
@@ -169,7 +169,7 @@ export function WithTwoCases({ children, left, right, top }: { children?: React.
                 <div>{ right }</div>
             </div>
             <TwoCasesLines />
-        </p>
+        </div>
     )
 }
 
@@ -179,7 +179,7 @@ export function WithThreeCases({ children, left, right, top }: { children?: Reac
     top?: boolean
 }) {
     return (
-        <p className={clsx(
+        <div className={clsx(
             'text-center relative',
             'mb-4 pb-6', top && 'pt-4 mt-4' // spacing for top line
         ) }>
@@ -192,7 +192,7 @@ export function WithThreeCases({ children, left, right, top }: { children?: Reac
                 <div>{ right }</div>
             </div>
             <ThreeCasesLines />
-        </p>
+        </div>
     )
 }
 

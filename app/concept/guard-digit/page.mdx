@@ -4,7 +4,7 @@ A **guard digit** is an additional bit used during intermediate floating-point c
 
 ## How guard digits work
 
-One or more guard digits can be used in floating-point arithmetic to extend the **significand** (also called mantissa) during internal computations. [IEEE 754](/spec/ieee754) arithmetic uses guard digits to improve accuracy during subtraction of nearly equal numbers, ensure correct rounding, and avoid [catastrophic cancellation](/concept/cancellation).
+One or more guard digits can be used in floating-point arithmetic to extend the **significand** (also called mantissa) during internal computations. [IEEE 754](/spec/ieee/754) arithmetic uses guard digits to improve accuracy during subtraction of nearly equal numbers, ensure correct rounding, and avoid [catastrophic cancellation](/concept/cancellation).
 
 Typically, hardware implementations use 1 to 3 extra bits: a guard bit, a **round bit**, and a **sticky bit**. These bits are often collectively referred to as **GRS bits**, and aren't part of the final stored floating-point result - they are only for internal use during computation.
 
@@ -37,4 +37,4 @@ When floating-point operations are done with a [guard digit](/concept/guard-digi
 The example immediately preceding Theorem 2 shows that a single guard digit will not always give exactly rounded results. The previous section gave several examples of algorithms that require a guard digit in order to work properly. This section gives examples of algorithms that require exact rounding.
 
 
-A single guard digit is enough to prevent catastrophic cancellation, where all digits are wrong, but it doesn’t fully eliminate error. It ensures that the relative error in the result remains small—typically close to but possibly slightly greater than machine epsilon.
+A single guard digit is enough to prevent catastrophic cancellation, where all digits are wrong, but it doesn't fully eliminate error. It ensures that the relative error in the result remains small—typically close to but possibly slightly greater than machine epsilon.

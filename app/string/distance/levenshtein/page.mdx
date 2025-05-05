@@ -1,6 +1,35 @@
 # Levenshtein Distance
 
-The Levenshtein distance is a measure of the difference between two strings. It is defined as the minimum number of single-character edits (insertions, deletions, or substitutions) required to change one string into the other.
+The Levenshtein distance is a string metric for measuring the difference between two sequences. It is defined as the minimum number of single-character edits (insertions, deletions, or substitutions) required to change one string into another.
+
+## History
+
+The Levenshtein distance is named after the Soviet mathematician Vladimir Levenshtein, who introduced the concept in a [1966 paper](/paper/1966/levenshtein.pdf). The distance is also known as the **edit distance**, which is the minimum number of edits (insertions, deletions, or substitutions) required to transform one string into another.
+
+## Definition
+
+The Levenshtein distance $d_{lev}$ between two strings $s_1$ and $s_2$ is defined recursively as:
+
+$$
+d_{lev}(s_1, s_2) = \begin{cases}
+|s_1| & \text{if } |s_2| = 0 \\
+|s_2| & \text{if } |s_1| = 0 \\
+d_{lev}(s_1[1:], s_2[1:]) & \text{if } s_1[0] = s_2[0] \\
+1 + \min \begin{cases}
+d_{lev}(s_1[1:], s_2) \\
+d_{lev}(s_1, s_2[1:]) \\
+d_{lev}(s_1[1:], s_2[1:])
+\end{cases} & \text{otherwise}
+\end{cases}
+$$
+
+where $|s|$ denotes the length of string $s$, $s[0]$ denotes the first character of $s$, and $s[i:]$ denotes the substring of $s$ starting from index $i$.
+
+The Levenshtein distance produces a non-negative value that ranges from 0 to infinity, where 0 indicates identical strings. The distance is symmetric, meaning the distance from string A to B is the same as from B to A. Most importantly, it satisfies the triangle inequality, making it a **proper metric**. This means that for any three strings A, B, and C, the distance from A to C will never be greater than the sum of the distances from A to B and B to C.
+
+## Applications
+
+The Levenshtein distance finds widespread use in various text processing applications. In spell checking, it helps identify and correct misspelled words by finding the closest matching words in a dictionary. For DNA sequence alignment, it helps identify genetic similarities and differences between sequences. In natural language processing, it's used for text normalization and fuzzy matching. The distance is also valuable in plagiarism detection systems, where it helps identify similar text passages. Additionally, it plays a crucial role in speech recognition systems, helping to match spoken words with their written forms.
 
 ## Implementation
 
@@ -32,16 +61,25 @@ function levenshteinDistance(str1, str2) {
 
     return dp[m][n];
 }
+
+const distance = levenshteinDistance("kitten", "sitting");
 ```
 
-## Example
+## Space efficiency
 
-```javascript
-const distance = levenshteinDistance("kitten", "sitting");
-``` 
+The space complexity of the Levenshtein distance algorithm is $$O(m \times n)$$, where $$m$$ and $$n$$ are the lengths of the two strings. This is because the algorithm uses a 2D array to store the distances between all pairs of characters in the two strings.
+
+## Time efficiency
+
+The time complexity of the Levenshtein distance algorithm is $$O(m \times n)$$, where $$m$$ and $$n$$ are the lengths of the two strings. This is because the algorithm must populate an entire 2D array to store the distances between all pairs of characters in the two strings.
 
 ## Output
 
 ```javascript
 console.log(distance); // 3
 ``` 
+
+## References
+
+1. Levenshtein, V. I. (1966). Binary codes capable of correcting deletions, insertions, and reversals. Soviet Physics Doklady, 10(8), 707-710.
+2. Wagner, R. A., & Fischer, M. J. (1974). The string-to-string correction problem. Journal of the ACM, 21(1), 168-173. 

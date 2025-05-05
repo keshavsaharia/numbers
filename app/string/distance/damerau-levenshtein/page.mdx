@@ -1,0 +1,47 @@
+# Damerau-Levenshtein Distance
+
+The Damerau-Levenshtein distance is a string metric that measures the edit distance between two strings by counting the minimum number of operations (insertions, deletions, substitutions, and transpositions of adjacent characters) required to transform one string into another.
+
+## Mathematical Definition
+
+The Damerau-Levenshtein distance $d_{DL}$ between two strings $s_1$ and $s_2$ is defined recursively as:
+
+$$
+d_{DL}(s_1, s_2) = \begin{cases}
+|s_1| & \text{if } |s_2| = 0 \\
+|s_2| & \text{if } |s_1| = 0 \\
+d_{DL}(s_1[1:], s_2[1:]) & \text{if } s_1[0] = s_2[0] \\
+1 + \min \begin{cases}
+d_{DL}(s_1[1:], s_2) \\
+d_{DL}(s_1, s_2[1:]) \\
+d_{DL}(s_1[1:], s_2[1:]) \\
+d_{DL}(s_1[2:], s_2[2:]) + 1 & \text{if } |s_1| > 1 \land |s_2| > 1 \land s_1[0] = s_2[1] \land s_1[1] = s_2[0]
+\end{cases} & \text{otherwise}
+\end{cases}
+$$
+
+where:
+- $|s|$ denotes the length of string $s$
+- $s[i:]$ denotes the substring of $s$ starting from index $i$
+- $s[0]$ denotes the first character of $s$
+
+## Properties
+
+The Damerau-Levenshtein distance exhibits several important mathematical properties. It produces a non-negative value that ranges from 0 to infinity, where 0 indicates identical strings. The distance is symmetric, meaning the distance from string A to B is the same as from B to A. It satisfies the triangle inequality, making it a proper metric. This means that for any three strings A, B, and C, the distance from A to C cannot be greater than the sum of the distances from A to B and B to C. A key distinguishing feature of this distance is its consideration of transpositions of adjacent characters, making it particularly suitable for detecting common typing errors.
+
+## Applications
+
+The Damerau-Levenshtein distance has become an essential tool in various text processing and analysis applications. In spell checking systems, it helps identify and correct misspelled words by finding the closest matching words in a dictionary. For DNA sequence alignment, it provides a way to measure genetic similarities and differences between sequences. In natural language processing, it's used for text normalization and fuzzy matching. The distance is also valuable in plagiarism detection systems, where it helps identify similar text passages. Additionally, it plays a crucial role in speech recognition systems, helping to match spoken words with their written forms.
+
+## Implementation
+
+```typescript
+function damerauLevenshteinDistance(s1: string, s2: string): number {
+    // Implementation coming soon
+}
+```
+
+## References
+
+1. Damerau, F. J. (1964). A technique for computer detection and correction of spelling errors. Communications of the ACM, 7(3), 171-176.
+2. Levenshtein, V. I. (1966). Binary codes capable of correcting deletions, insertions, and reversals. Soviet Physics Doklady, 10(8), 707-710. 

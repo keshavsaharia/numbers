@@ -1,0 +1,41 @@
+# Information Theory
+
+Information theory is a branch of mathematics that deals with the study of information and its properties. It is used to study the transmission, storage, and processing of information. This field provides the theoretical underpinnings for understanding how data can be efficiently encoded, transmitted, and decoded, ensuring that the integrity and confidentiality of information are maintained. Information theory explores concepts such as **entropy**, which measures the uncertainty or randomness of information, and **mutual information**, which quantifies the amount of information shared between variables. These concepts are crucial in optimizing communication systems, data compression algorithms, and error correction techniques.
+
+## History
+
+In 1948, Claude Shannon published a groundbreaking paper titled *A Mathematical Theory of Communication*. This seminal work laid the foundation for the field of information theory, introducing several key concepts that have become essential in the design and understanding of modern communication systems. Shannon's paper introduced the notions of **entropy**, **channel capacity**, and the **bit** as a unit of information, which have since become fundamental in the analysis and construction of communication frameworks.
+
+## Information entropy
+
+Shannon defined entropy as a measure of uncertainty or the information content within a message. For a discrete random variable $$X$$ with possible outcomes $$x$$ and corresponding probabilities $$p(x)$$, the entropy $$H(X)$$ is defined as:
+
+$$
+H(X) = -\sum_{x} p(x) \log p(x)
+$$
+
+This formula quantifies the average amount of information produced by a stochastic source of data.
+
+## Communication Model
+
+Shannon proposed a communication model that consists of five components: an information source, a transmitter, a channel, a receiver, and a destination. This model serves as the foundation for analyzing how information is transmitted and how noise affects communication systems.
+
+## Channel Capacity
+
+The concept of channel capacity, introduced by Shannon, refers to the maximum rate at which information can be reliably transmitted over a communication channel. Shannon demonstrated that it is possible to transmit information nearly error-free up to this capacity, even in the presence of noise.
+
+## Source and Channel Coding Theorems
+
+Shannon established the source coding theorem, which asserts that data can be compressed to its entropy limit without losing information. He also formulated the noisy-channel coding theorem, which proves that error-correcting codes can facilitate reliable communication over noisy channels up to the channel capacity.
+
+## Introduction of the Bit
+
+In his paper, Shannon formally introduced the term **bit** (short for binary digit) as the basic unit of information. This concept revolutionized the way information is quantified and processed, providing a standardized measure that underpins digital communication and computing. 
+
+The bit represents the most fundamental level of data, encapsulating a binary choice between two states - typically `0` and `1`. This binary representation enables the encoding, transmission, and storage of complex information to be performed by computer hardware in a compact and efficient manner. 
+
+Shannon's introduction of the bit laid the groundwork for the development of digital technologies, influencing everything from computer architecture to data encryption and compression algorithms.
+
+## Impact and Legacy
+
+Shannon's work has profoundly influenced various fields, including telecommunications, computer science, and data compression. His theories form the backbone of modern digital communication systems and have significantly impacted the development of technologies such as the internet, mobile communications, and data encryption. For an in-depth exploration of Shannon's contributions, you can read the full paper [here](/book/shannon_entropy.pdf). 

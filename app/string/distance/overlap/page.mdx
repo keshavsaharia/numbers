@@ -1,0 +1,42 @@
+# Overlap Coefficient
+
+The Overlap coefficient is a similarity measure between two strings that compares the size of their intersection to the size of the smaller set. It is particularly useful when comparing strings of different lengths, as it normalizes the similarity score based on the smaller string.
+
+## Mathematical Definition
+
+The Overlap coefficient $d_O$ between two strings $s_1$ and $s_2$ is defined as:
+
+$$
+d_O(s_1, s_2) = \frac{|X \cap Y|}{\min(|X|, |Y|)}
+$$
+
+where:
+- $X$ and $Y$ are the sets created from strings $s_1$ and $s_2$
+- $|X|$ and $|Y|$ are the cardinalities of sets $X$ and $Y$
+- $\cap$ denotes set intersection
+- $\min$ denotes the minimum function
+
+The distance version is defined as:
+
+$$d_O(s_1, s_2) = 1 - \frac{|X \cap Y|}{\min(|X|, |Y|)}$$
+
+## Properties
+
+The Overlap coefficient exhibits several important mathematical characteristics. It produces a value ranging from 0 to 1, where 0 indicates identical strings. While the coefficient is symmetric, meaning the similarity between string A and B is the same as between B and A, it does not satisfy the triangle inequality, making it a non-metric measure. The coefficient is always non-negative, and it has the unique property of being normalized by the smaller set size, making it particularly useful for comparing strings of different lengths.
+
+## Applications
+
+The Overlap coefficient has become a fundamental tool in various text processing and information retrieval applications. In document similarity analysis, it helps identify similar documents by comparing their word or character sets, regardless of their length. For text classification tasks, it provides an effective way to categorize documents based on their content. In information retrieval systems, it helps rank search results by relevance. The coefficient is also valuable in plagiarism detection, where it can identify similar text passages across different documents. Additionally, it plays a crucial role in search engines, helping to match user queries with relevant documents in the index.
+
+## Implementation
+
+```typescript
+function overlapDistance(s1: string, s2: string): number {
+    // Implementation coming soon
+}
+```
+
+## References
+
+1. Overlap coefficient. (n.d.). In Wikipedia. Retrieved from https://en.wikipedia.org/wiki/Overlap_coefficient
+2. Tan, P. N., Steinbach, M., & Kumar, V. (2005). Introduction to Data Mining. Pearson Education. 

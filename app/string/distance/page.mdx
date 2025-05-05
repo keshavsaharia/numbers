@@ -1,3 +1,10 @@
+import { stringDistance } from '@/data/string-distance'
+
+export const metadata = {
+  title: 'String distance',
+  description: 'A collection of string distance functions with code implementations as well as their mathematical definitions.'
+}
+
 # String distance
 
 A **string distance** is a measure of the similarity between two strings. Formally, it is a function that takes two strings and returns a number representing the difference between them.
@@ -8,48 +15,11 @@ $$ f : \Sigma^* \times \Sigma^* \to \mathbb{R} $$
 
 String distance is a fundamental concept in computer science and natural language processing, used for tasks such as spell checking, text comparison, and pattern matching. The following list is a collection of string distance functions with code implementations as well as their mathematical definitions.
 
-<SectionListBox sections={[
-  {
-    title: 'Jaro-Winkler distance',
-    href: '/string/distance/jaro-winkler',
-    description: 'The Jaro-Winkler distance measures string similarity by considering matching characters and their order, with a preference for common prefixes.'
-  },
-  {
-    title: 'Levenshtein distance',
-    href: '/string/distance/levenshtein',
-    description: 'The Levenshtein distance quantifies similarity by counting the minimum number of single-character edits needed to change one string into another.'
-  },
-  {
-    title: 'Hamming distance',
-    href: '/string/distance/hamming',
-    description: 'The Hamming distance measures similarity between two equal-length strings by counting differing character positions.'
-  },
-  {
-    title: 'Cosine distance',
-    href: '/string/distance/cosine',
-    description: 'The cosine distance evaluates similarity by measuring the angle between two string vectors in a multi-dimensional space.'
-  },
-  {
-    title: 'Jaccard distance',
-    href: '/string/distance/jaccard',
-    description: 'The Jaccard distance assesses similarity by comparing the size of the intersection to the union of character sets in two strings.'
-  },
-  {
-    title: 'Damerau-Levenshtein distance',
-    href: '/string/distance/damerau-levenshtein',
-    description: 'The Damerau-Levenshtein distance measures similarity by counting the minimum number of single-character edits, including transpositions, needed to transform one string into another.'
-  },
-  {
-    title: 'Sorensen-Dice coefficient',
-    href: '/string/distance/sorensen-dice',
-    description: 'The Sorensen-Dice coefficient evaluates similarity by calculating the proportion of shared bigrams between two strings.'
-  },
-  {
-    title: 'Overlap coefficient',
-    href: '/string/distance/overlap',
-    description: 'The Overlap coefficient measures similarity by dividing the size of the intersection by the size of the smaller character set of the two strings.'
-  }
-]}/>
+<SectionListBox sections={stringDistance.sections}/>
+
+## Time and space complexity
+
+<BigOComplexityTable algorithms={stringDistance.sections}/>
 
 ## History of record linkage
 
@@ -63,9 +33,11 @@ The original idea of record linkage was put forth in a 1946 paper by [Halbert Du
 >
 > Events of importance worth recording in the Book of Life are frequently put on record in different places since the person moves about the world through-out his lifetime. This makes it difficult to assemble this Book into a single compact volume. Yet, sometimes it is necessary to examine all of an individual's important records simultaneously. No one would read a novel, the pages of which were not assembled. Just so, it is necessary at times to link the various important records of a person's life.
 
-<div class="grid grid-cols-2 gap-4">
+<div className="grid grid-cols-2 gap-4">
   <div>
-Ivan P. Felligi and Alan B. Sunter, from the Dominion Bureau of Statistics in Canada, published a [paper](/paper/1969/felligi_sunter.pdf) in 1969 describing a formal mathematical model for linking records in different datasets. The **Fellegi-Sunter model** is a probabilistic framework for record linkage that classifies pairs of records as matches, non-matches, or possible matches based on likelihood ratios derived from agreement and disagreement patterns across record fields.
+Ivan P. Felligi and Alan B. Sunter, from the Dominion Bureau of Statistics in Canada, published a [paper](/paper/1969/felligi_sunter.pdf) in 1969 describing a formal mathematical model for linking records in different datasets. The **Fellegi-Sunter model** is a probabilistic framework for record linkage that classifies pairs of records as matches, non-matches, or possible matches based on likelihood ratios derived from agreement and disagreement patterns across record fields. 
+
+Felligi and Sunter proved that the probabilistic decision rule they described was optimal when the comparison attributes were conditionally independent. 
 
 Further innovation in record-linking methodologies and software happened in the 1990s and early 2000s at the US Census Bureau, to support census coverage evaluation efforts. A 1989 paper by [Matthew Jaro](/paper/1989/jaro.pdf) and a 1990 paper by [William Winkler](/paper/jarowinkler_1990.pdf) provided the names by which the algorithm is most commonly known.
   </div>
@@ -74,6 +46,6 @@ Further innovation in record-linking methodologies and software happened in the 
   </div>
 </div>
 
-Matthew A. Jaro is now a professor of computer science at the [University of Maryland, College Park](https://www.cs.umd.edu/), and William E. Winkler led the Record Linkage and Machine Learning Research Group at the [US Census Bureau](https://www.census.gov/topics/research/stat-research/expertise/record-linkage.html) until 2022. The [original 1990 paper](/paper/jarowinkler_1990.pdf) describes a methodology for matching records in various datasets collected by the US Census Bureau. Matthew Jaro would publish a [paper](/paper/jaro_1995.pdf) in 1995 describing a simpler version of the Jaro-Winkler distance for linking patient records in healthcare databases.
+Matthew Jaro would publish a [paper](/paper/jaro_1995.pdf) in 1995 describing a simpler version of the Jaro-Winkler distance for linking patient records in healthcare databases.
 
-Ondřej Rozinek and Jan Mareš published a [paper](/paper/roz_marez_2024.pdf) in 2024 presenting Convolution Jaro (ConvJ) and Convolution Jaro-Winkler (ConvJW), which are faster implementations of the Jaro and Jaro-Winkler distances that use a convolutional approach with Gaussian weighting to effectively capture the proximity of matching characters and provide a more meaningful similarity score.
+Efforts continue in producing faster and more space efficient implementations of the Jaro and Jaro-Winkler distances. Ondřej Rozinek and Jan Mareš published a [paper](/paper/roz_marez_2024.pdf) in 2024 presenting Convolution Jaro (ConvJ) and Convolution Jaro-Winkler (ConvJW), which are faster implementations of the Jaro and Jaro-Winkler distances that use a convolutional approach with Gaussian weighting to effectively capture the proximity of matching characters to provide a more meaningful similarity score.

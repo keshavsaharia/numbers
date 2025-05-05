@@ -11,3 +11,6 @@ export { FloatViewer } from './float/viewer'
 
 // Math equations
 export { MathTooltip } from './math/tooltip'
+
+// Algorithms
+export { BigOComplexityTable } from './algorithms/big-o'

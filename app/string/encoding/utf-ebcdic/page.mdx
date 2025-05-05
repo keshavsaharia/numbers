@@ -1,0 +1,56 @@
+# UTF-EBCDIC: Unicode Transformation Format for EBCDIC
+
+UTF-EBCDIC is a character encoding that maps Unicode characters to the Extended Binary Coded Decimal Interchange Code (EBCDIC) character set. It was developed to facilitate the use of Unicode on systems that traditionally use EBCDIC, particularly IBM mainframe and midrange computer systems.
+
+## History and Development
+
+UTF-EBCDIC was developed to bridge the gap between modern Unicode text processing and legacy EBCDIC systems. EBCDIC is an 8-bit character encoding that was developed by IBM in the 1960s and is still used in many mainframe and midrange computer systems.
+
+The development of UTF-EBCDIC was driven by the need to support Unicode text processing on systems that use EBCDIC as their native character set. This was particularly important for organizations that rely on legacy IBM systems but need to work with modern text data.
+
+## Technical Details
+
+UTF-EBCDIC uses a variable number of bytes to represent each character, similar to UTF-8. However, the encoding scheme is designed to be compatible with EBCDIC's structure. The encoding scheme is as follows:
+
+1. **Single-byte characters** (0-127): These are mapped to EBCDIC code points
+2. **Multi-byte characters** (128-1114111): These are represented by sequences of bytes that are compatible with EBCDIC
+
+The encoding is designed to ensure that:
+- EBCDIC characters are represented by their native code points
+- Multi-byte sequences are structured to be compatible with EBCDIC systems
+- The encoding can represent any Unicode character
+
+## Implementation Considerations
+
+When implementing UTF-EBCDIC, several important considerations must be taken into account:
+
+1. **EBCDIC Compatibility**: Ensuring compatibility with EBCDIC systems
+2. **Character Mapping**: Mapping between Unicode and EBCDIC characters
+3. **Multi-byte Sequences**: Handling multi-byte character sequences
+4. **Validation**: Ensuring that byte sequences are valid
+5. **Conversion**: Converting to and from other encodings
+
+## Common Issues
+
+Despite its purpose, UTF-EBCDIC can present some challenges:
+
+1. **Complexity**: The encoding is more complex than standard UTF encodings
+2. **Limited Use**: It's only used in specific EBCDIC-based systems
+3. **Compatibility**: Issues with systems that use standard UTF encodings
+4. **Documentation**: Limited documentation and support compared to other encodings
+
+## Best Practices
+
+When working with UTF-EBCDIC, it's important to follow these best practices:
+
+1. **Understand EBCDIC**: Have a good understanding of EBCDIC character sets
+2. **Test Thoroughly**: Test the encoding with various character sets
+3. **Document Usage**: Clearly specify when UTF-EBCDIC is being used
+4. **Handle Errors**: Provide appropriate error handling for invalid sequences
+5. **Consider Alternatives**: Evaluate whether other encodings might be more suitable
+
+## References
+
+1. Unicode Consortium. (2022). "The Unicode Standard"
+2. IBM. (2003). "EBCDIC to Unicode Mapping Tables"
+3. Davis, M. (2012). "Unicode: A History" 

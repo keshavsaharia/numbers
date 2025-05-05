@@ -11,38 +11,25 @@ That is, if you take the binary representation of a floating point number and in
 > <small className="text-gray-500">Kahan, 2004</small><br/>
 > From time to time, well-intentioned attempts to speed up a math library introduced inaccuries so large that Fred Gustavson  at IBM Yorktown Heights  coined the word  "GULP"  (Giga-Ulp)  to describe them.  Today, there is no excuse for a math library less accurate than the  Freely Distributed Math Library `fdlibm`, promulgated from  Sun Microsystems mostly by graduates from the  University of California at Berkeley, who created the libraries distributed with 4.3 BSD Berkeley UNIX in the  1980s.
 
-By then the adoption of [IEEE Standard 754](/spec/ieee754) had made infinities and NaNs so ubiquitous that the definition of an ulp had to be changed:
+By then the adoption of [IEEE Standard 754](/spec/ieee/754) had made infinities and NaNs so ubiquitous that the definition of an ulp had to be changed:
 
 > $$\text{ulp}(x)$$ is the gap between the two *finite* floating-point numbers nearest $$x$$, even if $$x$$ is one of them, and $$\text{ulp}(NaN)$$  is  $$NaN$$.
 
 E.g.,  for  IEEE 754 Double Precision  (8 bytes wide)  as in  MATLAB,
 ulp(1) = eps/2,  ulp(1.5) = eps,  ulp(inf) = 2^971,  ulp(0) = 2^-1074 .
 
-                            Why  "_finite_" ?
 
-Without this word we would have  ulp(Infinity) = Infinity ,  which is
-not too bad but not so good in situations like the following:
+## Why finite?
 
-For every finite floating-point number  y  we expect computed values
-    x := ( y - ulp(y) rounded )    and   z := ( y + ulp(y) rounded )
-to satisfy  $$x <= y <= z$$.  We cannot expect  $$x < y < z$$  in every
-case;  consider the case  y := 1  and remember that by default  IEEE
-754  rounds midway cases to nearest even so  z = 1 .  These inferences
-hold for decimal floating-point too though for very different reasons.
-By defining  ulp(Infinity)  to be finite we sustain these inferences at
-infinite  y  too;  they would be invalidated there otherwise.  Tighter
-inferences are available just when  y  is finite;  then
+Without this word we would have  ulp(Infinity) = Infinity , which is not too bad but not so good in situations like the following: 
 
-$$ x < y <= z ,   or   x <= y < z , $$  or both
+For any finite floating-point number $$y$$, we expect the computed values $$x = (y - \text{ulp}(y) \text{ rounded})$$ and $$z = (y + \text{ulp}(y) \text{ rounded})$$ to satisfy the inequality $$x \leq y \leq z$$. However, we cannot always expect the strict inequality $$x < y < z$$ to hold. For instance, when $$y = 1$$, the IEEE 754 standard rounds midway cases to the nearest even number, resulting in $$z = 1$$. These inferences are also applicable to decimal floating-point numbers, albeit for different reasons.
 
-Both strict inequalities are false if  y  is infinite;  even so,  no
-INVALID OPERATON  occurs.  Were  ulp(Infinity) = Infinity ,  an INVALID
-OPERATION  would occur at  x := y - ulp(y)  producing  NaN,  and again
-at each comparison of  x  and  y .  Gratuitous  INVALID OPERATIONs
-like these seem to punish a program cruelly and unusually:  they would
-wrest control from it in many environmemts,  though not  MATLAB's.
+By defining $$\text{ulp}(\infty)$$ as finite, we maintain these inferences even when $$y$$ is infinite; otherwise, they would be invalidated. When $$y$$ is finite, tighter inferences are possible: either $$x < y \leq z$$, $$x \leq y < z$$, or both.
 
-Here is a vectorized MATLAB program to compute `ulp(x)` on machines whose arithmetics conform to [IEEE Standard 754](/spec/ieee754), as almost all do now.
+If $$y$$ is infinite, both strict inequalities are false, yet no invalid operation occurs. If $$\text{ulp}(\infty)$$ were infinite, subtracting it from $$y$$ would result in an invalid operation, producing $$\text{NaN}$$, and further invalid comparisons between $$x$$ and $$y$$ would occur. Such gratuitous invalid operations could disrupt a program significantly, except in environments like MATLAB where this is handled gracefully.
+
+Here is a vectorized MATLAB program to compute `ulp(x)` on machines whose arithmetics conform to [IEEE Standard 754](/spec/ieee/754), as almost all do now.
 
 ```matlab
 function  u = ulp(x)

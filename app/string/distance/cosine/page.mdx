@@ -1,0 +1,42 @@
+# Cosine Distance
+
+The Cosine distance is a measure of similarity between two strings by treating them as vectors in a high-dimensional space and computing the cosine of the angle between them. It is particularly useful for comparing documents or text strings where the order of words is not as important as their frequency.
+
+## Mathematical Definition
+
+The Cosine distance $d_c$ between two strings $s_1$ and $s_2$ is defined as:
+
+$$
+d_c(s_1, s_2) = 1 - \cos(\theta) = 1 - \frac{\vec{s_1} \cdot \vec{s_2}}{|\vec{s_1}| |\vec{s_2}|}
+$$
+
+where:
+- $\vec{s_1}$ and $\vec{s_2}$ are the vector representations of the strings
+- $\theta$ is the angle between the vectors
+- $|\vec{s}|$ is the magnitude of vector $\vec{s}$
+
+The vectors are typically created using:
+- Character n-grams
+- Word frequency counts
+- TF-IDF (Term Frequency-Inverse Document Frequency)
+
+## Properties
+
+The Cosine distance has several distinctive mathematical characteristics. It produces a value ranging from 0 to 2, where 0 indicates identical strings. While the distance is symmetric, meaning the distance from string A to B is the same as from B to A, it does not satisfy the triangle inequality, making it a non-metric distance measure. The distance is always non-negative, and it has the unique property of being invariant to string length, making it particularly useful for comparing documents of different sizes.
+
+## Applications
+
+The Cosine distance has become a fundamental tool in modern text processing and information retrieval systems. In document similarity analysis, it helps identify similar documents regardless of their length. For text classification tasks, it provides an effective way to categorize documents based on their content. In information retrieval systems, it helps rank search results by relevance. The distance is also valuable in plagiarism detection, where it can identify similar text passages across different documents. Additionally, it plays a crucial role in search engines, helping to match user queries with relevant documents in the index.
+
+## Implementation
+
+```typescript
+function cosineDistance(s1: string, s2: string): number {
+    // Implementation coming soon
+}
+```
+
+## References
+
+1. Salton, G., & Buckley, C. (1988). Term-weighting approaches in automatic text retrieval. Information Processing & Management, 24(5), 513-523.
+2. Singhal, A. (2001). Modern information retrieval: A brief overview. IEEE Data Engineering Bulletin, 24(4), 35-43. 

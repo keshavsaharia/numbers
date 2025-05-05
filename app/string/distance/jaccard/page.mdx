@@ -1,0 +1,43 @@
+# Jaccard Distance
+
+The Jaccard distance is a measure of dissimilarity between two sets. When applied to strings, the sets are typically created using character n-grams or word sets. The distance is calculated as one minus the Jaccard similarity coefficient.
+
+## Mathematical Definition
+
+The Jaccard distance $d_J$ between two strings $s_1$ and $s_2$ is defined as:
+
+$$
+d_J(s_1, s_2) = 1 - J(s_1, s_2) = 1 - \frac{|S_1 \cap S_2|}{|S_1 \cup S_2|}
+$$
+
+where:
+- $S_1$ and $S_2$ are the sets created from strings $s_1$ and $s_2$
+- $|S|$ denotes the cardinality of set $S$
+- $\cap$ denotes set intersection
+- $\cup$ denotes set union
+
+The sets can be created using:
+- Character n-grams (e.g., bigrams, trigrams)
+- Word sets
+- Shingle sets (overlapping n-grams)
+
+## Properties
+
+The Jaccard distance exhibits several important mathematical properties. It produces a value ranging from 0 to 1, where 0 indicates identical strings. The distance is symmetric, meaning the distance from string A to B is the same as from B to A. It satisfies the triangle inequality, making it a proper metric. The distance is always non-negative, and it has the unique property of being invariant to string length, making it particularly useful for comparing texts of different sizes.
+
+## Applications
+
+The Jaccard distance has found widespread application in various text processing and data analysis tasks. In document similarity analysis, it helps identify similar documents by comparing their word or character sets. For plagiarism detection, it provides an effective way to measure the overlap between different texts. In data deduplication systems, it helps identify and remove duplicate records. The distance is also valuable in information retrieval systems, where it helps rank search results by relevance. Additionally, it plays a crucial role in text mining applications, helping to identify patterns and relationships in large text corpora.
+
+## Implementation
+
+```typescript
+function jaccardDistance(s1: string, s2: string): number {
+    // Implementation coming soon
+}
+```
+
+## References
+
+1. Jaccard, P. (1901). Étude comparative de la distribution florale dans une portion des Alpes et des Jura. Bulletin de la Société Vaudoise des Sciences Naturelles, 37, 547-579.
+2. Tan, P. N., Steinbach, M., & Kumar, V. (2005). Introduction to Data Mining. Pearson Education. 

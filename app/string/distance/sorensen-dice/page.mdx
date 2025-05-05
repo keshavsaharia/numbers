@@ -1,0 +1,41 @@
+# Sorensen-Dice Coefficient
+
+The Sorensen-Dice coefficient is a statistical measure of similarity between two strings based on the presence of shared character pairs (bigrams). It is particularly useful for comparing strings where the order of characters is important but exact matches are not required.
+
+## Mathematical Definition
+
+The Sorensen-Dice coefficient $d_{SD}$ between two strings $s_1$ and $s_2$ is defined as:
+
+$$
+d_{SD}(s_1, s_2) = \frac{2|X \cap Y|}{|X| + |Y|}
+$$
+
+where:
+- $X$ and $Y$ are the sets of bigrams from strings $s_1$ and $s_2$
+- $|X|$ and $|Y|$ are the cardinalities of sets $X$ and $Y$
+- $\cap$ denotes set intersection
+
+The distance version is defined as:
+
+$$d_{SD}(s_1, s_2) = 1 - \frac{2|X \cap Y|}{|X| + |Y|}$$
+
+## Properties
+
+The Sorensen-Dice coefficient exhibits several important mathematical characteristics. It produces a value ranging from 0 to 1, where 0 indicates identical strings. While the coefficient is symmetric, meaning the similarity between string A and B is the same as between B and A, it does not satisfy the triangle inequality, making it a non-metric measure. The coefficient is always non-negative, and it has the unique property of being sensitive to character order, making it particularly useful for comparing strings where the sequence of characters matters.
+
+## Applications
+
+The Sorensen-Dice coefficient has found widespread application in various text processing and analysis tasks. In string similarity analysis, it helps identify similar strings by comparing their character pairs. For name matching systems, it provides an effective way to match names that might have slight variations or typos. In spell checking applications, it helps identify and correct misspelled words. The coefficient is also valuable in plagiarism detection systems, where it helps identify similar text passages. Additionally, it plays a crucial role in bioinformatics, helping to compare DNA and protein sequences.
+
+## Implementation
+
+```typescript
+function sorensenDiceDistance(s1: string, s2: string): number {
+    // Implementation coming soon
+}
+```
+
+## References
+
+1. Dice, L. R. (1945). Measures of the amount of ecologic association between species. Ecology, 26(3), 297-302.
+2. Sorensen, T. (1948). A method of establishing groups of equal amplitude in plant sociology based on similarity of species content. Det Kongelige Danske Videnskabernes Selskab, 5(4), 1-34. 

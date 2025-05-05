@@ -1,0 +1,333 @@
+# Graph Theory
+
+Graph theory is a branch of mathematics that deals with the study of graphs, which are mathematical structures used to represent pairwise relations between objects. It provides a framework for analyzing and solving problems in various fields, including computer science, network analysis, and social sciences.
+
+## History
+
+Graph theory has its roots in the 18th century, with the pioneering work of the Swiss mathematician Leonhard Euler. In 1736, Euler solved the famous Königsberg bridge problem, which asked whether it was possible to walk through the city of Königsberg (now Kaliningrad, Russia) and cross each of its seven bridges exactly once. Euler's solution laid the groundwork for graph theory by abstracting the problem into a set of nodes (representing landmasses) and edges (representing bridges), thus creating one of the first instances of a graph.
+
+The field remained relatively dormant until the 19th century when mathematicians such as Gustav Kirchhoff began to apply graph-theoretic concepts to electrical circuits. Kirchhoff's work on circuit laws in 1847 utilized graphs to represent electrical networks, further demonstrating the utility of graph theory in practical applications.
+
+The late 19th and early 20th centuries saw significant advancements in graph theory, particularly with the contributions of mathematicians like Arthur Cayley and George Pólya. Cayley, in the 1850s, used trees (a type of graph) to enumerate chemical compounds, while Pólya developed enumeration techniques that became fundamental in combinatorial chemistry and other fields.
+
+In the 20th century, graph theory expanded rapidly, driven by its applications in computer science, operations research, and social network analysis. The development of algorithms for graph traversal, such as Dijkstra's algorithm for shortest paths and Kruskal's algorithm for minimum spanning trees, highlighted the importance of graph theory in solving complex computational problems.
+
+## Shortest path
+
+The shortest path problem is a fundamental problem in graph theory that seeks to find the shortest path between two nodes in a graph. It has applications in various fields, including transportation, telecommunications, and computer networks.
+
+<SectionListBox sections={[
+  {
+    path: 'dijkstra',
+    title: 'Dijkstra\'s algorithm',
+    description: 'Dijkstra\'s algorithm finds the shortest path between nodes by selecting the closest node and updating its neighbors.',
+    link: '/theory/graph/shortest-path/dijkstra'
+  },
+  {
+    path: 'bellman-ford',
+    title: 'Bellman-Ford algorithm',
+    description: 'The Bellman-Ford algorithm finds shortest paths and handles negative weights by relaxing edges iteratively.',
+    link: '/theory/graph/shortest-path/bellman-ford'
+  },
+  {
+    path: 'floyd-warshall',
+    title: 'Floyd-Warshall algorithm',
+    description: 'The Floyd-Warshall algorithm finds shortest paths between all pairs of nodes in a graph.',
+    link: '/theory/graph/shortest-path/floyd-warshall'
+  },
+  {
+    path: 'a-star',
+    title: 'A* algorithm',
+    description: 'The A* algorithm finds the shortest path by using heuristics to prioritize paths that appear to lead most quickly to the goal.',
+    link: '/theory/graph/shortest-path/a-star'
+  },
+  {
+    path: 'johnson',
+    title: 'Johnson\'s algorithm',
+    description: 'Johnson\'s algorithm finds shortest paths between all pairs of nodes in a sparse graph with negative weights.',
+    link: '/theory/graph/shortest-path/johnson'
+  }
+]}/>
+
+## Algorithm Efficiency
+
+### Shortest Path Algorithms
+
+1. **Dijkstra's Algorithm**
+   - **Time Complexity**: $$O((V + E) \log V)$$, where $$V$$ is the number of vertices and $$E$$ is the number of edges. This complexity arises from using a priority queue to select the next closest vertex.
+   - **Space Complexity**: $$O(V)$$, primarily due to the storage of the distance array and the priority queue.
+
+2. **Bellman-Ford Algorithm**
+   - **Time Complexity**: $$O(V \cdot E)$$, as it relaxes all edges $$V - 1$$ times.
+   - **Space Complexity**: $$O(V)$$, for storing the distance array.
+
+3. **Floyd-Warshall Algorithm**
+   - **Time Complexity**: $$O(V^3)$$, because it considers all pairs of vertices and updates the shortest paths.
+   - **Space Complexity**: $$O(V^2)$$, due to the storage of the distance matrix.
+
+4. **A* Algorithm**
+   - **Time Complexity**: $$O(E)$$ in the worst case, but typically better with a good heuristic.
+   - **Space Complexity**: $$O(V)$$, for storing the open and closed sets.
+
+5. **Johnson's Algorithm**
+   - **Time Complexity**: $$O(V^2 \log V + V \cdot E)$$, combining Dijkstra's algorithm for each vertex and reweighting edges.
+   - **Space Complexity**: $$O(V^2)$$, for storing the distance matrix.
+
+
+## Minimum spanning tree
+
+The minimum spanning tree problem is a classic problem in graph theory that seeks to find a spanning tree of a graph with the smallest possible total edge weight. It has applications in various fields, including transportation, telecommunications, and computer networks.
+
+<SectionListBox sections={[
+  {
+    path: 'kruskal',
+    title: 'Kruskal\'s algorithm',
+    description: 'Kruskal\'s algorithm finds the minimum spanning tree by selecting the smallest edge that does not form a cycle with the edges already in the tree.',
+    link: '/theory/graph/mst/kruskal'
+  },
+  {
+    path: 'prim',
+    title: 'Prim\'s algorithm',
+    description: 'Prim\'s algorithm finds the minimum spanning tree by growing a tree from a starting vertex, adding the smallest edge connecting the tree to a new vertex.',
+    link: '/theory/graph/mst/prim'
+  },
+  {
+    path: 'boruvka',
+    title: 'Borůvka\'s algorithm', 
+    description: 'Borůvka\'s algorithm finds the minimum spanning tree by repeatedly connecting components using their minimum weight edges.',
+    link: '/theory/graph/mst/boruvka'
+  }
+]}/>
+
+
+1. **Kruskal's Algorithm**
+   - **Time Complexity**: $$O(E \log E)$$, primarily due to sorting the edges.
+   - **Space Complexity**: $$O(V)$$, for the disjoint set data structure.
+
+2. **Prim's Algorithm**
+   - **Time Complexity**: $$O((V + E) \log V)$$, similar to Dijkstra's algorithm when using a priority queue.
+   - **Space Complexity**: $$O(V)$$, for storing the minimum spanning tree and the priority queue.
+
+3. **Borůvka's Algorithm**
+   - **Time Complexity**: $$O(E \log V)$$, as it repeatedly connects components using minimum weight edges.
+
+## Maximum flow
+
+The maximum flow problem is a fundamental problem in graph theory that seeks to find the maximum amount of flow that can be sent from a source node to a sink node in a network. It has applications in various fields, including transportation, telecommunications, and computer networks.
+
+<SectionListBox sections={[
+  {
+    path: 'ford-fulkerson',
+    title: 'Ford-Fulkerson algorithm',
+    description: 'The Ford-Fulkerson algorithm finds the maximum flow in a network by augmenting paths in the residual graph.', 
+    link: '/theory/graph/max-flow/ford-fulkerson'
+  },
+  {
+    path: 'dinic',
+    title: 'Dinic\'s algorithm',
+    description: 'Dinic\'s algorithm finds the maximum flow in a network by augmenting paths in the residual graph.', 
+    link: '/theory/graph/max-flow/dinic'
+  },
+  {
+    path: 'edmonds-karp',
+    title: 'Edmonds-Karp algorithm',
+    description: 'The Edmonds-Karp algorithm finds the maximum flow in a network by augmenting paths in the residual graph.', 
+    link: '/theory/graph/max-flow/edmonds-karp'
+  }
+]}/>
+
+
+1. **Ford-Fulkerson Algorithm**
+   - **Time Complexity**: $$O(E \cdot \text{max flow})$$, where the complexity depends on the maximum flow value.
+   - **Space Complexity**: $$O(V + E)$$, for storing the residual graph.
+
+2. **Dinic's Algorithm**
+   - **Time Complexity**: $$O(V^2 \cdot E)$$, due to the layered network and blocking flow approach.
+   - **Space Complexity**: $$O(V + E)$$, for storing the level graph and the residual graph.
+
+3. **Edmonds-Karp Algorithm**
+   - **Time Complexity**: $$O(V \cdot E^2)$$, as it is a specific implementation of the Ford-Fulkerson method using BFS.
+   - **Space Complexity**: $$O(V + E)$$, for storing the residual graph.
+
+
+## Minimum cut
+
+The minimum cut problem is a fundamental problem in graph theory that seeks to find the minimum cut of a graph. It has applications in various fields, including transportation, telecommunications, and computer networks.
+
+<SectionListBox sections={[
+  {
+    path: 'minimum-cut',
+    title: 'Minimum cut',
+    description: 'The minimum cut problem is a fundamental problem in graph theory that seeks to find the minimum cut of a graph.',
+    link: '/theory/graph/min-cut'
+  }
+]}/>    
+
+## Maximum matching
+
+The maximum matching problem is a fundamental problem in graph theory that seeks to find the maximum matching of a graph. It has applications in various fields, including transportation, telecommunications, and computer networks.
+
+<SectionListBox sections={[
+  {
+    path: 'maximum-matching',
+    title: 'Maximum matching',
+    description: 'The maximum matching problem is a fundamental problem in graph theory that seeks to find the maximum matching of a graph.',
+    link: '/theory/graph/max-matching'
+  }
+]}/>  
+
+## Maximum independent set
+
+The maximum independent set problem is a fundamental problem in graph theory that seeks to find the maximum independent set of a graph. It has applications in various fields, including transportation, telecommunications, and computer networks.
+
+<SectionListBox sections={[
+  {
+    path: 'maximum-independent-set',
+    title: 'Maximum independent set',
+    description: 'The maximum independent set problem is a fundamental problem in graph theory that seeks to find the maximum independent set of a graph.',
+    link: '/theory/graph/max-independent-set' 
+  }
+]}/>  
+
+## Maximum clique
+
+The maximum clique problem is a fundamental problem in graph theory that seeks to find the maximum clique of a graph. It has applications in various fields, including transportation, telecommunications, and computer networks.
+
+<SectionListBox sections={[
+  {
+    path: 'maximum-clique',
+    title: 'Maximum clique',
+    description: 'The maximum clique problem is a fundamental problem in graph theory that seeks to find the maximum clique of a graph.',
+    link: '/theory/graph/max-clique'
+  }
+]}/>  
+
+## Minimum vertex cover
+
+The minimum vertex cover problem is a fundamental problem in graph theory that seeks to find the minimum vertex cover of a graph. It has applications in various fields, including transportation, telecommunications, and computer networks.
+
+<SectionListBox sections={[
+  {
+    path: 'minimum-vertex-cover',
+    title: 'Minimum vertex cover',
+    description: 'The minimum vertex cover problem is a fundamental problem in graph theory that seeks to find the minimum vertex cover of a graph.', 
+    link: '/theory/graph/min-vertex-cover'
+  }
+]}/>    
+
+## Maximum weighted independent set
+
+The maximum weighted independent set problem is a fundamental problem in graph theory that seeks to find the maximum weighted independent set of a graph. It has applications in various fields, including transportation, telecommunications, and computer networks.
+
+<SectionListBox sections={[
+  {
+    path: 'maximum-weighted-independent-set',
+    title: 'Maximum weighted independent set',
+    description: 'The maximum weighted independent set problem is a fundamental problem in graph theory that seeks to find the maximum weighted independent set of a graph.',
+    link: '/theory/graph/max-weighted-independent-set'
+  }
+]}/>    
+
+## Maximum weighted clique
+
+The maximum weighted clique problem is a fundamental problem in graph theory that seeks to find the maximum weighted clique of a graph. It has applications in various fields, including transportation, telecommunications, and computer networks.
+
+<SectionListBox sections={[
+  {
+    path: 'maximum-weighted-clique',
+    title: 'Maximum weighted clique',
+    description: 'The maximum weighted clique problem is a fundamental problem in graph theory that seeks to find the maximum weighted clique of a graph.',
+    link: '/theory/graph/max-weighted-clique'
+  }
+]}/>    
+
+## Graph Coloring
+
+The graph coloring problem is a classic problem in graph theory that involves assigning colors to the vertices of a graph such that no two adjacent vertices share the same color. This problem has applications in scheduling, register allocation in compilers, and frequency assignment in wireless networks.
+
+<SectionListBox sections={[
+  {
+    path: 'graph-coloring',
+    title: 'Graph coloring',
+    description: 'The graph coloring problem is a classic problem in graph theory that involves assigning colors to the vertices of a graph such that no two adjacent vertices share the same color.',
+    link: '/theory/graph/graph-coloring'
+  }
+]}/>        
+
+## Traveling Salesman Problem
+
+The traveling salesman problem (TSP) is a well-known problem in graph theory and combinatorial optimization. It seeks to find the shortest possible route that visits each city exactly once and returns to the origin city. TSP has applications in logistics, planning, and the manufacturing of microchips.
+
+<SectionListBox sections={[
+  {
+    path: 'traveling-salesman-problem',
+    title: 'Traveling salesman problem',
+    description: 'The traveling salesman problem (TSP) is a well-known problem in graph theory and combinatorial optimization. It seeks to find the shortest possible route that visits each city exactly once and returns to the origin city.',
+    link: '/theory/graph/traveling-salesman-problem'
+  }
+]}/>      
+
+## Graph Isomorphism
+
+The graph isomorphism problem involves determining whether two graphs are isomorphic, meaning there is a one-to-one correspondence between their vertex sets that preserves adjacency. This problem is significant in chemistry for comparing molecular structures and in computer science for pattern recognition.
+
+<SectionListBox sections={[
+  {
+    path: 'graph-isomorphism',
+    title: 'Graph isomorphism', 
+    description: 'The graph isomorphism problem involves determining whether two graphs are isomorphic, meaning there is a one-to-one correspondence between their vertex sets that preserves adjacency.',
+    link: '/theory/graph/graph-isomorphism'
+  }
+]}/>      
+
+## Bipartite Graphs
+
+A bipartite graph is a type of graph whose vertices can be divided into two disjoint sets such that no two graph vertices within the same set are adjacent. Bipartite graphs are used in modeling relationships in social networks, matching problems, and network flow problems.
+
+<SectionListBox sections={[
+  {
+    path: 'bipartite-graphs',
+    title: 'Bipartite graphs',
+    description: 'A bipartite graph is a type of graph whose vertices can be divided into two disjoint sets such that no two graph vertices within the same set are adjacent.',
+    link: '/theory/graph/bipartite-graphs'
+  }
+]}/>      
+
+## Planar Graphs
+
+A planar graph can be drawn on a plane without any edges crossing. Planar graphs are important in geography for map coloring and in circuit design for minimizing wire crossings.
+
+<SectionListBox sections={[
+  {
+    path: 'planar-graphs',
+    title: 'Planar graphs',
+    description: 'A planar graph can be drawn on a plane without any edges crossing.',
+    link: '/theory/graph/planar-graphs'
+  }
+]}/>      
+
+## Eulerian and Hamiltonian Paths
+
+An Eulerian path in a graph visits every edge exactly once, while a Hamiltonian path visits every vertex exactly once. These concepts are used in solving puzzles, designing circuits, and optimizing routes.
+
+<SectionListBox sections={[
+  {
+    path: 'eulerian-and-hamiltonian-paths',
+    title: 'Eulerian and Hamiltonian paths',  
+    description: 'An Eulerian path in a graph visits every edge exactly once, while a Hamiltonian path visits every vertex exactly once.',
+    link: '/theory/graph/eulerian-and-hamiltonian-paths'
+  }
+]}/>      
+
+## Network Flow 
+
+Network flow problems involve finding the optimal way to send flow through a network from a source to a sink. These problems are crucial in optimizing transportation systems, telecommunications, and supply chain logistics.
+
+<SectionListBox sections={[
+  {
+    path: 'network-flow',
+    title: 'Network flow',
+    description: 'Network flow problems involve finding the optimal way to send flow through a network from a source to a sink.',
+    link: '/theory/graph/network-flow'
+  }
+]}/>

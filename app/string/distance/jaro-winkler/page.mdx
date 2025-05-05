@@ -1,109 +1,35 @@
 # Jaro-Winkler Distance
 
-The **Jaro-Winkler similarity** measures the edit distance between two strings by using a prefix scale $$p$$, which gives more favorable ratings to strings that match from the beginning for a set number of characters $$l$$. A higher Jaro-Winkler distance implies less similarity between two strings, and is normalized so $$0$$ means an exact match and $$1$$ means no similarity.
+The Jaro-Winkler distance is a sophisticated string similarity metric designed to measure how alike two strings are. It builds upon the Jaro distance metric by incorporating an additional factor that gives a higher score to strings that share a common prefix. This makes it particularly useful in applications where the beginning of the strings is more significant, such as in name matching.
+
+## Mathematical Definition
+
+The Jaro-Winkler distance, denoted as $d_w$, between two strings $s_1$ and $s_2$ is mathematically expressed as:
+
+$$d_w = d_j + (l \cdot p \cdot (1 - d_j))$$
+
+In this formula:
+- $d_j$ represents the Jaro distance, which is a foundational component of the Jaro-Winkler distance.
+- $l$ is the length of the common prefix shared by the two strings, with a maximum consideration of 4 characters. This parameter helps in boosting the similarity score for strings that start similarly.
+- $p$ is the scaling factor, typically set to 0.1, which determines the weight of the prefix in the overall similarity score.
+
+The Jaro distance $d_j$ itself is calculated using the formula:
+
+$$
+d_j = \begin{cases}
+0 & \text{if } m = 0 \\
+\frac{1}{3} \left(\frac{m}{|s_1|} + \frac{m}{|s_2|} + \frac{m-t}{m}\right) & \text{otherwise}
+\end{cases}
+$$
+
+Here, $m$ represents the number of matching characters between the two strings. Characters are considered matching if they are the same and not farther apart than half the length of the longer string. The variable $t$ is half the number of transpositions, which are instances where matching characters appear in a different order. The symbols $|s_1|$ and $|s_2|$ denote the lengths of the strings $s_1$ and $s_2$, respectively.
 
 
-## History
 
-The original idea of record linkage was put forth in a 1946 paper by [Halbert Dunn](/paper/1946/dunn.pdf), Chief of the National Office of Vital Statistics at the US Public Health Service.
+The Jaro-Winkler distance ranges from 0 to 1, where 0 indicates completely different strings and 1 indicates identical strings. The distance is symmetric, meaning $$d_w(s_1, s_2) = d_w(s_2, s_1)$$. However, it does not satisfy the triangle inequality, which means it is not a true metric. Since it provides a boost to strings that share common prefixes, it is particularly useful for applications where the start of the string is significant.
 
-> Each person in the world creates a Book of Life. This Book starts with birth and ends with death. Its pages are made up of the records of the principal events in life. Record linkage is the name given to the process of assembling the pages of this Book, into a volume.
->
-> The Book has many pages for some and is but a few pages in length for others. In the case of a stillbirth, the entire volume is but a single page.
->
-> The person retains the same identity throughout the Book. Except for advancing age, he is the same person. Thinking backward he can remember the important pages of his Book even though he may have forgotten some of the words. To other persons, however, his identity must be proven. "Is the John Doe who enlists today in fact the same John Doe who was born eighteen years ago?"
->
-> Events of importance worth recording in the Book of Life are frequently put on record in different places since the person moves about the world through-out his lifetime. This makes it difficult to assemble this Book into a single compact volume. Yet, sometimes it is necessary to examine all of an individual's important records simultaneously. No one would read a novel, the pages of which were not assembled. Just so, it is necessary at times to link the various important records of a person's life.
+The Jaro-Winkler distance is widely used in various fields. In record linkage, it helps identify records that refer to the same entity across different datasets. For name matching, it is used to compare names in databases to find duplicates or similar entries. In spell checking, it suggests corrections for misspelled words based on similarity. It is also employed in duplicate detection to identify duplicate entries in datasets and in data cleaning to improve data quality by merging similar entries.
 
-<div class="grid grid-cols-2 gap-4">
-  <div>
-Ivan P. Felligi and Alan B. Sunter, from the Dominion Bureau of Statistics in Canada, published a [paper](/paper/1969/felligi_sunter.pdf) in 1969 describing a formal mathematical model for linking records in different datasets. The **Fellegi-Sunter model** is a probabilistic framework for record linkage that classifies pairs of records as matches, non-matches, or possible matches based on likelihood ratios derived from agreement and disagreement patterns across record fields.
+## Space efficiency
 
-Further innovation in record-linking methodologies and software happened in the 1990s and early 2000s at the US Census Bureau, to support census coverage evaluation efforts. A 1989 paper by [Matthew Jaro](/paper/1989/jaro.pdf) and a 1990 paper by [William Winkler](/paper/jarowinkler_1990.pdf) provided the names by which the algorithm is most commonly known.
-  </div>
-  <div>
-    <img src="/paper/1969/felligi_sunter.png" style={{ width: '100%' }} alt="Felligi and Sunter" />
-  </div>
-</div>
-
-Matthew A. Jaro is now a professor of computer science at the [University of Maryland, College Park](https://www.cs.umd.edu/), and William E. Winkler led the Record Linkage and Machine Learning Research Group at the [US Census Bureau](https://www.census.gov/topics/research/stat-research/expertise/record-linkage.html) until 2022. The [original 1990 paper](/paper/jarowinkler_1990.pdf) describes a methodology for matching records in various datasets collected by the US Census Bureau. Matthew Jaro would publish a [paper](/paper/jaro_1995.pdf) in 1995 describing a simpler version of the Jaro-Winkler distance for linking patient records in healthcare databases.
-
-Ondřej Rozinek and Jan Mareš published a [paper](/paper/roz_marez_2024.pdf) in 2024 presenting Convolution Jaro (ConvJ) and Convolution Jaro-Winkler (ConvJW), which are faster implementations of the Jaro and Jaro-Winkler distances that use a convolutional approach with Gaussian weighting to effectively capture the proximity of matching characters and provide a more meaningful similarity score.
-
-## Implementation
-
-Here is an implementation of the Jaro-Winkler distance in JavaScript.
-
-```javascript
-function jaroWinklerDistance(str1, str2) {
-    // If strings are equal, return 0 (no distance)
-    if (str1 === str2) return 0;
-
-    // Calculate Jaro Distance first
-    const matchDistance = Math.floor(Math.max(str1.length, str2.length) / 2) - 1;
-    
-    // Find matching characters within the distance
-    const str1Matches = new Array(str1.length).fill(false);
-    const str2Matches = new Array(str2.length).fill(false);
-    let matches = 0;
-    
-    for (let i = 0; i < str1.length; i++) {
-        const start = Math.max(0, i - matchDistance);
-        const end = Math.min(i + matchDistance + 1, str2.length);
-        
-        for (let j = start; j < end; j++) {
-            if (!str2Matches[j] && str1[i] === str2[j]) {
-                str1Matches[i] = true;
-                str2Matches[j] = true;
-                matches++;
-                break;
-            }
-        }
-    }
-
-    // If no matches, return 1 (maximum distance)
-    if (matches === 0) return 1;
-
-    // Count transpositions
-    let transpositions = 0;
-    let j = 0;
-    
-    for (let i = 0; i < str1.length; i++) {
-        if (str1Matches[i]) {
-            while (!str2Matches[j]) j++;
-            if (str1[i] !== str2[j]) transpositions++;
-            j++;
-        }
-    }
-    
-    // Calculate Jaro Distance
-    const m = matches;
-    transpositions = Math.floor(transpositions / 2);
-    
-    const jaroDistance = 1 - ((m / str1.length + m / str2.length + (m - transpositions) / m) / 3);
-
-    // Calculate Jaro-Winkler Distance
-    const p = 0.1; // Scaling factor
-    let l = 0;     // Length of common prefix (up to 4)
-    
-    // Count matching characters at start up to 4
-    for (let i = 0; i < Math.min(4, Math.min(str1.length, str2.length)); i++) {
-        if (str1[i] === str2[i]) l++;
-        else break;
-    }
-
-    // Return Jaro-Winkler distance
-    return jaroDistance * (1 - p * l);
-}
-```
-
-## Mathematical intuition
-
-> Given $$n$$ fields and a sample of $$N$$ record pairs drawn from $$A \times B$$, let $$y_i^j = 1$$ if field $$i$$ agrees for record pair $$j$$, let $$y_i^j = 0$$ if field $$i$$ disagrees for record pair $$j$$, for $$i = 1, \ldots, n$$ and $$j = 1, \ldots, N$$. Further, let $$y_j$$ be the vector of ones and zeros showing field agreements and disagreements for the $$j$$th pair in the sample, and let $$y$$ be the vector containing all of the $$y_i$$.
->
-> The $$m_i$$ and $$u_i$$ probabilities can be defined as $$m_i = \text{Pr}\{y_i^j = 1 | r_i \in M\}$$ and $$u_i = \text{Pr}\{y_i^j = 1 | r_i \in U\}$$ for a randomly selected record pair $$r_j$$ and $$i = 1, 2, \ldots, n$$. Define $$p$$ as the proportion of matched pairs equal to $$|M|/|M \cup U|$$. The elements of $$M \cup U$$ (i.e., all record pairs $$r$$) are distributed according to a finite mixture with the unknown parameters $$\phi = (m, u, p)$$. We will use an EM algorithm to estimate these parameters; in particular, the $$m$$ vector is of the greatest interest.
-
-To estimate how similar two records are, we can compare them field by field—for example, comparing names, addresses, or dates. For each record pair in a sample, we mark a 1 if a given field matches and a 0 if it doesn't, creating a vector of match indicators for each pair. Across all pairs, we collect these indicators into a larger dataset. We then define two probabilities for each field: one for how likely it is to match when the pair actually refers to the same entity (denoted $m_i$), and one for how likely it is to match when the pair refers to different entities (denoted $u_i$). The overall proportion of matching pairs in the data is called $p$. All record pairs are assumed to come from a mixture of true matches and non-matches, and the key unknowns—$m$, $u$, and $p$—are estimated using the Expectation-Maximization (EM) algorithm. Among these, the $m$ values are especially important, as they capture the likelihood of agreement for each field in genuine matches.
-
-> Let $$x$$ be the complete data vector equal to $$(y, g)$$, where $$g_i = (1, 0)$$ iff $$r_i \in M$$ and $$g_i = (0, 1)$$ iff $$r_i \in U$$. Then, the complete data log-likelihood is:
-> $$ \ln f(x | \phi) = \sum_{j=1}^N g_i \cdot (\ln \text{Pr}\{y^j |M\}, \ln \text{Pr}\{y^j |U\})^T + \sum_{j=1}^N g_i \cdot (\ln p, \ln(1 - p))^T $$
+The space complexity of the Jaro-Winkler distance is $O(1)$ because it only requires a constant amount of memory to store the variables $m$, $t$, and $l$. The space complexity of the Jaro distance is also $O(1)$ because it only requires a constant amount of memory to store the variables $m$ and $t$.

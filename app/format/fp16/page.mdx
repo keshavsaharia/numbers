@@ -11,7 +11,7 @@ In 2018, a paper titled [Mixed Precision Training](/paper/mixedp_training.pdf), 
 
 ## Binary Representation
 
-The FP16 format is defined by the [IEEE 754-2008 standard](/spec/ieee754). It encodes a real number using 16 bits, divided into three fields:
+The FP16 format is defined by the [IEEE 754-2008 standard](/spec/ieee/754). It encodes a real number using 16 bits, divided into three fields:
 
 - **1 sign bit** $$s$$
 - **5 exponent bits** $$e$$, with a bias of $$15$$
@@ -85,6 +85,6 @@ Support for FP16 is now widely available across modern platforms:
 
 - **Python**: `numpy.float16`, `struct`, and external IEEE 754 conversion libraries.
 - **Machine Learning Frameworks**: PyTorch (`torch.float16`, `torch.autocast`), TensorFlow (`tf.float16`, `tf.keras.mixed_precision`).
-- **Hardware**: Supported natively on NVIDIA GPUs (Pascal and newer), AMD RDNA, Apple’s Neural Engine, ARM Cortex cores, and many embedded DSPs.
+- **Hardware**: Supported natively on NVIDIA GPUs (Pascal and newer), AMD RDNA, Apple's Neural Engine, ARM Cortex cores, and many embedded DSPs.
 
 In many of these systems, FP16 support is tightly integrated with kernel-level optimizations and vectorized operations.

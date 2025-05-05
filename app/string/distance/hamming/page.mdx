@@ -1,0 +1,67 @@
+export const metadata = {
+  title: 'Hamming Distance',
+  description: 'The Hamming distance is a metric for comparing two equal-length strings by counting the number of positions at which the corresponding characters are different.'
+}
+
+import { BigOComplexityTable } from '@/components/algorithms/big-o'
+import { stringDistance } from '@/data/string-distance'
+
+# Hamming Distance
+
+The Hamming distance is a metric for comparing two equal-length strings by counting the number of positions at which the corresponding characters are different. It is named after Richard Hamming, who introduced it in his [paper](/paper/1950/hamming.pdf) on error-detecting and error-correcting codes.
+
+<BigOComplexityTable algorithms={stringDistance.sections} selected='hamming'/>
+
+## Mathematical Definition
+
+The Hamming distance $d_H$ between two equal-length strings $s_1$ and $s_2$ is defined as:
+
+$$d_H(s_1, s_2) = \sum_{i=1}^{n} [s_1[i] \neq s_2[i]]$$
+
+where $$n$$ is the length of the strings, $$[x]$$ is the Iverson bracket (1 if $$x$$ is true, 0 if $$x$$ is false) and $$s[i]$$ denotes the character at position $$i$$ in string $$s$$.
+
+## Properties
+
+The Hamming distance is a metric on the set of words of fixed length $$n$$, known as a Hamming space. It fulfills the conditions of non-negativity, symmetry, and the identity of indiscernibles, meaning the Hamming distance between two words is zero if and only if the words are identical. It also satisfies the triangle inequality: for any three words $$a$$, $$b$$, and $$c$$, the distance between $$a$$ and $$c$$ is not greater than the sum of the distances between $$a$$ and $$b$$, and between $$b$$ and $$c$$. This is because any difference between the $$i$$-th letter of $$a$$ and $$c$$ implies a difference between the $$i$$-th letter of $$a$$ and $$b$$, or between $$b$$ and $$c$$. The Hamming distance can also be interpreted as the Hamming weight of $$a - b$$ for a suitable choice of the subtraction operator, similar to how the difference between two integers represents a distance from zero on the number line.
+
+For binary strings $$a$$ and $$b$$, the Hamming distance equals the number of ones in the result of $$a \oplus b$$ (where $$\oplus$$ denotes the XOR operation). The metric space of length-$$n$$ binary strings, with the Hamming distance, is known as the Hamming cube. This space is equivalent to the set of distances between vertices in a hypercube graph. Additionally, a binary string of length $$n$$ can be viewed as a vector in $$\mathbb{R}^n$$, where each symbol in the string is treated as a real coordinate. In this context, the strings form the vertices of an $$n$$-dimensional hypercube, and the Hamming distance between the strings corresponds to the Manhattan distance between these vertices.
+
+
+## Error Detection and Correction
+
+The minimum Hamming distance, often denoted as $$d_{\text{min}}$$, is a crucial concept in coding theory, particularly in the design of error-detecting and error-correcting codes. A code $$C$$ is said to be $$k$$ error detecting if the minimum Hamming distance between any two of its codewords is at least $$k+1$$. For instance, consider a code with two codewords "000" and "111". The Hamming distance between these two words is 3, making it a $$k=2$$ error detecting code. This implies that if one or two bits are flipped, the error can be detected. However, if three bits are flipped, "000" becomes "111", and the error goes undetected.
+
+A code $$C$$ is $$k$$-error correcting if, for every word $$w$$ in the Hamming space $$H$$, there exists at most one codeword $$c$$ from $$C$$ such that the Hamming distance between $$w$$ and $$c$$ is at most $$k$$. In simpler terms, a code is $$k$$-errors correcting if the minimum Hamming distance between any two of its codewords is at least $$2k+1$$. Geometrically, this means that any closed balls of radius $$k$$ centered on distinct codewords are disjoint, often referred to as [Hamming spheres](https://en.wikipedia.org/wiki/Sphere_packing#Other_spaces).
+
+For example, consider the same 3-bit code with codewords "000" and "111". The Hamming space consists of the words 000, 001, 010, 011, 100, 101, 110, and 111. The codeword "000" and its single-bit error words "001", "010", and "100" are all within a Hamming distance of 1 from "000". Similarly, the codeword "111" and its single-bit error words "110", "101", and "011" are within a Hamming distance of 1 from "111". This code can correct a single-bit error, making it a $$k=1$$ error-correcting code. Since the minimum Hamming distance between "000" and "111" is 3, the code satisfies the condition $$2k+1 = 3$$.
+
+In summary, a code with a minimum Hamming distance $$d$$ between its codewords can detect up to $$d-1$$ errors and can correct up to $$\left\lfloor \frac{d-1}{2} \right\rfloor$$ errors. The latter is known as the packing radius or the error-correcting capability of the code.
+
+## Applications
+
+In the context of telecommunications, the Hamming distance is used as an error metric for data transmission, and is sometimes called the **signal distance**.
+
+For DNA sequence analysis, it provides a simple way to measure genetic differences between sequences. In cryptography, it helps assess the security of encryption algorithms by measuring the difference between plaintext and ciphertext. The distance is also essential in information theory for analyzing code efficiency and in network coding for optimizing data transmission protocols.
+
+## Implementation
+
+```javascript
+function hammingDistance(s1: string, s2: string): number {
+    if (s1.length !== s2.length) {
+        throw new Error('Strings must be of equal length');
+    }
+    
+    let distance = 0;
+    for (let i = 0; i < s1.length; i++) {
+        if (s1[i] !== s2[i]) {
+            distance++;
+        }
+    }
+    return distance;
+}
+```
+
+## References
+
+1. Hamming, R. W. (1950). Error detecting and error correcting codes. The Bell System Technical Journal, 29(2), 147-160.
+2. Hamming, R. W. (1986). Coding and Information Theory (2nd ed.). Prentice-Hall. 

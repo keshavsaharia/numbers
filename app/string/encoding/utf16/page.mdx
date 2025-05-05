@@ -1,0 +1,191 @@
+# UTF-16
+
+UTF-16 is a variable-width character encoding that can represent any character in the Unicode standard. It was developed as part of the Unicode standard and is particularly important in systems where 16-bit units are the natural size for character representation.
+
+In UTF-16 encoding, every code unit is exact 16 bits long, allowing for a total of 65536 possible representable characters. This character set is called the **Basic Multilingual Plane** (BMP), and includes the most common characters like the Latin, Greek, and Cyrillic alphabets. Each code unit can be written in a string with `\u` followed by exactly four hex digits.
+
+```javascript
+// Example of characters from the Basic Multilingual Plane (BMP)
+const bmpString = "\u0041\u03A9\u0416"; // 'A' (Latin), 'Ω' (Greek), 'Ж' (Cyrillic)
+console.log(bmpString); // Output: AΩЖ
+
+// Each character is represented by a single 16-bit code unit
+console.log(bmpString.length); // Output: 3
+
+// Accessing each character in the BMP
+console.log(bmpString.charCodeAt(0).toString(16)); // Output: 41
+console.log(bmpString.charCodeAt(1).toString(16)); // Output: 3a9
+console.log(bmpString.charCodeAt(2).toString(16)); // Output: 416
+```
+
+However, the entire Unicode character set is much larger than 65536 characters. These less common characters (emojis, rare Chinese letters, etc) are stored in UTF-16 as **surrogate pairs**, which are pairs of 16-bit code units that represent a single character. 
+
+```javascript
+// Example of a character represented by a surrogate pair
+const surrogatePair = "\uD83D\uDE00"; // 😀 (Grinning Face emoji)
+console.log(surrogatePair); // Output: 😀
+
+console.log(surrogatePair.length); // Output: 2
+
+// Accessing each part of the surrogate pair
+console.log(surrogatePair.charCodeAt(0).toString(16)); // d83d (high-surrogate)
+console.log(surrogatePair.charCodeAt(1).toString(16)); // de00 (low-surrogate)
+
+// Output: 1f600 (full code point)
+console.log(surrogatePair.codePointAt(0).toString(16)); 
+```
+
+To avoid ambiguity, the two parts of the pair must be between `0xD800` and `0xDFFF`, and these code units are not used to encode single-code-unit characters. More precisely, leading surrogates, also called **high-surrogate code units**, have values between `0xD800` and `0xDBFF` inclusive. Trailing surrogates, also called **low-surrogate code units**, have values between `0xDC00` and `0xDFFF` inclusive. 
+
+```javascript
+// Function to check if a code unit is a high-surrogate
+function isHighSurrogate(codeUnit) {
+  return codeUnit >= 0xD800 && codeUnit <= 0xDBFF;
+}
+
+// Function to check if a code unit is a low-surrogate
+function isLowSurrogate(codeUnit) {
+  return codeUnit >= 0xDC00 && codeUnit <= 0xDFFF;
+}
+
+// Example code units
+const highSurrogate = 0xD834; // A valid high-surrogate code unit
+const lowSurrogate = 0xDD1E;  // A valid low-surrogate code unit
+
+console.log(isHighSurrogate(highSurrogate)); // Output: true
+console.log(isLowSurrogate(lowSurrogate));   // Output: true
+
+// Example of invalid single-code-unit characters
+const invalidSingleCodeUnit = 0xD800; // High-surrogate without a pair
+console.log(isHighSurrogate(invalidSingleCodeUnit)); // Output: true
+console.log(isLowSurrogate(invalidSingleCodeUnit));  // Output: false
+```
+
+Each Unicode character, comprised of one or two UTF-16 code units, is also called a Unicode code point. Each Unicode code point can be written in a string with `\u{xxxxxx}`, where `xxxxxx` represents 1 - 6 hex digits.
+
+```javascript
+// Example of a Unicode code point
+const codePoint = "\u{1F600}"; // 😀 (Grinning Face emoji)
+console.log(codePoint); // Output: 😀
+
+// Each character is represented by a single 16-bit code unit
+console.log(codePoint.length); // Output: 1
+```
+
+## Lone surrogates
+
+A **lone surrogate** is a 16-bit code unit satisfying one of the following properties:
+
+- It is in the range `0xD800` - `0xDBFF`, inclusive (i.e., is a leading surrogate), but it is the last code unit in the string, or the next code unit is not a trailing surrogate
+- It is in the range `0xDC00` - `0xDFFF`, inclusive (i.e., is a trailing surrogate), but it is the first code unit in the string, or the previous code unit is not a leading surrogate
+
+Lone surrogates do not represent any Unicode character. Although most JavaScript built-in methods handle them correctly, lone surrogates are often not valid values when interacting with other systems — for example, `encodeURI()` will throw a `URIError` for lone surrogates, because URI encoding uses UTF-8 encoding, which does not have any encoding for lone surrogates. 
+
+```javascript
+// Function to check if a string is well-formed
+function isWellFormed(str) {
+  for (let i = 0; i < str.length; i++) {
+    const codeUnit = str.charCodeAt(i);
+    if (isHighSurrogate(codeUnit)) {
+      if (i === str.length - 1 || !isLowSurrogate(str.charCodeAt(i + 1))) {
+        return false; // Lone high surrogate
+      }
+      i++; // Skip the next low surrogate
+    } else if (isLowSurrogate(codeUnit)) {
+      if (i === 0 || !isHighSurrogate(str.charCodeAt(i - 1))) {
+        return false; // Lone low surrogate
+      }
+    }
+  }
+  return true;
+}
+
+// Example usage
+const wellFormedString = "\uD834\uDD1E"; // A well-formed surrogate pair
+const loneSurrogateString = "\uD834"; // A lone high surrogate
+
+console.log(isWellFormed(wellFormedString)); // Output: true
+console.log(isWellFormed(loneSurrogateString)); // Output: false
+```
+
+Strings not containing any lone surrogates are called **well-formed strings**, and are safe to be used with functions that do not deal with UTF-16 (such as `encodeURI()` or `TextEncoder`). You can check if a string is well-formed with the `isWellFormed()` method, or sanitize lone surrogates with the `toWellFormed()` method.
+
+```javascript
+// Example usage of isWellFormed function
+const exampleString1 = "\uD83D\uDE00"; // 😀 (Grinning Face emoji)
+const exampleString2 = "\uD83D"; // Lone high surrogate
+
+// Well-formed because it contains a valid surrogate pair.
+console.log(isWellFormed(exampleString1)); // Output: true
+
+// Not well-formed because it contains a lone high surrogate.
+console.log(isWellFormed(exampleString2)); // Output: false
+```
+
+On top of Unicode characters, there are certain sequences of Unicode characters that should be treated as one visual unit, known as a grapheme cluster. The most common case is emojis: many emojis that have a range of variations are actually formed by multiple emojis, usually joined by the &lt;ZWJ&gt; (`U+200D`) character.
+
+```javascript {{ vfs: 'string_code_point_split_emojis' }}
+// splits into two lone surrogates: ['\ud83d', '\ude04']
+console.log("😄".split(""))
+
+// "Backhand Index Pointing Right: Dark Skin Tone"
+// splits into the basic emoji + skin tone indicator
+console.log([..."👉🏿"]) // ['👉', '🏿']
+
+// "Family: Man, Boy" splits into the "Man" and "Boy" emoji, joined by a ZWJ
+console.log([..."👨‍👦"]) // [ '👨', '‍', '👦' ]
+
+
+// The United Nations flag splits into two "region indicator" letters "U" and "N"
+// All flag emojis are formed by joining two region indicator letters
+console.log([..."🇺🇳"]) // [ '🇺', '🇳' ]
+```
+
+You must be careful which level of characters you are iterating on. For example, `split("")` will split by UTF-16 code units and will separate surrogate pairs. String indexes also refer to the index of each UTF-16 code unit. On the other hand, `[Symbol.iterator]()` iterates by Unicode code points. In general, correctly iterating through grapheme clusters requires careful logic and extensive testing.
+
+
+## Byte Order
+
+In the context of UTF-16 encoding, the byte order refers to the sequence in which bytes are arranged within a 16-bit code unit.
+
+In **big-endian** format, the most significant byte (MSB) is stored first, followed by the least significant byte (LSB). This means that for a given 16-bit code unit, the higher-order byte is placed at the lower memory address. Big-endian order is often used in network protocols and certain hardware architectures, as it aligns with the natural order of reading numbers from left to right.
+
+In **little-endian** format, the least significant byte is stored first, followed by the most significant byte. This arrangement places the lower-order byte at the lower memory address. Little-endian order is commonly used in x86 architecture and many modern computing systems, as it can simplify certain arithmetic operations at the hardware level.
+
+To ensure that the byte order is correctly interpreted, especially when data is exchanged between systems with different endianness, a Byte Order Mark (BOM) can be included at the beginning of a UTF-16 encoded text. The BOM is a special Unicode character that indicates the byte order of the data:
+
+- `FE FF`: This sequence signifies that the data is in big-endian order. When a system reads this BOM, it knows to interpret the subsequent bytes as big-endian.
+
+- `FF FE`: This sequence indicates little-endian order. Upon encountering this BOM, a system will interpret the following bytes as little-endian.
+
+The use of a BOM is particularly important in environments where the byte order is not predetermined, such as in file storage or data transmission over networks. By including a BOM, developers can ensure that UTF-16 encoded text is interpreted consistently and accurately across different platforms and systems, thereby avoiding potential data corruption or misinterpretation. However, it is worth noting that while the BOM is useful for indicating byte order, it is not mandatory in all contexts, and some systems may choose to handle byte order through other means, such as metadata or configuration settings.
+
+
+## Implementation Considerations
+
+When implementing UTF-16, several important considerations must be taken into account to ensure correct and efficient handling of text data.
+
+### Byte Order
+
+UTF-16 can be stored in either big-endian or little-endian byte order. In big-endian order, the most significant byte is stored first, while in little-endian order, the least significant byte is stored first. It is crucial to correctly interpret the byte order to avoid misreading the data. For example, the character 'A' (U+0041) is represented as `00 41` in big-endian and `41 00` in little-endian. To indicate the byte order, a Byte Order Mark (BOM) can be used at the start of the text. The BOM for big-endian is `FE FF`, and for little-endian, it is `FF FE`. When reading or writing UTF-16 data, always check for the presence of a BOM to determine the correct byte order.
+
+### Surrogate Pairs
+
+UTF-16 uses surrogate pairs to represent characters outside the Basic Multilingual Plane (BMP), which includes characters with code points above U+FFFF. A surrogate pair consists of two 16-bit code units: a high surrogate and a low surrogate. The high surrogate is in the range `0xD800` to `0xDBFF`, and the low surrogate is in the range `0xDC00` to `0xDFFF`. For example, the character '𐍈' (U+10348) is represented by the surrogate pair `D800 DF48`. Proper handling of surrogate pairs is essential to correctly encode and decode characters outside the BMP. When processing text, ensure that surrogate pairs are not split or misinterpreted as individual characters.
+
+### Validation
+
+It is important to validate surrogate pairs to ensure they are correctly formed. A valid surrogate pair must consist of a high surrogate followed by a low surrogate. Lone surrogates, where a high surrogate is not followed by a low surrogate or vice versa, are invalid and do not represent any Unicode character. For example, the sequence `D800 0041` is invalid because the high surrogate `D800` is not followed by a low surrogate. Implement validation checks to detect and handle invalid surrogate pairs, which can prevent errors in text processing and ensure compatibility with systems that require well-formed UTF-16 data.
+
+## Best Practices
+
+When working with UTF-16, it's important to follow these best practices:
+
+- **Always use BOM**: Include a byte order mark at the start of the text
+- **Handle surrogates**: Properly process surrogate pairs
+- **Validate input**: Check that surrogate pairs are valid
+
+## References
+
+- [Unicode Consortium. (2022). "The Unicode Standard"](https://www.unicode.org/standard/standard.html)
+- [Yergeau, F. (2003). "UTF-16, a transformation format of ISO 10646"](https://www.ietf.org/rfc/rfc2781.txt)
