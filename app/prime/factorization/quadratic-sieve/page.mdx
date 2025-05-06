@@ -1,0 +1,119 @@
+# Quadratic Sieve
+
+The Quadratic Sieve is one of the most efficient algorithms for factoring large integers up to about 100 digits. It combines elements of linear algebra and number theory to find factors by constructing a system of linear equations over a finite field. The algorithm is particularly effective for numbers that are products of two large primes of similar size.
+
+## Algorithm Overview
+
+The Quadratic Sieve works by finding smooth numbers (numbers with only small prime factors) that are congruent to perfect squares modulo n. These relations are then used to construct a system of linear equations, whose solution leads to a non-trivial factorization of n.
+
+## Mathematical Foundation
+
+The algorithm is based on the following principle: if we can find integers x and y such that:
+
+$$x^2 \equiv y^2 \pmod{n}$$
+
+and $x \not\equiv \pm y \pmod{n}$, then $\gcd(x - y, n)$ and $\gcd(x + y, n)$ are non-trivial factors of n.
+
+## Time and Space Complexity
+
+The time complexity of the Quadratic Sieve is:
+
+$$O(e^{\sqrt{\ln n \ln \ln n}})$$
+
+The space complexity is $O(\sqrt{n})$ for storing the factor base and relations.
+
+## JavaScript Implementation
+
+```javascript
+function quadraticSieve(n) {
+    // Factor base generation
+    const factorBase = generateFactorBase(n);
+    const relations = [];
+    
+    // Sieving phase
+    const sieveArray = new Array(sieveSize).fill(0);
+    for (let i = 0; i < factorBase.length; i++) {
+        const p = factorBase[i];
+        const roots = tonelliShanks(n, p);
+        for (const root of roots) {
+            for (let j = root; j < sieveSize; j += p) {
+                sieveArray[j] += Math.log(p);
+            }
+        }
+    }
+    
+    // Finding smooth numbers
+    for (let i = 0; i < sieveSize; i++) {
+        if (Math.abs(sieveArray[i] - Math.log(i * i - n)) < threshold) {
+            const factors = factorize(i * i - n, factorBase);
+            if (factors) {
+                relations.push({
+                    x: i,
+                    factors: factors
+                });
+            }
+        }
+    }
+    
+    // Linear algebra phase
+    const matrix = buildMatrix(relations, factorBase);
+    const solution = solveLinearSystem(matrix);
+    
+    // Factorization phase
+    return findFactors(n, relations, solution);
+}
+
+// Helper function for Tonelli-Shanks algorithm
+function tonelliShanks(n, p) {
+    // Implementation of Tonelli-Shanks algorithm
+    // Returns square roots of n modulo p
+}
+
+// Helper function for matrix operations
+function buildMatrix(relations, factorBase) {
+    // Build the matrix for linear algebra phase
+}
+
+function solveLinearSystem(matrix) {
+    // Solve the system of linear equations
+}
+
+function findFactors(n, relations, solution) {
+    // Use the solution to find factors
+}
+```
+
+## Example Usage
+
+The Quadratic Sieve is typically used for numbers that are too large to factor with simpler methods. For example:
+
+```javascript
+const n = 1234567890123456789012345678901234567890n;
+const factors = quadraticSieve(n);
+console.log(factors);
+```
+
+## Optimization Techniques
+
+Several optimizations can improve the performance of the Quadratic Sieve:
+
+1. Using multiple polynomials to increase the yield of smooth numbers
+2. Implementing block sieving to improve cache efficiency
+3. Using parallel processing for the sieving phase
+4. Optimizing the linear algebra phase with sparse matrix techniques
+
+## Limitations
+
+The main limitations of the Quadratic Sieve are:
+- Memory requirements grow with the size of the number
+- Performance degrades for numbers with more than 100 digits
+- Requires careful tuning of parameters for optimal performance
+- Not suitable for numbers with many small prime factors
+
+## Applications
+
+The Quadratic Sieve is particularly useful in:
+- Cryptanalysis of RSA and other cryptographic systems
+- Integer factorization competitions
+- Research in number theory
+- Breaking cryptographic keys 

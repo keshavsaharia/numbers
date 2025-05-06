@@ -1,0 +1,144 @@
+# Trial Division
+
+Trial division is the most straightforward method for determining whether a number is prime. While not the most efficient for large numbers, it serves as a foundational concept in prime testing and is perfectly suitable for small numbers.
+
+## Mathematical Definition
+
+A number n is prime if and only if it has exactly two factors: 1 and itself. Trial division works by checking if any number from 2 to \(\sqrt{n}\) divides n evenly. If no such divisor is found, then n is prime.
+
+The mathematical foundation is based on the following theorem:
+
+If n is composite, then n has a prime factor less than or equal to \(\sqrt{n}\).
+
+This is because if n = ab where a and b are integers greater than 1, then either:
+- a ≤ \(\sqrt{n}\) or
+- b ≤ \(\sqrt{n}\)
+
+## Time and Space Complexity
+
+The time complexity of trial division is:
+
+$$
+O(\sqrt{n})
+$$
+
+where n is the number being tested. This makes it impractical for very large numbers, but efficient for small numbers.
+
+The space complexity is:
+
+$$
+O(1)
+$$
+
+as we only need a constant amount of memory regardless of input size.
+
+## JavaScript Implementation
+
+Here's a basic implementation of trial division:
+
+```javascript
+function isPrime(n) {
+    // Handle edge cases
+    if (n <= 1) return false;
+    if (n <= 3) return true;
+    if (n % 2 === 0 || n % 3 === 0) return false;
+    
+    // Check all numbers of form 6k ± 1 up to sqrt(n)
+    for (let i = 5; i * i <= n; i += 6) {
+        if (n % i === 0 || n % (i + 2) === 0) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+// Example usage:
+console.log(isPrime(17));  // true
+console.log(isPrime(24));  // false
+```
+
+## Optimizations
+
+Several optimizations can be applied to the basic trial division algorithm:
+
+1. **Skip Even Numbers**: After checking 2, we can skip all even numbers since they can't be prime.
+2. **Skip Multiples of 3**: After checking 3, we can skip all multiples of 3.
+3. **Wheel Factorization**: We can extend this pattern to create a "wheel" that skips numbers that are definitely not prime.
+
+Here's an optimized version using wheel factorization:
+
+```javascript
+function isPrimeOptimized(n) {
+    // Handle small numbers and obvious non-primes
+    if (n <= 1) return false;
+    if (n <= 3) return true;
+    if (n % 2 === 0 || n % 3 === 0) return false;
+    
+    // Create a wheel of increments that skips multiples of 2 and 3
+    const wheel = [4, 2, 4, 2, 4, 6, 2, 6];
+    let wheelIndex = 0;
+    let i = 5;
+    
+    while (i * i <= n) {
+        if (n % i === 0) return false;
+        i += wheel[wheelIndex];
+        wheelIndex = (wheelIndex + 1) % 8;
+    }
+    
+    return true;
+}
+```
+
+## Finding Prime Factors
+
+Trial division can also be used to find all prime factors of a number:
+
+```javascript
+function primeFactors(n) {
+    const factors = [];
+    
+    // Handle factors of 2
+    while (n % 2 === 0) {
+        factors.push(2);
+        n = n / 2;
+    }
+    
+    // Handle odd factors
+    for (let i = 3; i * i <= n; i += 2) {
+        while (n % i === 0) {
+            factors.push(i);
+            n = n / i;
+        }
+    }
+    
+    // If n is still greater than 2, it's prime
+    if (n > 2) {
+        factors.push(n);
+    }
+    
+    return factors;
+}
+
+// Example usage:
+console.log(primeFactors(84));  // [2, 2, 3, 7]
+```
+
+## Applications
+
+Trial division is useful in several contexts:
+
+1. Educational purposes - it's the most intuitive way to understand primality testing
+2. Testing small numbers (roughly up to 10⁶)
+3. Finding all prime factors of a number
+4. Verification of results from probabilistic primality tests
+
+## Limitations
+
+The main limitations of trial division are:
+
+1. Poor performance for large numbers
+2. Not suitable for cryptographic applications
+3. Inefficient for numbers with large prime factors
+
+For testing large numbers, more sophisticated algorithms like Miller-Rabin or AKS are recommended. 

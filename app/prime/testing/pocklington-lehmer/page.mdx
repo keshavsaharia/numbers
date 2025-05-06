@@ -1,0 +1,263 @@
+# Pocklington-Lehmer Primality Test
+
+The Pocklington-Lehmer primality test is a deterministic primality test that can prove a number is prime by finding a partial factorization of n - 1. It's particularly useful when n - 1 has a large prime factor.
+
+## Mathematical Foundation
+
+The test is based on the following theorem:
+
+Let $$n > 1$$ be an integer and suppose that $$n - 1 = FR$$ where:
+1. $$F > \sqrt{n} - 1$$
+2. All prime factors of $$F$$ are known
+3. For each prime factor $$q$$ of $$F$$, there exists an integer $$a$$ such that:
+   - $$a^{n-1} \equiv 1 \pmod{n}$$
+   - $$\gcd(a^{\frac{n-1}{q}} - 1, n) = 1$$
+
+Then $$n$$ is prime.
+
+## Time and Space Complexity
+
+The time complexity depends on the factorization of $$n - 1$$, but the primality test itself is in $$ O(\log^3 n) $$, and the space complexity is $$O(\log n)$$.
+
+## JavaScript Implementation
+
+Here's an implementation of the Pocklington-Lehmer test.
+
+```javascript
+function modPow(base, exponent, modulus) {
+    if (modulus === 1n) return 0n;
+    
+    let result = 1n;
+    base = base % modulus;
+    
+    while (exponent > 0n) {
+        if (exponent % 2n === 1n) {
+            result = (result * base) % modulus;
+        }
+        base = (base * base) % modulus;
+        exponent = exponent / 2n;
+    }
+    
+    return result;
+}
+
+function gcd(a, b) {
+    a = BigInt(Math.abs(Number(a)));
+    b = BigInt(Math.abs(Number(b)));
+    
+    while (b) {
+        [a, b] = [b, a % b];
+    }
+    
+    return a;
+}
+
+function findPrimeFactors(n) {
+    const factors = [];
+    let num = n;
+    
+    // Handle factors of 2
+    while (num % 2n === 0n) {
+        factors.push(2n);
+        num = num / 2n;
+    }
+    
+    // Handle odd factors
+    for (let i = 3n; i * i <= num; i += 2n) {
+        while (num % i === 0n) {
+            factors.push(i);
+            num = num / i;
+        }
+    }
+    
+    // If num > 1, it's prime
+    if (num > 1n) {
+        factors.push(num);
+    }
+    
+    return [...new Set(factors)]; // Return unique factors
+}
+
+function pocklingtonLehmer(n) {
+    // Convert to BigInt and handle small cases
+    n = BigInt(n);
+    if (n <= 1n) return false;
+    if (n <= 3n) return true;
+    if (n % 2n === 0n) return false;
+    
+    const nMinus1 = n - 1n;
+    const sqrt = BigInt(Math.floor(Math.sqrt(Number(n))));
+    
+    // Find prime factors of n-1
+    const primeFactors = findPrimeFactors(nMinus1);
+    
+    // Try to find suitable F and R
+    for (let i = 0n; i < primeFactors.length; i++) {
+        const F = nMinus1 / primeFactors[i];
+        
+        if (F > sqrt - 1n) {
+            // Try different bases
+            for (let a = 2n; a < 20n; a++) {
+                const powerMod = modPow(a, nMinus1, n);
+                if (powerMod !== 1n) continue;
+                
+                const factor = modPow(a, F, n);
+                if (gcd(factor - 1n, n) === 1n) {
+                    return true;
+                }
+            }
+        }
+    }
+    
+    return false;
+}
+
+// Example usage:
+console.log(pocklingtonLehmer(17));  // true
+console.log(pocklingtonLehmer(561)); // false (Carmichael number)
+```
+
+## Extended Implementation
+
+Here's a more comprehensive version that includes additional checks:
+
+```javascript
+function extendedPocklingtonLehmer(n) {
+    // Handle small cases
+    if (n <= 1n) return false;
+    if (n <= 3n) return true;
+    if (n % 2n === 0n) return false;
+    
+    // Trial division by small primes
+    const smallPrimes = [3n, 5n, 7n, 11n, 13n, 17n, 19n, 23n, 29n, 31n];
+    for (const p of smallPrimes) {
+        if (n === p) return true;
+        if (n % p === 0n) return false;
+    }
+    
+    const nMinus1 = n - 1n;
+    const sqrt = BigInt(Math.floor(Math.sqrt(Number(n))));
+    
+    // Find complete factorization of n-1
+    const factors = findPrimeFactors(nMinus1);
+    
+    // Try different factorizations
+    for (let mask = 1; mask < (1 << factors.length); mask++) {
+        let F = 1n;
+        for (let i = 0; i < factors.length; i++) {
+            if (mask & (1 << i)) {
+                F *= factors[i];
+            }
+        }
+        
+        if (F > sqrt - 1n) {
+            // Try different bases
+            for (let a = 2n; a < 20n; a++) {
+                let isValid = true;
+                
+                // Check first condition
+                if (modPow(a, nMinus1, n) !== 1n) {
+                    continue;
+                }
+                
+                // Check second condition for each prime factor
+                for (const q of factors) {
+                    const power = nMinus1 / q;
+                    const value = modPow(a, power, n);
+                    if (gcd(value - 1n, n) !== 1n) {
+                        isValid = false;
+                        break;
+                    }
+                }
+                
+                if (isValid) return true;
+            }
+        }
+    }
+    
+    return false;
+}
+```
+
+## Applications
+
+The Pocklington-Lehmer test is useful in several contexts:
+
+1. Proving primality when n-1 has a large prime factor
+2. Generating certified prime numbers
+3. Cryptographic applications
+4. Number theory research
+
+## Best Practices
+
+When implementing the test:
+
+1. Use efficient modular arithmetic
+2. Handle large numbers appropriately (BigInt)
+3. Implement robust prime factorization
+4. Consider combining with other tests
+5. Use optimized GCD algorithms
+
+## Performance Optimizations
+
+1. **Efficient Modular Exponentiation**:
+```javascript
+function optimizedModPow(base, exponent, modulus) {
+    if (modulus === 1n) return 0n;
+    
+    const bits = exponent.toString(2);
+    let result = 1n;
+    base = base % modulus;
+    
+    for (const bit of bits) {
+        result = (result * result) % modulus;
+        if (bit === '1') {
+            result = (result * base) % modulus;
+        }
+    }
+    
+    return result;
+}
+```
+
+2. **Optimized GCD**:
+```javascript
+function binaryGCD(a, b) {
+    if (b === 0n) return a;
+    
+    let shift = 0n;
+    while ((a | b) & 1n === 0n) {
+        a >>= 1n;
+        b >>= 1n;
+        shift++;
+    }
+    
+    while (a & 1n === 0n) a >>= 1n;
+    
+    while (b !== 0n) {
+        while (b & 1n === 0n) b >>= 1n;
+        if (a > b) [a, b] = [b, a];
+        b -= a;
+    }
+    
+    return a << shift;
+}
+```
+
+## Limitations
+
+1. Requires factorization of n-1
+2. Not efficient for all numbers
+3. Complex implementation
+4. May be slow for certain number types
+
+## Historical Significance
+
+The test is important because:
+
+1. One of the first deterministic primality tests
+2. Led to development of other primality tests
+3. Still useful in certain cases
+4. Historically significant in number theory
+
+For practical applications, this test is often combined with other methods or used in specific cases where n-1 has a known factorization. 

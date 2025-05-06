@@ -1,0 +1,195 @@
+# Miller-Rabin Primality Test
+
+The Miller-Rabin primality test is a sophisticated probabilistic primality testing algorithm that provides strong guarantees of correctness. It's widely used in cryptographic applications due to its efficiency and reliability.
+
+## Mathematical Foundation
+
+The Miller-Rabin test is based on two key mathematical properties:
+
+1. For any prime $$p > 2$$, we can write $$p - 1 = d \times 2^s$$, where $$d$$ is odd and $$s \geq 1$$.
+
+2. For any prime $$p$$ and any base $$a$$ coprime to $$p$$, either:
+   - $$a^d \equiv 1 \pmod{p}$$, or
+   - There exists $$r$$ where $$0 \leq r < s$$ such that $$a^{d \times 2^r} \equiv -1 \pmod{p}$$
+
+If neither condition holds for a given base $$a$$, then $$p$$ is definitely composite. If either condition holds, $$p$$ is probably prime.
+
+## Time and Space Complexity
+
+For $$k$$ rounds of testing, the time complexity is $$O(k \log^3 n)$$, and the space complexity is $$O(1)$$.
+
+## Implementation
+
+```javascript
+function modPow(base, exponent, modulus) {
+    if (modulus === 1) return 0;
+    
+    let result = 1n;
+    base = BigInt(base) % BigInt(modulus);
+    exponent = BigInt(exponent);
+    modulus = BigInt(modulus);
+    
+    while (exponent > 0n) {
+        if (exponent % 2n === 1n) {
+            result = (result * base) % modulus;
+        }
+        base = (base * base) % modulus;
+        exponent = exponent / 2n;
+    }
+    
+    return result;
+}
+
+function millerRabinTest(n, k = 20) {
+    // Handle small numbers
+    if (n <= 1 || n === 4) return false;
+    if (n <= 3) return true;
+    
+    // Convert to BigInt for large number handling
+    n = BigInt(n);
+    
+    // Write n-1 as d * 2^s
+    let s = 0n;
+    let d = n - 1n;
+    while (d % 2n === 0n) {
+        s++;
+        d /= 2n;
+    }
+    
+    // Witness function
+    function witness(a) {
+        // Compute a^d % n
+        let x = modPow(a, d, n);
+        if (x === 1n || x === n - 1n) return false;
+        
+        // Square x s-1 times
+        for (let r = 1n; r < s; r++) {
+            x = (x * x) % n;
+            if (x === n - 1n) return false;
+            if (x === 1n) return true;
+        }
+        
+        return true;
+    }
+    
+    // Use deterministic bases for n < 2⁶⁴
+    if (n < 2n ** 64n) {
+        const bases = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37];
+        for (let base of bases) {
+            if (n === BigInt(base)) return true;
+            if (witness(base)) return false;
+        }
+        return true;
+    }
+    
+    // For larger numbers, use random bases
+    for (let i = 0; i < k; i++) {
+        const a = 2n + BigInt(Math.floor(Math.random() * (Number(n) - 4))) + 1n;
+        if (witness(a)) return false;
+    }
+    
+    return true;
+}
+
+// Example usage:
+console.log(millerRabinTest(17));   // true
+console.log(millerRabinTest(561));  // false (Carmichael number)
+```
+
+## Deterministic Version
+
+For numbers below $$2^{64}$$, we can make the Miller-Rabin test deterministic by using specific bases.
+
+```javascript
+function isPrime(n) {
+    if (n <= 1 || n === 4) return false;
+    if (n <= 3) return true;
+    
+    // Deterministic bases for different ranges
+    const bases = n < 1_373_653 ? [2, 3] :
+                 n < 9_080_191 ? [31, 73] :
+                 n < 4_759_123_141 ? [2, 7, 61] :
+                 n < 2_152_302_898_747 ? [2, 3, 5, 7, 11] :
+                 n < 3_474_749_660_383 ? [2, 3, 5, 7, 11, 13] :
+                 [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37];
+    
+    // Write n-1 as d * 2^s
+    let s = 0;
+    let d = n - 1;
+    while (d % 2 === 0) {
+        s++;
+        d = Math.floor(d / 2);
+    }
+    
+    for (let a of bases) {
+        if (a >= n) break;
+        let x = modPow(a, d, n);
+        if (x === 1 || x === n - 1) continue;
+        
+        let composite = true;
+        for (let r = 1; r < s; r++) {
+            x = (x * x) % n;
+            if (x === n - 1) {
+                composite = false;
+                break;
+            }
+        }
+        if (composite) return false;
+    }
+    
+    return true;
+}
+```
+
+## Applications
+
+The Miller-Rabin test is used in many important applications:
+
+1. Cryptographic key generation
+2. SSL/TLS certificate generation
+3. Digital signatures
+4. Random prime number generation
+5. Public key cryptography systems
+
+## Best Practices
+
+When implementing Miller-Rabin:
+
+1. Use BigInt for numbers larger than 2⁵³
+2. Use deterministic version for numbers < 2⁶⁴
+3. Choose appropriate number of rounds (k) based on security requirements
+4. Combine with trial division for small factors
+5. Use cryptographically secure random number generation
+
+## Performance Optimizations
+
+1. **Small Prime Testing**: For small numbers, use trial division
+2. **Deterministic Bases**: Use predetermined bases for numbers < 2⁶⁴
+3. **Parallel Testing**: Test multiple bases concurrently
+4. **Precomputation**: Cache commonly used values
+
+```javascript
+function optimizedPrimalityTest(n) {
+    // Quick check for small numbers
+    if (n <= 1 || n === 4) return false;
+    if (n <= 3) return true;
+    if (n % 2 === 0) return false;
+    
+    // Trial division for small factors
+    for (let i = 3; i <= 100 && i * i <= n; i += 2) {
+        if (n % i === 0) return false;
+    }
+    
+    // Use Miller-Rabin for larger numbers
+    return millerRabinTest(n);
+}
+```
+
+## Limitations
+
+1. Probabilistic nature (though with very high confidence)
+2. Computational intensity for very large numbers
+3. Need for good random number generation
+4. Complex implementation compared to simpler tests
+
+Despite these limitations, Miller-Rabin remains the preferred choice for most practical applications requiring prime testing. 

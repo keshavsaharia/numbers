@@ -1,0 +1,130 @@
+# Sieve of Eratosthenes
+
+The Sieve of Eratosthenes is one of the most efficient ways to find all prime numbers up to a given limit n. This ancient algorithm, attributed to Eratosthenes of Cyrene (276-194 BC), remains relevant today due to its simplicity and efficiency.
+
+## Mathematical Definition
+
+Let's define the Sieve of Eratosthenes formally:
+
+Given a number n, the algorithm finds all prime numbers less than or equal to n by:
+
+1. Creating a list of all integers from 2 to n
+2. Starting with p = 2 (the smallest prime number)
+3. Marking all multiples of p (excluding p itself) as composite
+4. Finding the next unmarked number and repeating step 3
+5. Continuing until p² > n
+
+The mathematical foundation relies on the fact that any composite number must have a prime factor less than or equal to its square root.
+
+## Time and Space Complexity
+
+The time complexity of the Sieve of Eratosthenes is:
+
+$$
+O(n \log \log n)
+$$
+
+This comes from the fact that each number is crossed out approximately \(\log \log n\) times. The space complexity is:
+
+$$
+O(n)
+$$
+
+as we need to maintain a boolean array of size n.
+
+## JavaScript Implementation
+
+Here's an efficient implementation of the Sieve of Eratosthenes in JavaScript:
+
+```javascript
+function sieveOfEratosthenes(n) {
+    // Create array of size n+1 and fill with true
+    const isPrime = new Array(n + 1).fill(true);
+    
+    // 0 and 1 are not prime
+    isPrime[0] = isPrime[1] = false;
+    
+    // Start with 2, the first prime number
+    for (let i = 2; i * i <= n; i++) {
+        // If i is prime, mark all its multiples as non-prime
+        if (isPrime[i]) {
+            for (let j = i * i; j <= n; j += i) {
+                isPrime[j] = false;
+            }
+        }
+    }
+    
+    // Collect all prime numbers
+    const primes = [];
+    for (let i = 2; i <= n; i++) {
+        if (isPrime[i]) {
+            primes.push(i);
+        }
+    }
+    
+    return primes;
+}
+
+// Example usage:
+console.log(sieveOfEratosthenes(30));
+// Output: [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
+```
+
+## Optimizations
+
+Several optimizations can be applied to the basic sieve:
+
+1. **Memory Optimization**: We can use a bit array instead of a boolean array to reduce memory usage by a factor of 8.
+2. **Computational Optimization**: We can skip even numbers after 2, reducing the work by half.
+
+Here's an optimized version:
+
+```javascript
+function optimizedSieve(n) {
+    if (n < 2) return [];
+    
+    // Only store odd numbers to save memory
+    const isPrime = new Array(Math.floor(n/2)).fill(true);
+    
+    // Handle multiples of odd numbers
+    for (let i = 3; i * i <= n; i += 2) {
+        if (isPrime[Math.floor(i/2)]) {
+            for (let j = i * i; j <= n; j += 2 * i) {
+                isPrime[Math.floor(j/2)] = false;
+            }
+        }
+    }
+    
+    // Collect primes
+    const primes = [2];
+    for (let i = 3; i <= n; i += 2) {
+        if (isPrime[Math.floor(i/2)]) {
+            primes.push(i);
+        }
+    }
+    
+    return primes;
+}
+```
+
+## Applications
+
+The Sieve of Eratosthenes has several practical applications:
+
+1. Finding prime numbers for cryptographic algorithms
+2. Number theory research
+3. Factorization algorithms
+4. Educational purposes to understand prime numbers
+
+## Limitations
+
+While efficient for smaller ranges, the Sieve of Eratosthenes has some limitations:
+
+1. Memory requirements grow linearly with n
+2. Not suitable for testing individual large numbers
+3. Cannot efficiently find primes in a range [a,b] where a is large
+
+For testing individual large numbers, other algorithms like Miller-Rabin or Fermat tests are more appropriate.
+
+
+

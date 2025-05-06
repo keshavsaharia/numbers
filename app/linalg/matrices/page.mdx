@@ -1,0 +1,74 @@
+# Matrices
+
+A matrix is a rectangular array of numbers arranged in rows and columns. Matrices are fundamental structures in linear algebra that can represent linear transformations, systems of equations, and data structures.
+
+## Matrix Representation
+
+An m × n matrix A has m rows and n columns:
+
+$$
+A = \begin{pmatrix} 
+a_{11} & a_{12} & \cdots & a_{1n} \\
+a_{21} & a_{22} & \cdots & a_{2n} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{m1} & a_{m2} & \cdots & a_{mn}
+\end{pmatrix}
+$$
+
+## Matrix Operations
+
+### Addition and Subtraction
+For matrices of the same size:
+
+$$
+(A \pm B)_{ij} = a_{ij} \pm b_{ij}
+$$
+
+### Scalar Multiplication
+For a scalar c:
+
+$$
+(cA)_{ij} = c \cdot a_{ij}
+$$
+
+### Matrix Multiplication
+For matrices A (m × n) and B (n × p):
+
+$$
+(AB)_{ij} = \sum_{k=1}^n a_{ik}b_{kj}
+$$
+
+## Special Matrices
+
+1. **Square Matrix**: Number of rows equals number of columns
+2. **Identity Matrix**: Square matrix with 1s on diagonal, 0s elsewhere
+3. **Diagonal Matrix**: Non-zero elements only on diagonal
+4. **Symmetric Matrix**: Equal to its transpose (A = Aᵀ)
+5. **Triangular Matrix**: Upper or lower triangular form
+
+## Properties
+
+- **Determinant**: A scalar value that provides information about the matrix's invertibility and scaling properties
+- **Rank**: The dimension of the vector space spanned by the matrix's columns
+- **Trace**: Sum of diagonal elements in a square matrix
+- **Inverse**: For a square matrix A, matrix A⁻¹ such that AA⁻¹ = A⁻¹A = I
+
+## Applications
+
+Matrices are used extensively in:
+- Solving systems of linear equations
+- Computer graphics (transformations)
+- Machine learning (data representation)
+- Quantum mechanics
+- Network analysis
+- Economics (input-output models)
+
+## Computational Considerations
+
+The time complexity for common matrix operations:
+- Matrix Addition: O(mn) for m × n matrices
+- Matrix Multiplication: O(mnp) for m × n and n × p matrices
+- Matrix Determinant: O(n³) for n × n matrices
+- Matrix Inverse: O(n³) for n × n matrices
+
+Space complexity is typically O(mn) for an m × n matrix. 

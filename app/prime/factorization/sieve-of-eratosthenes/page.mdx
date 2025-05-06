@@ -1,0 +1,146 @@
+# Sieve of Eratosthenes for Factorization
+
+The Sieve of Eratosthenes is an ancient algorithm for finding all prime numbers up to a given limit. When adapted for factorization, it provides an efficient way to find prime factors by first generating a list of primes and then using them to factorize numbers. This approach is particularly effective when multiple numbers need to be factorized, as the prime list can be reused.
+
+## History
+
+Eratosthenes of Cyrene, a Greek mathematician, was born around 276 BC. He is known for his work in geometry, geography, and astronomy. The Sieve of Eratosthenes, an algorithm for finding all prime numbers up to a given limit, is one of his most famous contributions to mathematics.
+
+## Algorithm Overview
+
+Assume that all numbers are prime. Starting with the number $$2$$, mark all its multiples as non-prime. Then, move to the next number and repeat the process.
+
+The time complexity of the Sieve of Eratosthenes is $$O(n \log \log n)$$ for generating primes up to $$n$$. The factorization phase has a time complexity of $$O(\pi(\sqrt{n}))$$, where $$\pi(x)$$ is the prime-counting function. The space complexity is $$O(n)$$ for storing the sieve array.
+
+## Implementation
+
+```javascript
+function sieveOfEratosthenes(limit) {
+    const sieve = new Array(limit + 1).fill(true);
+    sieve[0] = sieve[1] = false;
+    
+    for (let i = 2 ; i * i <= limit ; i++) {
+        if (sieve[i]) {
+            for (let j = i * i ; j <= limit ; j += i) {
+                sieve[j] = false;
+            }
+        }
+    }
+    
+    return sieve;
+}
+
+function factorizeWithSieve(n, sieve) {
+    const factors = [];
+    const limit = Math.min(n, sieve.length - 1);
+    
+    for (let i = 2; i <= limit; i++) {
+        if (sieve[i]) {
+            while (n % i === 0) {
+                factors.push(i);
+                n = n / i;
+            }
+        }
+    }
+    
+    if (n > 1) {
+        factors.push(n);
+    }
+    
+    return factors;
+}
+
+// Example usage
+function factorizeNumber(n) {
+    const limit = Math.ceil(Math.sqrt(n));
+    const sieve = sieveOfEratosthenes(limit);
+    return factorizeWithSieve(n, sieve);
+}
+```
+
+## Example Usage
+
+Let's factorize the number 120:
+
+```javascript
+const result = factorizeNumber(120);
+console.log(result); // [2, 2, 2, 3, 5]
+```
+
+This means that $$120 = 2^3 \times 3 \times 5$$.
+
+## Optimization Techniques
+
+One optimization technique is to use a bit array instead of a boolean array, which reduces memory usage significantly. 
+
+```javascript
+function sieveOfEratosthenes(limit) {
+    // Initialize the sieve with all multiples of 2 marked as non-prime, and
+    // the initial byte with the first prime numbers
+    const sieve = new UInt8Array(Math.ceil(limit / 8)).fill(0b01010101)
+    sieve[0] = 0b00110101
+    //           01234567
+
+    // Special case to handle multiples of three five and seven, which could involve more than
+    // one bit change per byte
+    const threeMask = [ 0b10110110, 0b11011011, 0b01101101 ]
+    let threeIndex = 0
+    for (let i = 1 ; i <= sieve.length ; i++) {
+        sieve[i] &= threeMask[threeIndex]
+        threeIndex = (threeIndex + 1) % 3
+    }
+
+    const fiveMask = [ 0b11011110, 0b11110111, 0b10111101, 0b11101111, 0b01111011 ]
+    let fiveIndex = 0
+    for (let i = 1 ; i <= sieve.length ; i++) {
+        sieve[i] &= fiveMask[fiveIndex]
+        fiveIndex = (fiveIndex + 1) % 5
+    }
+
+    const sevenMask = [ 0b11111101, 0b11111011, 0b11110111, 0b11101111, 0b11011111, 0b10111111, 0b01111111 ]
+    let sevenIndex = 0
+    for (let i = 1 ; i <= sieve.length ; i++) {
+        sieve[i] &= sevenMask[sevenIndex]
+        sevenIndex = (sevenIndex + 1) % 7
+    }
+
+    // Now all multiples of 2, 3 and 5 are marked as non-prime, and the sieve is ready
+    // to be further processed for multiples of 7 onwards
+    for (let byte = 1 ; byte < sieve.length ; byte++) {
+        // Binary 1 in left side of the byte
+        const mask = 128
+
+        for (let bit = initialBit ; bit < 8 ; bit++) {
+            const isPrime = sieve[byte] & mask
+            const index = byte * 8 + bit
+
+            if (isPrime) {
+                for (let i = index * index ; i <= limit ; i += index) {
+                    sieve[Math.floor(i / 8)] &= ~(1 << (i % 8))
+                }
+            }
+
+            // Shift the mask to the next bit
+            mask >>= 1
+        }
+
+        initialBit = 0
+    }
+
+    return sieve
+}
+```
+
+Another technique is implementing segmented sieving, which is particularly beneficial for handling very large numbers. Additionally, wheel factorization can be employed to skip multiples of small primes, thereby improving efficiency. Lastly, parallel processing can be utilized to handle large ranges more effectively, distributing the workload across multiple processors to speed up the computation.
+
+## Limitations
+
+The primary limitations of this approach include the significant memory requirements needed to store the sieve array, its inefficiency when dealing with single large numbers, and the constraints imposed by the maximum array size in JavaScript.
+
+## Applications
+
+The Sieve of Eratosthenes is particularly useful in batch processing scenarios where multiple numbers require factorization, allowing for efficient computation by leveraging precomputed prime numbers. 
+
+In educational settings, this method serves as an excellent demonstration of prime factorization, providing a clear and systematic approach to understanding how composite numbers can be broken down into their prime components. 
+
+Furthermore, in the realm of cryptography, where the security of many systems relies on the difficulty of factorizing large numbers, the Sieve of Eratosthenes offers a foundational technique for performing multiple factorizations efficiently. Additionally, it plays a significant role in number theory research and analysis, where understanding the prime structure of numbers is crucial for advancing theoretical insights and applications. 

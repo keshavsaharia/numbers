@@ -1,0 +1,197 @@
+import { GaussianElimination } from '@/components/linalg/gaussian'
+
+# Gaussian Elimination
+
+Gaussian elimination is a method for solving systems of linear equations. It is a systematic way to transform the system into an equivalent system that is easier to solve.
+
+The general form of a system of linear equations with **coefficients** $$a_{m,n}$$ and **constants** $$b_m$$ is:
+
+$$
+\begin{cases}
+a_{1,1}x_1 + a_{1,2}x_2 + \cdots + a_{1,n}x_n = b_1 \\
+a_{2,1}x_1 + a_{2,2}x_2 + \cdots + a_{2,n}x_n = b_2 \\
+\vdots \\
+a_{m,1}x_1 + a_{m,2}x_2 + \cdots + a_{m,n}x_n = b_m
+\end{cases}  
+$$
+
+The goal of Gaussian elimination is to transform this system into an upper triangular matrix, which can be solved using back substitution. Notice that $$a'$$ is the result of the forward elimination step which reduces values of $$a$$ through the elimination process.
+
+$$
+\begin{cases}
+a_{1,1}x_1 + a_{1,2}x_2 + \cdots + a_{1,n}x_n = b_1 \\
+a_{2,1}x_1 + a_{2,2}x_2 + \cdots + a_{2,n}x_n = b_2 \\
+\vdots \\
+a_{m,1}x_1 + a_{m,2}x_2 + \cdots + a_{m,n}x_n = b_m
+\end{cases}  
+
+\rightarrow
+
+\begin{bmatrix}
+a_{1,1}' & a_{1,2}' & \cdots & a_{1,n}' \\
+0 & a_{2,2}' & \cdots & a_{2,n}' \\
+\vdots & \vdots & \ddots & \vdots \\
+0 & 0 & \cdots & a_{n,n}'
+\end{bmatrix}
+$$
+
+<GaussianElimination/>
+
+## Algorithm
+
+The algorithm can be broken down into two main steps: **forward elimination** and **back substitution**.
+
+### Forward Elimination
+
+The goal of forward elimination is to transform the original system of equations into an **upper triangular form**, where all elements below the main diagonal are zero. 
+
+$$
+\begin{bmatrix}
+a_{1,1} & a_{1,2} & \cdots & a_{1,n} \\
+0 & a_{2,2} & \cdots & a_{2,n} \\
+\vdots & \vdots & \ddots & \vdots \\
+0 & 0 & \cdots & a_{n,n}
+\end{bmatrix}
+$$
+
+This is achieved by performing a series of row operations to eliminate the coefficients below the main diagonal of the matrix. The system of equations can be represented in matrix form as:
+
+$$
+A\mathbf{x} = \mathbf{b}
+$$
+
+where $$A$$ is the coefficient matrix, $$\mathbf{x}$$ is the vector of unknowns, and $$\mathbf{b}$$ is the constant vector. The forward elimination process starts with **pivoting**: for each column, select the pivot element, which is the largest absolute value in the column from the current row to the last row. This also helps in reducing [numerical errors](/concept/ulp).
+
+<Center>
+$$
+\begin{bmatrix}
+a_{11} & a_{12} & \cdots & a_{1n} \\
+0 & a_{22} & \cdots & a_{2n} \\
+\vdots & \vdots & \ddots & \vdots \\
+0 & 0 & \cdots & a_{nn}
+\end{bmatrix}
+$$
+</Center>
+
+Next is **row swapping**: swap the current row with the row containing the pivot element to bring the pivot to the diagonal position. For example, suppose we have a matrix $$A$$ and we want to swap row $$i$$ with row $$j$$:
+
+<Center>
+$$
+\begin{bmatrix}
+a_{1,1} & a_{1,2} & \cdots & a_{1,n} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{i,1} & a_{i,2} & \cdots & a_{i,n} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{j,1} & a_{j,2} & \cdots & a_{j,n} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{m,1} & a_{m,2} & \cdots & a_{m,n}
+\end{bmatrix}
+
+\rightarrow
+
+\begin{bmatrix}
+a_{1,1} & a_{1,2} & \cdots & a_{1,n} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{j,1} & a_{j,2} & \cdots & a_{j,n} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{i,1} & a_{i,2} & \cdots & a_{i,n} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{m,1} & a_{m,2} & \cdots & a_{m,n}
+\end{bmatrix}
+$$
+</Center>
+
+Finally, in the **elimination** step, for each row below the pivot, subtract a multiple of the pivot row from the current row to make the elements below the pivot zero. For example, to eliminate the element $$a_{i,j}$$ below the pivot $$a_{j,j}$$, we multiply row $$j$$ by $$\frac{a_{i,j}}{a_{j,j}}$$ and subtract it from row $$i$$.
+
+<Center>
+$$
+\begin{bmatrix}
+a_{1,1} & a_{1,2} & \cdots & a_{1,n} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{j,1} & a_{j,2} & \cdots & a_{j,n} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{i,1} & a_{i,2} & \cdots & a_{i,n} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{m,1} & a_{m,2} & \cdots & a_{m,n}
+\end{bmatrix}
+
+\rightarrow
+
+\begin{bmatrix}
+a_{1,1} & a_{1,2} & \cdots & a_{1,n} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{j,1} & a_{j,2} & \cdots & a_{j,n} \\
+\vdots & \vdots & \ddots & \vdots \\
+0 & a_{i,2}' & \cdots & a_{i,n}' \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{m,1} & a_{m,2} & \cdots & a_{m,n}
+\end{bmatrix}
+$$
+</Center>
+
+After forward elimination, the matrix $$A$$ is transformed into an upper triangular matrix $$U$$, where all elements below the main diagonal are zero.
+
+## Back Substitution
+
+Once the matrix is in upper triangular form, back substitution is used to find the solution vector $$\mathbf{x}$$. Starting from the last row, solve for each variable by substituting the known values from the previous steps. The back substitution process is as follows:
+
+- Solve for the last variable using the last equation.
+- Substitute the known value into the previous equations to solve for the remaining variables.
+
+The result is the solution vector $$\mathbf{x}$$, which satisfies the original system of equations.
+
+The time complexity of Gaussian elimination is $$O(n^3)$$, where $$n$$ is the number of equations (or variables). The space complexity is $$O(n^2)$$ due to the storage of the matrix and vectors involved in the computation.
+
+Here is a simple implementation of Gaussian elimination in JavaScript.
+
+```javascript
+function gaussianElimination(A, b) {
+  const n = A.length;
+  const x = new Array(n).fill(0);
+
+  // Forward elimination
+  for (let i = 0; i < n; i++) {
+    // Find pivot row
+    let maxRow = i;
+    for (let k = i + 1; k < n; k++) {
+      if (Math.abs(A[k][i]) > Math.abs(A[maxRow][i])) {
+        maxRow = k;
+      }
+    }
+
+    // Swap rows
+    [A[i], A[maxRow]] = [A[maxRow], A[i]];
+    [b[i], b[maxRow]] = [b[maxRow], b[i]];
+
+    // Make all rows below this one 0 in the current column
+    for (let k = i + 1; k < n; k++) {
+      const factor = A[k][i] / A[i][i];
+      for (let j = i; j < n; j++) {
+        A[k][j] -= factor * A[i][j];
+      }
+      b[k] -= factor * b[i];
+    }
+  }
+
+  // Back substitution
+  for (let i = n - 1; i >= 0; i--) {
+    x[i] = b[i] / A[i][i];
+    for (let k = i - 1; k >= 0; k--) {
+      b[k] -= A[k][i] * x[i];
+    }
+  } 
+
+  return x;
+}
+
+const A = [
+  [1, 2, 3],
+  [4, 5, 6],
+  [7, 8, 9]
+];
+const b = [1, 2, 3];  
+const x = gaussianElimination(A, b);
+console.log(x); // Output: [1, 2, 3]
+```
+
+This function will throw an error if the matrix is singular (i.e., if it does not have a unique solution).

@@ -1,0 +1,157 @@
+# Elliptic Curve Factorization
+
+Elliptic Curve Factorization (ECM) is a factorization algorithm that uses elliptic curves to find small prime factors of large integers. It is particularly effective for finding factors between 20 and 50 digits in length. The algorithm is based on the properties of [elliptic curves](https://en.wikipedia.org/wiki/Elliptic_curve) over finite fields and their group structure.
+
+An elliptic curve over a field K is defined by the equation:
+
+$$ y^2 = x^3 + ax + b $$
+
+where $$a, b \in K$$ and $$4a^3 + 27b^2 \neq 0$$. The algorithm uses the fact that the order of the group of points on an elliptic curve over $$\mathbb{F}_p$$ is between $$p + 1 - 2\sqrt{p}$$ and $$p + 1 + 2\sqrt{p}$$.
+
+## Algorithm
+
+The ECM algorithm works by choosing a random elliptic curve and a point on that curve. It then computes scalar multiples of this point and looks for a point at infinity, which indicates that a factor has been found. The algorithm is similar in structure to Pollard's p-1 algorithm but uses the group structure of elliptic curves instead of multiplicative groups.
+
+
+## Time and Space Complexity
+
+The expected time complexity of ECM is $$O(e^{\sqrt{2 \ln p \ln \ln p}})$$, where $$p$$ is the smallest prime factor of $$n$$. The space complexity is $$O(1)$$ as it only needs to store a few points on the curve.
+
+## Implementation
+
+```javascript
+function ellipticCurveFactorization(n) {
+    if (n === 1) return [];
+    if (isPrime(n)) return [n];
+    
+    // Choose random curve parameters
+    const a = BigInt(Math.floor(Math.random() * n));
+    const b = BigInt(Math.floor(Math.random() * n));
+    
+    // Choose random point on curve
+    const x = BigInt(Math.floor(Math.random() * n));
+    const y = BigInt(Math.floor(Math.random() * n));
+    
+    // Compute scalar multiplication
+    let point = { x, y };
+    let factor = 1n;
+    
+    for (let i = 2; i < 1000; i++) {
+        try {
+            point = scalarMultiply(point, BigInt(i), a, b, n);
+        } catch (e) {
+            if (e instanceof Error && e.message === 'Factor found') {
+                factor = BigInt(e.factor);
+                break;
+            }
+        }
+    }
+    
+    if (factor === 1n) {
+        // Try a different curve
+        return ellipticCurveFactorization(n);
+    }
+    
+    return [...ellipticCurveFactorization(factor), 
+            ...ellipticCurveFactorization(n / factor)];
+}
+
+function scalarMultiply(point, k, a, b, n) {
+    let result = point;
+    let temp = point;
+    
+    for (let i = 1; i < k; i++) {
+        try {
+            result = addPoints(result, temp, a, b, n);
+        } catch (e) {
+            if (e instanceof Error && e.message === 'Factor found') {
+                throw e;
+            }
+        }
+    }
+    
+    return result;
+}
+
+function addPoints(p1, p2, a, b, n) {
+    if (p1.x === p2.x && p1.y === p2.y) {
+        return doublePoint(p1, a, b, n);
+    }
+    
+    const lambda = ((p2.y - p1.y) * modInverse(p2.x - p1.x, n)) % n;
+    const x3 = (lambda * lambda - p1.x - p2.x) % n;
+    const y3 = (lambda * (p1.x - x3) - p1.y) % n;
+    
+    return { x: x3, y: y3 };
+}
+
+function doublePoint(p, a, b, n) {
+    const lambda = ((3n * p.x * p.x + a) * modInverse(2n * p.y, n)) % n;
+    const x3 = (lambda * lambda - 2n * p.x) % n;
+    const y3 = (lambda * (p.x - x3) - p.y) % n;
+    
+    return { x: x3, y: y3 };
+}
+
+function modInverse(a, n) {
+    // Extended Euclidean algorithm for modular inverse
+    let [t, newt] = [0n, 1n];
+    let [r, newr] = [n, a];
+    
+    while (newr !== 0n) {
+        const quotient = r / newr;
+        [t, newt] = [newt, t - quotient * newt];
+        [r, newr] = [newr, r - quotient * newr];
+    }
+    
+    if (r > 1n) {
+        throw new Error('Factor found');
+    }
+    
+    return t < 0n ? t + n : t;
+}
+```
+
+## Example Usage
+
+Let's factorize a number using ECM:
+
+```javascript
+const n = 1234567890123456789012345678901234567890n;
+const factors = ellipticCurveFactorization(n);
+console.log(factors);
+```
+
+## Optimization Techniques
+
+Several optimizations can significantly enhance the performance of the Elliptic Curve Method (ECM). One key optimization involves using Montgomery curves. These curves, represented by the equation $$By^2 = x^3 + Ax^2 + x$$, allow for faster point arithmetic, particularly the x-coordinate computations which are central to ECM. This reduces the number of required modular multiplications, thereby speeding up the overall factorization process.
+
+Another significant improvement is the implementation of Stage 2 of the ECM algorithm. Stage 1 aims to find factors $$p$$ where the order of the chosen point $$P$$ on the elliptic curve $$E$$ modulo $$p$$ is smooth with respect to a bound $$B_1$$. Stage 2 extends this search to find factors where the order has one large prime factor $$q$$ between $$B_1$$ and a second, larger bound $$B_2$$. Techniques like Pollard's rho or discrete logarithm methods are employed in Stage 2, increasing the likelihood of finding a factor without drastically increasing the computational cost compared to simply raising the $$B_1$$ bound.
+
+ECM is inherently parallelizable, making parallel processing a highly effective optimization strategy. Since the computation for each randomly chosen elliptic curve is independent, multiple curves can be processed simultaneously across different processor cores or machines. This concurrent execution drastically reduces the real time required to find a factor, as numerous attempts can be made in parallel.
+
+Optimizing the scalar multiplication algorithm, which computes $$kP$$ (a point $$P$$ multiplied by a large scalar $$k$$), is also crucial as it forms the computational core of ECM. Techniques such as the binary method (double-and-add), Non-Adjacent Form (NAF) representation of the scalar $$k$$, or sliding window methods can reduce the total number of point additions and doublings needed, leading to faster computation of $$kP$$.
+
+Finally, the use of precomputed tables can accelerate common operations within ECM. For instance, during scalar multiplication using windowed methods, precalculating and storing multiples of the base point $$P$$ (like $$2P$$, $$3P$$, ..., up to a certain limit determined by the window size) allows these values to be quickly retrieved from memory instead of being computed repeatedly. This trades increased memory usage for reduced computation time during the critical scalar multiplication phase.
+
+## Limitations
+
+The effectiveness of the Elliptic Curve Method (ECM) is primarily dictated by the size of the smallest prime factor, denoted as $$p$$, of the number $$n$$ being factorized. The algorithm's runtime is roughly proportional to the effort required to find an elliptic curve group whose order modulo $$p$$ is smooth (has only small prime factors). Consequently, ECM performs exceptionally well when $$n$$ possesses a relatively small prime factor, but its efficiency diminishes significantly as the size of the smallest prime factor increases. This contrasts with methods like the Quadratic Sieve or GNFS, whose runtime depends mainly on the size of $$n$$ itself.
+
+ECM is a probabilistic algorithm, meaning it doesn't guarantee finding a factor within a specific timeframe or after a set number of attempts. Its success hinges on finding an elliptic curve and a point whose order modulo a prime factor $$p$$ is smooth with respect to chosen bounds. For certain numbers or specific choices of curves and parameters, the algorithm might fail to find such a smooth order, even after many iterations. While trying more curves or adjusting the smoothness bounds usually overcomes this, it highlights the non-deterministic nature of the method.
+
+The implementation of ECM requires meticulous handling of various edge cases inherent in elliptic curve arithmetic. The formulas for point addition and doubling have exceptions, such as when adding a point to its inverse (resulting in the point at infinity) or when the calculation of the modular inverse fails. This failure occurs when the greatest common divisor (GCD) of the number being inverted and the modulus $$n$$ is greater than 1. Critically, encountering this GCD is precisely how ECM discovers a non-trivial factor of $$n$$. Therefore, the algorithm must correctly identify and manage these scenarios, distinguishing between computational exceptions and successful factorization events.
+
+Due to its runtime dependency on the smallest prime factor, ECM is generally not the preferred method for factoring numbers composed exclusively of large prime factors, such as RSA moduli used in cryptography. When all prime factors $$p$$ are large, the probability of the elliptic curve group order modulo $$p$$ being smooth within practical computational limits becomes exceedingly small. In such cases, algorithms like the Quadratic Sieve (for numbers up to around 100 digits) or the General Number Field Sieve (for larger numbers) typically offer better performance.
+
+## Applications
+
+The Elliptic Curve Method (ECM) excels at finding small prime factors of very large composite numbers. Its runtime depends primarily on the size of the smallest factor $$p$$, rather than the size of the number $$n$$ itself. This characteristic makes it significantly more efficient than other methods like Trial Division or Pollard's Rho when $$n$$ has at least one relatively small prime factor, even if $$n$$ itself is astronomically large.
+
+In the field of cryptanalysis, ECM serves as a valuable tool. While factoring the large semi-primes used in systems like RSA typically requires more powerful algorithms like the GNFS, ECM can be employed to probe for weaknesses. If a large number used in a cryptographic context happens to possess smaller factors due to improper generation or other vulnerabilities, ECM is often the most efficient way to discover them, potentially compromising the system's security.
+
+ECM is a standard algorithm featured prominently in integer factorization competitions and large-scale computational projects like the Cunningham project. Participants frequently use ECM as an initial step to quickly sift out any small or medium-sized prime factors from the target numbers. Removing these smaller factors efficiently reduces the size of the remaining composite, paving the way for the application of more resource-intensive algorithms suited for numbers with only large prime factors.
+
+The study and application of ECM contribute significantly to research in number theory. It provides a practical link between the abstract theory of elliptic curves and the fundamental problem of integer factorization. Investigating the properties of elliptic curve groups over finite fields, particularly their order's smoothness properties, is driven partly by the desire to improve ECM, leading to deeper theoretical insights and new computational techniques.
+
+Furthermore, ECM often functions as an essential component within more sophisticated factorization strategies. Algorithms like the Quadratic Sieve (QS) and the General Number Field Sieve (GNFS), while powerful for numbers with large factors, benefit greatly from preprocessing. Running ECM first to eliminate smaller factors can substantially reduce the size of the number fed into QS or GNFS, thereby decreasing the overall time and computational resources required for the complete factorization.

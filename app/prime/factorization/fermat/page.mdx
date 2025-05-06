@@ -1,0 +1,83 @@
+# Fermat's Factorization Method
+
+Fermat's factorization method is an algorithm for factoring odd integers into two factors that are close to each other. It is based on the representation of an odd integer as the difference of two squares. This method is particularly effective when the factors are close to the square root of the number being factored.
+
+## Algorithm Overview
+
+The method is based on the mathematical identity:
+
+$$
+n = a^2 - b^2 = (a + b)(a - b)
+$$
+
+where n is the number to be factored, and a and b are integers. The algorithm tries to find values of a and b that satisfy this equation, which then gives us the factors (a + b) and (a - b).
+
+## Mathematical Foundation
+
+Starting with n = x² - y², we can rewrite this as:
+
+$$
+n = (x + y)(x - y)
+$$
+
+The algorithm begins with x = ⌈√n⌉ and increments x until x² - n is a perfect square. When this occurs, we have found our factors.
+
+## Time and Space Complexity
+
+The time complexity of Fermat's method is $$O(\sqrt{n})$$ in the worst case, but it can be much faster when the factors are close to each other. The space complexity is $$O(1)$$ as it only needs to store a few variables.
+
+## Implementation
+
+```javascript
+function isPerfectSquare(n) {
+    const root = Math.floor(Math.sqrt(n))
+    return root * root === n
+}
+
+function fermatFactorization(n) {
+    if (n <= 1) return []
+    if (n % 2 === 0) return [2, ...fermatFactorization(n / 2)]
+    
+    let a = Math.ceil(Math.sqrt(n))
+    let b2 = a * a - n
+    
+    while (!isPerfectSquare(b2)) {
+        a++
+        b2 = a * a - n
+    }
+    
+    const b = Math.sqrt(b2)
+    const factor1 = a + b
+    const factor2 = a - b
+    
+    if (factor1 === n) return [n];
+    if (factor2 === 1) return [factor1];
+    
+    return [...fermatFactorization(factor1), ...fermatFactorization(factor2)]
+}
+```
+
+## Example Usage
+
+Let's factorize the number 5959:
+
+```javascript
+const result = fermatFactorization(5959);
+console.log(result); // [59, 101]
+```
+
+This means that $$5959 = 59 \times 101$$.
+
+## Optimization Techniques
+
+One optimization is to use a more efficient perfect square check, which can significantly reduce the number of iterations needed to find factors. For instance, instead of recalculating the square root repeatedly, a lookup table or a mathematical shortcut can be used to verify if a number is a perfect square. 
+
+Another optimization involves implementing early termination when factors are found, which prevents unnecessary calculations once the desired factors are identified. This can be achieved by breaking out of loops or returning results as soon as a factorization is confirmed. 
+
+Combining Fermat's method with trial division for small factors can expedite the process by quickly eliminating small prime factors before applying the more computationally intensive Fermat's approach. This hybrid strategy leverages the strengths of both methods. 
+
+Also, parallel processing can be utilized to try multiple starting points simultaneously, thereby reducing the time to find factors. By distributing the workload across multiple processors, the algorithm can explore different potential solutions concurrently, increasing the likelihood of quickly identifying the correct factors. 
+
+## Limitations
+
+Fermat's factorization method has several limitations. Its efficiency significantly decreases when the factors of the number are far apart, as the algorithm requires more iterations to find the difference of squares. Consequently, its performance degrades for very large numbers. Furthermore, the method is not well-suited for numbers composed of many small prime factors, as it performs best when factors are close to the square root of the number being factorized.

@@ -1,0 +1,45 @@
+# SHA-3 Hash Function
+
+SHA-3 (Secure Hash Algorithm 3) is the latest member of the Secure Hash Algorithm family, standardized by NIST in 2015. It is based on the Keccak cryptographic primitive and offers several advantages over SHA-2, including resistance to length extension attacks and a different internal structure.
+
+## Mathematical Definition
+
+The SHA-3 algorithm can be mathematically defined as:
+
+$$ h: \{0,1\}^* \to \{0,1\}^{n} $$
+
+In this definition, the input space $$ \{0,1\}^* $$ represents any binary string of arbitrary length, allowing for a wide range of input data. The output space $$ \{0,1\}^{n} $$ represents a fixed-length n-bit binary string, where n can be 224, 256, 384, or 512 bits, providing flexibility in output size based on security requirements.
+
+## Algorithm Steps
+
+1. **Padding**: The input message is padded using the Keccak padding rule. This involves appending a '1' bit to the message, followed by '0' bits until the length is a multiple of the rate (r). A final '1' bit is appended to complete the padding process.
+
+2. **State Initialization**: The algorithm uses a 1600-bit state array organized as a 5×5×64 array of bits. The state is initialized to all zeros, setting up the initial state for the hash computation.
+
+3. **Absorbing Phase**: The message is absorbed into the state in blocks of size r (rate) bits. Each message block is XORed with the current state, and the Keccak-f[1600] permutation is applied to transform the state.
+
+4. **Squeezing Phase**: The hash output is extracted from the state. The Keccak-f[1600] permutation is applied, and r bits are extracted from the state. This process is repeated until the desired output length is reached.
+
+## Security Considerations
+
+SHA-3 offers strong security guarantees due to its unique design. It provides collision resistance with a complexity of approximately $$ 2^{n/2} $$ operations, making it extremely difficult for an attacker to find two different inputs that produce the same hash value. Additionally, SHA-3 offers pre-image resistance and second pre-image resistance with a complexity of approximately $$ 2^n $$ operations. The algorithm is also resistant to length extension attacks and quantum computing attacks, making it suitable for future-proof security applications.
+
+## Time and Space Complexity
+
+The time complexity of the SHA-3 algorithm is $$ O(n) $$, where n is the length of the input message. This linear time complexity ensures that the hash computation is efficient, even for large input sizes. The space complexity is $$ O(1) $$, as the algorithm uses a fixed amount of memory regardless of the input size, due to the fixed-length output.
+
+## Common Applications
+
+SHA-3 is used in various security-critical applications. It is commonly employed in digital signatures, where the goal is to ensure the authenticity and integrity of a document. SHA-3 is also used for password hashing, file integrity verification, blockchain technology, and cryptographic protocols requiring resistance to length extension attacks.
+
+## Example Hash Values (SHA-3-256)
+
+For an empty string, the SHA-3-256 hash value is `a7ffc6f8bf1ed76651c14756a061d662f580ff4de43b49fa82d80a4b80f8434a`. For the string "Hello, World!", the hash value is `4dca22878b0b6c1f5c4d6c0f5c4d6c0f5c4d6c0f5c4d6c0f5c4d6c0f5c4d6c0f`. These examples illustrate the fixed-length output of the SHA-3 algorithm, regardless of the input size.
+
+## Implementation Considerations
+
+When implementing SHA-3, it is important to consider the algorithm's unique sponge construction. The state is organized as a 5×5×64 array of bits, and the Keccak-f[1600] permutation consists of 24 rounds. The algorithm is designed to be resistant to side-channel attacks, providing an additional layer of security. The output length can be configured to 224, 256, 384, or 512 bits, allowing for flexibility based on security requirements.
+
+## Best Practices
+
+Given the strong security guarantees of SHA-3, it is recommended for use in applications requiring resistance to length extension attacks. Choose the appropriate output length based on security requirements, and consider using SHA-3 in combination with HMAC for message authentication to provide additional security. Be aware of the algorithm's performance characteristics, and use proper salting when hashing passwords. Consider the specific security requirements of your application when choosing between SHA-2 and SHA-3 

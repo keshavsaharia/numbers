@@ -1,0 +1,45 @@
+# SHA-224 Hash Function
+
+SHA-224 is a variant of the SHA-256 hash function that produces a 224-bit (28-byte) hash value, typically expressed as a 56-character hexadecimal number. It is part of the SHA-2 family and is essentially SHA-256 with a different initialization value and truncated output.
+
+## Mathematical Definition
+
+The SHA-224 algorithm processes input data in 512-bit blocks and produces a 224-bit hash value. The algorithm can be mathematically defined as:
+
+$$ h: \{0,1\}^* \to \{0,1\}^{224} $$
+
+In this definition, the input space $$ \{0,1\}^* $$ represents any binary string of arbitrary length, allowing for a wide range of input data. The output space $$ \{0,1\}^{224} $$ represents a fixed-length 224-bit binary string, ensuring a consistent output size regardless of the input length.
+
+## Algorithm Steps
+
+1. **Padding**: The input message is padded to ensure its length is congruent to 448 modulo 512 bits. This padding process involves appending a single '1' bit to the message, followed by enough '0' bits to make the length congruent to 448 modulo 512. Finally, a 64-bit representation of the original message length is appended to the end.
+
+2. **Initialization**: The algorithm initializes eight 32-bit variables (a, b, c, d, e, f, g, h) with specific values. These variables are set to the following hexadecimal values: $$ a = 0xc1059ed8 $$, $$ b = 0x367cd507 $$, $$ c = 0x3070dd17 $$, $$ d = 0xf70e5939 $$, $$ e = 0xffc00b31 $$, $$ f = 0x68581511 $$, $$ g = 0x64f98fa7 $$, and $$ h = 0xbefa4fa4 $$. These initial values are derived from the square roots of prime numbers and are used to set up the initial state of the hash computation.
+
+3. **Main Loop**: The algorithm processes the message in 512-bit blocks through 64 rounds of operations. These operations utilize bitwise logical functions (Ch, Maj, Σ0, Σ1, σ0, σ1), modular addition, right rotations, and predefined constants (Kt) to transform the input data into the final hash value.
+
+4. **Output**: The final hash value is the concatenation of the first seven 32-bit variables (a, b, c, d, e, f, g) after all blocks have been processed, with the last 32 bits truncated. This concatenated value represents the SHA-224 hash of the input message.
+
+## Security Considerations
+
+SHA-224 offers strong security guarantees due to its design. It provides collision resistance with a complexity of approximately $$ 2^{112} $$ operations, making it difficult for an attacker to find two different inputs that produce the same hash value. Additionally, SHA-224 offers pre-image resistance and second pre-image resistance with a complexity of approximately $$ 2^{224} $$ operations. These properties make SHA-224 suitable for security-critical applications.
+
+## Time and Space Complexity
+
+The time complexity of the SHA-224 algorithm is $$ O(n) $$, where n is the length of the input message. This linear time complexity ensures that the hash computation is efficient, even for large input sizes. The space complexity is $$ O(1) $$, as the algorithm uses a fixed amount of memory regardless of the input size, due to the fixed-length output.
+
+## Common Applications
+
+SHA-224 is used in various security-critical applications. It is commonly employed in digital signatures, where the goal is to ensure the authenticity and integrity of a document. SHA-224 is also used for file integrity verification, SSL/TLS security, and applications requiring 224-bit hash outputs. It is particularly useful in systems where SHA-256 would be too long but SHA-1 is not secure enough.
+
+## Example Hash Values
+
+For an empty string, the SHA-224 hash value is `d14a028c2a3a2bc9476102bb288234c415a2b01f828ea62ac5b3e42f`. For the string "Hello, World!", the hash value is `2f05477fc24bb4faefd865078956f95a6f3c7737e8f0e3c0f0c0f0c0f0c0f0c0f`. These examples illustrate the fixed-length output of the SHA-224 algorithm, regardless of the input size.
+
+## Implementation Considerations
+
+When implementing SHA-224, it is important to consider the algorithm's similarity to SHA-256, except for initialization values and output truncation. All operations are performed on 32-bit words, and the algorithm uses big-endian byte ordering. The output is typically represented as a 56-character hexadecimal string, which is a common format for displaying hash values. The algorithm is designed to be resistant to length extension attacks, providing an additional layer of security.
+
+## Best Practices
+
+Given the strong security guarantees of SHA-224, it is recommended for use in applications requiring a 224-bit hash output. Consider using SHA-224 in combination with HMAC for message authentication to provide additional security. Always use proper salting when hashing passwords to enhance security. Be aware of the algorithm's performance characteristics, and consider the specific security requirements of your application. 

@@ -1,0 +1,31 @@
+[
+{"FPGA":"Virtex","Transistor count":"70,000,000","Date of introduction":"1997","Designer":"Xilinx","Manufacturer":"","Process":"","Area":"","Transistor density, tr":{"/mm2":""},"Ref":""},
+{"FPGA":"Virtex-E","Transistor count":"200,000,000","Date of introduction":"1998","Designer":"Xilinx","Manufacturer":"","Process":"","Area":"","Transistor density, tr":{"/mm2":""},"Ref":""},
+{"FPGA":"Virtex-II","Transistor count":"350,000,000","Date of introduction":"2000","Designer":"Xilinx","Manufacturer":"","Process":"130 nm","Area":"","Transistor density, tr":{"/mm2":""},"Ref":""}
+,
+{"FPGA":"Virtex-II PRO","Transistor count":"430,000,000","Date of introduction":"2002","Designer":"Xilinx","Manufacturer":"","Process":"","Area":"","Transistor density, tr":{"/mm2":""},"Ref":""},
+{"FPGA":"Virtex-4","Transistor count":"1,000,000,000","Date of introduction":"2004","Designer":"Xilinx","Manufacturer":"","Process":"90 nm","Area":"","Transistor density, tr":{"/mm2":""},"Ref":""}
+,
+{"FPGA":"Virtex-5","Transistor count":"1,100,000,000","Date of introduction":"2006","Designer":"Xilinx","Manufacturer":"TSMC","Process":"65 nm","Area":"","Transistor density, tr":{"/mm2":""},"Ref":""}
+,
+{"FPGA":"Stratix IV","Transistor count":"2,500,000,000","Date of introduction":"2008","Designer":"Altera","Manufacturer":"TSMC","Process":"40 nm","Area":"","Transistor density, tr":{"/mm2":""},"Ref":""}
+,
+{"FPGA":"Stratix V","Transistor count":"3,800,000,000","Date of introduction":"2011","Designer":"Altera","Manufacturer":"TSMC","Process":"28 nm","Area":"","Transistor density, tr":{"/mm2":""},"Ref":""}
+,
+{"FPGA":"Arria 10","Transistor count":"5,300,000,000","Date of introduction":"2014","Designer":"Altera","Manufacturer":"TSMC","Process":"20 nm","Area":"","Transistor density, tr":{"/mm2":""},"Ref":""}
+,
+{"FPGA":"Virtex-7 2000T","Transistor count":"6,800,000,000","Date of introduction":"2011","Designer":"Xilinx","Manufacturer":"TSMC","Process":"28 nm","Area":"","Transistor density, tr":{"/mm2":""},"Ref":""}
+,
+{"FPGA":"Stratix 10 SX 2800","Transistor count":"17,000,000,000","Date of introduction":"TBD","Designer":"Intel","Manufacturer":"Intel","Process":"14 nm","Area":"560 mm2","Transistor density, tr":{"/mm2":"30,400,000"},"Ref":""}
+,
+{"FPGA":"Virtex-Ultrascale VU440","Transistor count":"20,000,000,000","Date of introduction":"Q1 2015","Designer":"Xilinx","Manufacturer":"TSMC","Process":"20 nm","Area":"","Transistor density, tr":{"/mm2":""},"Ref":""}
+,
+{"FPGA":"Virtex-Ultrascale+ VU19P","Transistor count":"35,000,000,000","Date of introduction":"2020","Designer":"Xilinx","Manufacturer":"TSMC","Process":"16 nm","Area":"900 mm2","Transistor density, tr":{"/mm2":"38,900,000"},"Ref":""}
+,
+{"FPGA":"Versal VC1902","Transistor count":"37,000,000,000","Date of introduction":"2H 2019","Designer":"Xilinx","Manufacturer":"TSMC","Process":"7 nm","Area":"","Transistor density, tr":{"/mm2":""},"Ref":""}
+,
+{"FPGA":"Stratix 10 GX 10M","Transistor count":"43,300,000,000","Date of introduction":"Q4 2019","Designer":"Intel","Manufacturer":"Intel","Process":"14 nm","Area":"1,400 mm2","Transistor density, tr":{"/mm2":"30,930,000"},"Ref":""}
+,
+{"FPGA":"Versal VP1802","Transistor count":"92,000,000,000","Date of introduction":"2021 ?","Designer":"Xilinx","Manufacturer":"TSMC","Process":"7 nm","Area":"","Transistor density, tr":{"/mm2":""},"Ref":""}
+
+]

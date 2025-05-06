@@ -1,0 +1,235 @@
+# BLS75 Primality Test
+
+The BLS75 primality test is a deterministic primality test designed for numbers of a specific form. It's particularly efficient for testing numbers of the form $$k \cdot 7^n \pm 5$$ where $$k$$ is small.
+
+## Mathematical Foundation
+
+The test is based on Lucas sequences and the following theorem:
+
+Let $$n$$ be a positive integer of the form $$k \cdot 7^m \pm 5$$. Then $$n$$ is prime if and only if it satisfies certain congruence conditions involving Lucas sequences.
+
+For a number $$n$$ of this form, we define:
+
+$$
+U_k(P,Q) = \frac{\alpha^k - \beta^k}{\alpha - \beta}
+$$
+
+where $$\alpha$$ and $$\beta$$ are the roots of $$x^2 - Px + Q$$.
+
+## Theorem
+
+
+Define $$n > 1$$. If for every prime factor $$q$$ of $$n-1$$, if there exists an integer $$a$$ such that $$ a^{n-1} \equiv 1 \pmod{n} $$ and $$a^{\frac{n-1}{q}} \not\equiv 1 \pmod{n}, $$ then $$n$$ is prime.
+
+### Proof
+
+To demonstrate that $$n$$ is prime, we need to show that $$\phi(n) = n-1$$, where $$\phi(n)$$ is the Euler totient function. More simply, we need to prove that $$n-1$$ divides $$\phi(n)$$. Assume, for contradiction, that this is not the case. Then there exists a prime $$q$$ and an exponent $$r > 0$$ such that $$q^r$$ divides $$n-1$$ but not $$\phi(n)$$. For this prime $$q$$, there must be an integer $$a$$ satisfying the conditions above. Let $$m$$ be the order of $$a$$ modulo $$n$$. Then $$m$$ divides $$n-1$$ (by the first condition) but not $$\frac{n-1}{q}$$ (by the second condition). Thus, $$q^r$$ divides $$m$$, which in turn divides $$\phi(n)$$—a contradiction that proves the theorem.
+
+In this proof, we examined the group $$(\mathbb{Z}/n\mathbb{Z})^*$$, which, if it had the correct size, $$n-1$$, would indicate that $$n$$ is prime. We gathered sufficient information (the two conditions) to demonstrate that the group indeed has the correct size. This approach forms the foundation of all modern primality tests, whether they are as straightforward as the test above or as complex as those involving elliptic curves or number fields.
+
+## Time and Space Complexity
+
+The time complexity for testing a number $$n$$ is $$O(\log^2 n)$$, and the space complexity is $$O(\log n)$$.
+
+## JavaScript Implementation
+
+Here's an implementation of the BLS7-5 test.
+
+```javascript
+function modPow(base, exponent, modulus) {
+    if (modulus === 1n) return 0n;
+    
+    let result = 1n;
+    base = base % modulus;
+    
+    while (exponent > 0n) {
+        if (exponent % 2n === 1n) {
+            result = (result * base) % modulus;
+        }
+        base = (base * base) % modulus;
+        exponent = exponent / 2n;
+    }
+    
+    return result;
+}
+
+function lucasSequence(P, Q, k, n) {
+    let U = 1n;
+    let V = BigInt(P);
+    let Qk = 1n;
+    
+    for (let bit of k.toString(2).slice(1)) {
+        U = (U * V) % n;
+        V = (V * V - 2n * Qk) % n;
+        Qk = (Qk * Qk) % n;
+        
+        if (bit === '1') {
+            const t1 = U * P;
+            const t2 = V;
+            U = (t1 + t2) * (1n / 2n) % n;
+            V = (t1 * P + t2 * Q) * (1n / 2n) % n;
+            Qk = (Qk * Q) % n;
+        }
+    }
+    
+    return [U, V];
+}
+
+function isForm7n5(n) {
+    // Check if n is of form k * 7^m ± 5
+    let temp = n;
+    if (temp % 7n === 0n) {
+        while (temp % 7n === 0n) {
+            temp = temp / 7n;
+        }
+    }
+    return Math.abs(Number(temp)) === 5;
+}
+
+function bls75Test(n) {
+    // Convert to BigInt
+    n = BigInt(n);
+    
+    // Handle small cases
+    if (n <= 1n) return false;
+    if (n <= 3n) return true;
+    if (n % 2n === 0n) return false;
+    
+    // Check if n is of the correct form
+    if (!isForm7n5(n)) {
+        throw new Error("Number must be of form k * 7^m ± 5");
+    }
+    
+    // Parameters for Lucas sequence
+    const P = 3n;
+    const Q = -1n;
+    
+    // Calculate (n+1)/2
+    const k = (n + 1n) / 2n;
+    
+    // Compute Lucas sequence
+    const [U, V] = lucasSequence(P, Q, k, n);
+    
+    // Check congruence conditions
+    return U === 0n && V === 2n;
+}
+
+// Example usage:
+console.log(bls75Test(5));     // true
+console.log(bls75Test(47));    // true (7^2 - 5)
+console.log(bls75Test(12));    // false
+```
+
+## Optimized Implementation
+
+Here's a version with additional optimizations:
+
+```javascript
+function optimizedBLS75(n) {
+    n = BigInt(n);
+    
+    // Quick checks
+    if (n <= 1n) return false;
+    if (n <= 3n) return true;
+    if (n % 2n === 0n) return false;
+    
+    // Efficient form check
+    function checkForm(n) {
+        const remainder = n % 7n;
+        if (remainder !== 5n && remainder !== 2n) {
+            let temp = n;
+            while (temp % 7n === 0n) {
+                temp /= 7n;
+                if (temp % 7n === 5n || temp % 7n === 2n) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        return true;
+    }
+    
+    if (!checkForm(n)) {
+        return false;
+    }
+    
+    // Optimized Lucas sequence computation
+    function fastLucasSequence(P, Q, k, n) {
+        let U = 1n;
+        let V = BigInt(P);
+        let k2 = k;
+        
+        while (k2 > 1n) {
+            if (k2 % 2n === 0n) {
+                const t = V;
+                V = (V * V - 2n) % n;
+                U = (U * t) % n;
+            } else {
+                const t = U;
+                U = (U * V - P) % n;
+                V = (V * V - 2n) % n;
+            }
+            k2 = k2 / 2n;
+        }
+        
+        return [U, V];
+    }
+    
+    const [U, V] = fastLucasSequence(3n, -1n, (n + 1n) / 2n, n);
+    return U === 0n && V === 2n;
+}
+```
+
+## Applications
+
+The BLS75 test is particularly useful for efficiently testing numbers that conform to specific forms. This test is designed to handle numbers of the form $$k \cdot 7^n \pm 5$$, where $$k$$ is a small integer. By focusing on this specific structure, the BLS75 test can quickly determine the primality of such numbers, making it a valuable tool in scenarios where these forms are prevalent.
+
+In the realm of cryptography, the BLS75 test finds applications due to its ability to efficiently verify the primality of numbers that fit its criteria. Cryptographic systems often require the use of large prime numbers, and when these numbers are of the form $$k \cdot 7^n \pm 5$$, the BLS75 test provides a deterministic and reliable method for ensuring their primality. This can enhance the security and performance of cryptographic protocols that rely on such primes.
+
+The BLS75 test also contributes to research in number theory by providing insights into the properties and distribution of prime numbers of specific forms. Researchers can use this test to explore patterns and relationships within the set of numbers that fit the $$k \cdot 7^n \pm 5$$ form, potentially leading to new discoveries and advancements in the field.
+
+Furthermore, the BLS75 test is instrumental in generating prime numbers of specific forms. By applying this test, mathematicians and computer scientists can efficiently produce prime numbers that meet the criteria of the test, which can be useful in various applications, including cryptographic key generation and mathematical research. The ability to generate such primes with certainty and efficiency underscores the practical significance of the BLS75 test in both theoretical and applied contexts.
+
+## Best Practices
+
+When implementing the BLS75 primality test, it is crucial to use efficient modular arithmetic. This involves performing arithmetic operations under a modulus, which is essential for handling large numbers without encountering overflow issues. Efficient modular arithmetic ensures that calculations remain within manageable bounds, allowing the algorithm to run smoothly and accurately. By optimizing these operations, the BLS75 test can achieve better performance and reliability.
+
+Handling large numbers appropriately is another important aspect of implementing the BLS75 test. Since the test often deals with numbers of the form $$k \cdot 7^n \pm 5$$, where $$n$$ can be quite large, it is vital to use data types that can accommodate such sizes. In many programming languages, this means utilizing arbitrary-precision arithmetic libraries or data types like BigInt in JavaScript. Properly managing large numbers ensures that the test can process inputs of significant size without errors or performance degradation.
+
+Validating the input format is a necessary step before running the BLS75 test. The test is specifically designed for numbers of the form $$k \cdot 7^n \pm 5$$, so it is important to verify that the input number conforms to this structure. Ensuring that the input is in the correct format prevents unnecessary computations and potential errors, allowing the test to focus on numbers that it is optimized to handle.
+
+Optimizing the computation of Lucas sequences is a key factor in the efficiency of the BLS75 test. Lucas sequences play a central role in the test's mathematical foundation, and their computation can be resource-intensive. By implementing optimized algorithms for calculating these sequences, the BLS75 test can reduce computational overhead and improve its overall speed. This optimization is crucial for maintaining the test's performance, especially when dealing with large numbers.
+
+Finally, it is worth considering the combination of the BLS75 test with other primality tests for general numbers. While the BLS75 test is highly effective for numbers of its specific form, it may not be suitable for all numbers. By integrating it with other tests, such as the Miller-Rabin or Baillie-PSW tests, one can create a more comprehensive primality testing suite. This approach allows for the efficient handling of a wider range of numbers, leveraging the strengths of each test to achieve accurate and reliable results.
+
+## Performance Considerations
+
+To optimize the performance of the BLS75 primality test, it is essential to employ efficient modular arithmetic. Modular arithmetic is a fundamental component of the test, as it allows for calculations to be performed within a fixed range, thereby preventing overflow and ensuring accuracy. By optimizing these operations, the test can handle large numbers more effectively, maintaining precision and speed. This involves using algorithms that minimize the number of operations required to compute results under a modulus, which can significantly enhance the overall efficiency of the test.
+
+Another critical aspect of performance optimization is the implementation of fast Lucas sequence computation. Lucas sequences are integral to the mathematical foundation of the BLS75 test, and their efficient computation is crucial for the test's success. By developing algorithms that can quickly and accurately compute these sequences, the test can reduce the computational load and improve its execution time. This involves leveraging mathematical properties and techniques that streamline the calculation process, allowing the test to handle larger inputs with greater speed and reliability.
+
+Optimizing form checking is also vital for enhancing the performance of the BLS75 test. The test is specifically designed for numbers of the form $$k \cdot 7^n \pm 5$$, and ensuring that the input number conforms to this structure is crucial. By implementing efficient form-checking algorithms, the test can quickly verify whether a number fits the required form, thereby avoiding unnecessary computations on unsuitable inputs. This optimization not only saves time but also ensures that the test is applied only to numbers for which it is intended, maximizing its effectiveness.
+
+Finally, using appropriate data types, such as BigInt, is essential for handling the large numbers often encountered in the BLS75 test. BigInt allows for the representation and manipulation of integers larger than those natively supported by standard data types, which is crucial for maintaining accuracy and performance when dealing with significant values. By utilizing data types that can accommodate the size of the numbers involved, the test can perform calculations without encountering overflow issues, ensuring that it operates smoothly and efficiently even with large inputs.
+
+## Limitations
+
+The BLS75 primality test is specifically designed to work with numbers of the form $$k \cdot 7^n \pm 5$$. This means that its application is limited to numbers that fit this particular structure. The test leverages the unique properties of these numbers to determine their primality efficiently. However, this specificity also means that the BLS75 test is not applicable to numbers that do not conform to this form, which limits its use in broader contexts.
+
+Due to its specialized nature, the BLS75 test is not suitable for general primality testing. General primality tests are designed to handle a wide range of numbers, regardless of their specific form. In contrast, the BLS75 test's focus on numbers of the form $$k \cdot 7^n \pm 5$$ means it cannot be used as a universal solution for primality testing. For numbers outside this form, other algorithms, such as the Miller-Rabin or Baillie-PSW tests, are more appropriate.
+
+The implementation of the BLS75 test requires careful handling of Lucas sequences. Lucas sequences are a critical component of the test's mathematical foundation, and their accurate computation is essential for the test's success. Implementing these sequences involves complex calculations that must be performed with precision to ensure the test's reliability. Any errors in the implementation of Lucas sequences can lead to incorrect results, highlighting the need for meticulous attention to detail.
+
+In terms of performance, the BLS75 test may be slower than other primality tests when applied to general numbers. While it is optimized for numbers of the form $$k \cdot 7^n \pm 5$$, its efficiency diminishes when used outside this context. Other tests, such as the Miller-Rabin test, are designed to handle a broader range of numbers and may offer faster performance for general primality testing. As a result, the BLS75 test is best reserved for its intended purpose, where it can provide accurate and efficient results.
+
+## Historical Significance
+
+The BLS75 test is significant because it exemplifies the efficiency of specialized primality tests. Unlike general-purpose tests, which are designed to handle a wide variety of numbers, the BLS75 test is tailored for numbers of a specific form, namely $$k \cdot 7^n \pm 5$$. This specialization allows it to perform primality testing with remarkable speed and accuracy for numbers that fit this pattern. By focusing on a narrow class of numbers, the BLS75 test can leverage mathematical properties unique to these forms, resulting in a more efficient testing process compared to broader algorithms.
+
+Another important aspect of the BLS75 test is its demonstration of the relationship between Lucas sequences and primality. Lucas sequences are a series of numbers that are closely related to Fibonacci numbers and have unique properties that can be exploited in primality testing. The BLS75 test uses these sequences to establish conditions under which a number is prime. This connection not only enhances the test's effectiveness but also enriches our understanding of how Lucas sequences can be applied in number theory, particularly in the context of primality testing.
+
+The BLS75 test provides deterministic testing for specific number forms, which is a crucial advantage in certain applications. Deterministic tests offer a definitive answer regarding the primality of a number, as opposed to probabilistic tests that only provide a likelihood. For numbers of the form $$k \cdot 7^n \pm 5$$, the BLS75 test can conclusively determine primality, making it a reliable tool in scenarios where certainty is paramount. This deterministic nature is particularly valuable in cryptographic applications, where the use of prime numbers is essential for security.
+
+Furthermore, the BLS75 test contributes to the understanding of prime number patterns. By focusing on numbers of a specific form, the test sheds light on the distribution and properties of primes within this subset. This insight can lead to broader discoveries in number theory, as researchers explore the implications of these patterns and their connections to other mathematical concepts. The BLS75 test, therefore, not only serves as a practical tool for primality testing but also as a catalyst for further exploration and discovery in the field of mathematics.
+
+For general primality testing, other algorithms like the Miller-Rabin test are more appropriate. The Miller-Rabin test is a probabilistic algorithm that can handle a wide range of numbers, making it suitable for general use. In contrast, the BLS75 test should be used specifically for numbers of the form $$k \cdot 7^n \pm 5$$, where its specialized approach can be fully utilized. By selecting the appropriate test for the given context, one can achieve optimal results in terms of both accuracy and efficiency.

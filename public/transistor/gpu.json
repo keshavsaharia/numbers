@@ -1,0 +1,320 @@
+[
+{"processor":"µPD7220 GDC","transistor":"40,000","year":"1982","designer":"NEC","fab":"NEC","process":"5,000 nm","area":"?","density":"?","ref":""}
+,
+{"processor":"ARTC HD63484","transistor":"60,000","year":"1984","designer":"Hitachi","fab":"Hitachi","process":"?","area":"?","density":"?","ref":""},
+{"processor":"CBM Agnus","transistor":"21,000","year":"1985","designer":"Commodore","fab":"CSG","process":"5,000 nm","area":"?","density":"?","ref":""}
+,
+{"processor":"YM7101 VDP","transistor":"100,000","year":"1988","designer":"Yamaha, Sega","fab":"Yamaha","process":"?","area":"?","density":"?","ref":""},
+{"processor":"Tom & Jerry","transistor":"750,000","year":"1993","designer":"Flare","fab":"IBM","process":"?","area":"?","density":"?","ref":""},
+{"processor":"VDP1","transistor":"1,000,000","year":"1994","designer":"Sega","fab":"Hitachi","process":"500 nm","area":"?","density":"?","ref":""}
+,
+{"processor":"Sony GPU","transistor":"1,000,000","year":"1994","designer":"Toshiba","fab":"LSI","process":"500 nm","area":"?","density":"?","ref":""}
+,
+{"processor":"NV1","transistor":"1,000,000","year":"1995","designer":"Nvidia, Sega","fab":"SGS","process":"500 nm","area":"90 mm2","density":"11,000","ref":""}
+,
+{"processor":"Reality Coprocessor","transistor":"2,600,000","year":"1996","designer":"SGI","fab":"NEC","process":"350 nm","area":"81 mm2","density":"32,100","ref":""}
+,
+{"processor":"PowerVR","transistor":"1,200,000","year":"1996","designer":"VideoLogic","fab":"NEC","process":"350 nm","area":"?","density":"?","ref":""}
+,
+{"processor":"Voodoo Graphics","transistor":"1,000,000","year":"1996","designer":"3dfx","fab":"TSMC","process":"500 nm","area":"?","density":"?","ref":""}
+,
+{"processor":"Voodoo Rush","transistor":"1,000,000","year":"1997","designer":"3dfx","fab":"TSMC","process":"500 nm","area":"?","density":"?","ref":""}
+,
+{"processor":"NV3","transistor":"3,500,000","year":"1997","designer":"Nvidia","fab":"SGS, TSMC","process":"350 nm","area":"90 mm2","density":"38,900","ref":""}
+,
+{"processor":"i740","transistor":"3,500,000","year":"1998","designer":"Intel, Real3D","fab":"Real3D","process":"350 nm","area":"?","density":"?","ref":""}
+,
+{"processor":"Voodoo 2","transistor":"4,000,000","year":"1998","designer":"3dfx","fab":"TSMC","process":"350 nm","area":"?","density":"?","ref":""}
+,
+{"processor":"Voodoo Rush","transistor":"4,000,000","year":"1998","designer":"3dfx","fab":"TSMC","process":"350 nm","area":"?","density":"?","ref":""}
+,
+{"processor":"NV4","transistor":"7,000,000","year":"1998","designer":"Nvidia","fab":"TSMC","process":"350 nm","area":"90 mm2","density":"78,000","ref":""}
+,
+{"processor":"PowerVR2 CLX2","transistor":"10,000,000","year":"1998","designer":"VideoLogic","fab":"NEC","process":"250 nm","area":"116 mm2","density":"86,200","ref":""}
+,
+{"processor":"PowerVR2 PMX1","transistor":"6,000,000","year":"1999","designer":"VideoLogic","fab":"NEC","process":"250 nm","area":"?","density":"?","ref":""}
+,
+{"processor":"Rage 128","transistor":"8,000,000","year":"1999","designer":"ATI","fab":"TSMC, UMC","process":"250 nm","area":"70 mm2","density":"114,000","ref":""}
+,
+{"processor":"Voodoo 3","transistor":"8,100,000","year":"1999","designer":"3dfx","fab":"TSMC","process":"250 nm","area":"?","density":"?","ref":""}
+,
+{"processor":"Graphics Synthesizer","transistor":"43,000,000","year":"1999","designer":"Sony, Toshiba","fab":"Sony, Toshiba","process":"180 nm","area":"279 mm2","density":"154,000","ref":""}
+,
+{"processor":"NV5","transistor":"15,000,000","year":"1999","designer":"Nvidia","fab":"TSMC","process":"250 nm","area":"90 mm2","density":"167,000","ref":""}
+,
+{"processor":"NV10","transistor":"17,000,000","year":"1999","designer":"Nvidia","fab":"TSMC","process":"220 nm","area":"111 mm2","density":"153,000","ref":""}
+,
+{"processor":"NV11","transistor":"20,000,000","year":"2000","designer":"Nvidia","fab":"TSMC","process":"180 nm","area":"65 mm2","density":"308,000","ref":""}
+,
+{"processor":"NV15","transistor":"25,000,000","year":"2000","designer":"Nvidia","fab":"TSMC","process":"180 nm","area":"81 mm2","density":"309,000","ref":""}
+,
+{"processor":"Voodoo 4","transistor":"14,000,000","year":"2000","designer":"3dfx","fab":"TSMC","process":"220 nm","area":"?","density":"?","ref":""}
+,
+{"processor":"Voodoo 5","transistor":"28,000,000","year":"2000","designer":"3dfx","fab":"TSMC","process":"220 nm","area":"?","density":"?","ref":""}
+,
+{"processor":"R100","transistor":"30,000,000","year":"2000","designer":"ATI","fab":"TSMC","process":"180 nm","area":"97 mm2","density":"309,000","ref":""}
+,
+{"processor":"Flipper","transistor":"51,000,000","year":"2000","designer":"ArtX","fab":"NEC","process":"180 nm","area":"106 mm2","density":"481,000","ref":""}
+,
+{"processor":"PowerVR3 KYRO","transistor":"14,000,000","year":"2001","designer":"Imagination","fab":"ST","process":"250 nm","area":"?","density":"?","ref":""}
+,
+{"processor":"PowerVR3 KYRO II","transistor":"15,000,000","year":"2001","designer":"Imagination","fab":"ST","process":"180 nm","area":"?","density":"?","ref":""}
+,
+{"processor":"NV2A","transistor":"60,000,000","year":"2001","designer":"Nvidia","fab":"TSMC","process":"150 nm","area":"?","density":"?","ref":""}
+,
+{"processor":"NV20","transistor":"57,000,000","year":"2001","designer":"Nvidia","fab":"TSMC","process":"150 nm","area":"128 mm2","density":"445,000","ref":""}
+,
+{"processor":"NV25","transistor":"63,000,000","year":"2002","designer":"Nvidia","fab":"TSMC","process":"150 nm","area":"142 mm2","density":"444,000","ref":""}
+,
+{"processor":"NV28","transistor":"36,000,000","year":"2002","designer":"Nvidia","fab":"TSMC","process":"150 nm","area":"101 mm2","density":"356,000","ref":""}
+,
+{"processor":"NV17/18","transistor":"29,000,000","year":"2002","designer":"Nvidia","fab":"TSMC","process":"150 nm","area":"65 mm2","density":"446,000","ref":""}
+,
+{"processor":"R200","transistor":"60,000,000","year":"2001","designer":"ATI","fab":"TSMC","process":"150 nm","area":"68 mm2","density":"882,000","ref":""}
+,
+{"processor":"R300","transistor":"107,000,000","year":"2002","designer":"ATI","fab":"TSMC","process":"150 nm","area":"218 mm2","density":"490,800","ref":""}
+,
+{"processor":"R360","transistor":"117,000,000","year":"2003","designer":"ATI","fab":"TSMC","process":"150 nm","area":"218 mm2","density":"536,700","ref":""}
+,
+{"processor":"NV34","transistor":"45,000,000","year":"2003","designer":"Nvidia","fab":"TSMC","process":"150 nm","area":"124 mm2","density":"363,000","ref":""}
+,
+{"processor":"NV34b","transistor":"45,000,000","year":"2004","designer":"Nvidia","fab":"TSMC","process":"140 nm","area":"91 mm2","density":"495,000","ref":""}
+,
+{"processor":"NV30","transistor":"125,000,000","year":"2003","designer":"Nvidia","fab":"TSMC","process":"130 nm","area":"199 mm2","density":"628,000","ref":""}
+,
+{"processor":"NV31","transistor":"80,000,000","year":"2003","designer":"Nvidia","fab":"TSMC","process":"130 nm","area":"121 mm2","density":"661,000","ref":""}
+,
+{"processor":"NV35/38","transistor":"135,000,000","year":"2003","designer":"Nvidia","fab":"TSMC","process":"130 nm","area":"207 mm2","density":"652,000","ref":""}
+,
+{"processor":"NV36","transistor":"82,000,000","year":"2003","designer":"Nvidia","fab":"IBM","process":"130 nm","area":"133 mm2","density":"617,000","ref":""}
+,
+{"processor":"R480","transistor":"160,000,000","year":"2004","designer":"ATI","fab":"TSMC","process":"130 nm","area":"297 mm2","density":"538,700","ref":""}
+,
+{"processor":"NV40","transistor":"222,000,000","year":"2004","designer":"Nvidia","fab":"IBM","process":"130 nm","area":"305 mm2","density":"727,900","ref":""}
+,
+{"processor":"NV44","transistor":"75,000,000","year":"2004","designer":"Nvidia","fab":"IBM","process":"130 nm","area":"110 mm2","density":"681,800","ref":""}
+,
+{"processor":"NV41","transistor":"222,000,000","year":"2005","designer":"Nvidia","fab":"TSMC","process":"110 nm","area":"225 mm2","density":"986,700","ref":""}
+,
+{"processor":"NV42","transistor":"198,000,000","year":"2005","designer":"Nvidia","fab":"TSMC","process":"110 nm","area":"222 mm2","density":"891,900","ref":""}
+,
+{"processor":"NV43","transistor":"146,000,000","year":"2005","designer":"Nvidia","fab":"TSMC","process":"110 nm","area":"154 mm2","density":"948,100","ref":""}
+,
+{"processor":"G70","transistor":"303,000,000","year":"2005","designer":"Nvidia","fab":"TSMC, Chartered","process":"110 nm","area":"333 mm2","density":"909,900","ref":""}
+,
+{"processor":"Xenos","transistor":"232,000,000","year":"2005","designer":"ATI","fab":"TSMC","process":"90 nm","area":"182 mm2","density":"1,275,000","ref":""}
+,
+{"processor":"RSX Reality Synthesizer","transistor":"300,000,000","year":"2005","designer":"Nvidia, Sony","fab":"Sony","process":"90 nm","area":"186 mm2","density":"1,613,000","ref":""}
+,
+{"processor":"R520","transistor":"321,000,000","year":"2005","designer":"ATI","fab":"TSMC","process":"90 nm","area":"288 mm2","density":"1,115,000","ref":""}
+,
+{"processor":"RV530","transistor":"157,000,000","year":"2005","designer":"ATI","fab":"TSMC","process":"90 nm","area":"150 mm2","density":"1,047,000","ref":""}
+,
+{"processor":"RV515","transistor":"107,000,000","year":"2005","designer":"ATI","fab":"TSMC","process":"90 nm","area":"100 mm2","density":"1,070,000","ref":""}
+,
+{"processor":"R580","transistor":"384,000,000","year":"2006","designer":"ATI","fab":"TSMC","process":"90 nm","area":"352 mm2","density":"1,091,000","ref":""}
+,
+{"processor":"G71","transistor":"278,000,000","year":"2006","designer":"Nvidia","fab":"TSMC","process":"90 nm","area":"196 mm2","density":"1,418,000","ref":""}
+,
+{"processor":"G72","transistor":"112,000,000","year":"2006","designer":"Nvidia","fab":"TSMC","process":"90 nm","area":"81 mm2","density":"1,383,000","ref":""}
+,
+{"processor":"G73","transistor":"177,000,000","year":"2006","designer":"Nvidia","fab":"TSMC","process":"90 nm","area":"125 mm2","density":"1,416,000","ref":""}
+,
+{"processor":"G80","transistor":"681,000,000","year":"2006","designer":"Nvidia","fab":"TSMC","process":"90 nm","area":"480 mm2","density":"1,419,000","ref":""}
+,
+{"processor":"G86 Tesla","transistor":"210,000,000","year":"2007","designer":"Nvidia","fab":"TSMC","process":"80 nm","area":"127 mm2","density":"1,654,000","ref":""}
+,
+{"processor":"G84 Tesla","transistor":"289,000,000","year":"2007","designer":"Nvidia","fab":"TSMC","process":"80 nm","area":"169 mm2","density":"1,710,000","ref":""}
+,
+{"processor":"RV560","transistor":"330,000,000","year":"2006","designer":"ATI","fab":"TSMC","process":"80 nm","area":"230 mm2","density":"1,435,000","ref":""}
+,
+{"processor":"R600","transistor":"700,000,000","year":"2007","designer":"ATI","fab":"TSMC","process":"80 nm","area":"420 mm2","density":"1,667,000","ref":""}
+,
+{"processor":"RV610","transistor":"180,000,000","year":"2007","designer":"ATI","fab":"TSMC","process":"65 nm","area":"85 mm2","density":"2,118,000","ref":""}
+,
+{"processor":"RV630","transistor":"390,000,000","year":"2007","designer":"ATI","fab":"TSMC","process":"65 nm","area":"153 mm2","density":"2,549,000","ref":""}
+,
+{"processor":"G92","transistor":"754,000,000","year":"2007","designer":"Nvidia","fab":"TSMC, UMC","process":"65 nm","area":"324 mm2","density":"2,327,000","ref":""}
+,
+{"processor":"G94 Tesla","transistor":"505,000,000","year":"2008","designer":"Nvidia","fab":"TSMC","process":"65 nm","area":"240 mm2","density":"2,104,000","ref":""}
+,
+{"processor":"G96 Tesla","transistor":"314,000,000","year":"2008","designer":"Nvidia","fab":"TSMC","process":"65 nm","area":"144 mm2","density":"2,181,000","ref":""}
+,
+{"processor":"G98 Tesla","transistor":"210,000,000","year":"2008","designer":"Nvidia","fab":"TSMC","process":"65 nm","area":"86 mm2","density":"2,442,000","ref":""}
+,
+{"processor":"GT200","transistor":"1,400,000,000","year":"2008","designer":"Nvidia","fab":"TSMC","process":"65 nm","area":"576 mm2","density":"2,431,000","ref":""}
+,
+{"processor":"RV620","transistor":"181,000,000","year":"2008","designer":"ATI","fab":"TSMC","process":"55 nm","area":"67 mm2","density":"2,701,000","ref":""}
+,
+{"processor":"RV635","transistor":"378,000,000","year":"2008","designer":"ATI","fab":"TSMC","process":"55 nm","area":"135 mm2","density":"2,800,000","ref":""}
+,
+{"processor":"RV710","transistor":"242,000,000","year":"2008","designer":"ATI","fab":"TSMC","process":"55 nm","area":"73 mm2","density":"3,315,000","ref":""}
+,
+{"processor":"RV730","transistor":"514,000,000","year":"2008","designer":"ATI","fab":"TSMC","process":"55 nm","area":"146 mm2","density":"3,521,000","ref":""}
+,
+{"processor":"RV670","transistor":"666,000,000","year":"2008","designer":"ATI","fab":"TSMC","process":"55 nm","area":"192 mm2","density":"3,469,000","ref":""}
+,
+{"processor":"RV770","transistor":"956,000,000","year":"2008","designer":"ATI","fab":"TSMC","process":"55 nm","area":"256 mm2","density":"3,734,000","ref":""}
+,
+{"processor":"RV790","transistor":"959,000,000","year":"2008","designer":"ATI","fab":"TSMC","process":"55 nm","area":"282 mm2","density":"3,401,000","ref":""}
+,
+{"processor":"G92b Tesla","transistor":"754,000,000","year":"2008","designer":"Nvidia","fab":"TSMC, UMC","process":"55 nm","area":"260 mm2","density":"2,900,000","ref":""}
+,
+{"processor":"G94b Tesla","transistor":"505,000,000","year":"2008","designer":"Nvidia","fab":"TSMC, UMC","process":"55 nm","area":"196 mm2","density":"2,577,000","ref":""}
+,
+{"processor":"G96b Tesla","transistor":"314,000,000","year":"2008","designer":"Nvidia","fab":"TSMC, UMC","process":"55 nm","area":"121 mm2","density":"2,595,000","ref":""}
+,
+{"processor":"GT200b Tesla","transistor":"1,400,000,000","year":"2008","designer":"Nvidia","fab":"TSMC, UMC","process":"55 nm","area":"470 mm2","density":"2,979,000","ref":""}
+,
+{"processor":"GT218 Tesla","transistor":"260,000,000","year":"2009","designer":"Nvidia","fab":"TSMC","process":"40 nm","area":"57 mm2","density":"4,561,000","ref":""}
+,
+{"processor":"GT216 Tesla","transistor":"486,000,000","year":"2009","designer":"Nvidia","fab":"TSMC","process":"40 nm","area":"100 mm2","density":"4,860,000","ref":""}
+,
+{"processor":"GT215 Tesla","transistor":"727,000,000","year":"2009","designer":"Nvidia","fab":"TSMC","process":"40 nm","area":"144 mm2","density":"5,049,000","ref":""}
+,
+{"processor":"RV740","transistor":"826,000,000","year":"2009","designer":"ATI","fab":"TSMC","process":"40 nm","area":"137 mm2","density":"6,029,000","ref":""}
+,
+{"processor":"Cypress RV870","transistor":"2,154,000,000","year":"2009","designer":"ATI","fab":"TSMC","process":"40 nm","area":"334 mm2","density":"6,449,000","ref":""}
+,
+{"processor":"Juniper RV840","transistor":"1,040,000,000","year":"2009","designer":"ATI","fab":"TSMC","process":"40 nm","area":"166 mm2","density":"6,265,000","ref":""}
+,
+{"processor":"Redwood RV830","transistor":"627,000,000","year":"2010","designer":"AMD (ATI)","fab":"TSMC","process":"40 nm","area":"104 mm2","density":"6,029,000","ref":""}
+,
+{"processor":"Cedar RV810","transistor":"292,000,000","year":"2010","designer":"AMD","fab":"TSMC","process":"40 nm","area":"59 mm2","density":"4,949,000","ref":""}
+,
+{"processor":"Cayman RV970","transistor":"2,640,000,000","year":"2010","designer":"AMD","fab":"TSMC","process":"40 nm","area":"389 mm2","density":"6,789,000","ref":""}
+,
+{"processor":"Barts RV940","transistor":"1,700,000,000","year":"2010","designer":"AMD","fab":"TSMC","process":"40 nm","area":"255 mm2","density":"6,667,000","ref":""}
+,
+{"processor":"Turks RV930","transistor":"716,000,000","year":"2011","designer":"AMD","fab":"TSMC","process":"40 nm","area":"118 mm2","density":"6,068,000","ref":""}
+,
+{"processor":"Caicos RV910","transistor":"370,000,000","year":"2011","designer":"AMD","fab":"TSMC","process":"40 nm","area":"67 mm2","density":"5,522,000","ref":""}
+,
+{"processor":"GF100 Fermi","transistor":"3,200,000,000","year":"2010","designer":"Nvidia","fab":"TSMC","process":"40 nm","area":"526 mm2","density":"6,084,000","ref":""}
+,
+{"processor":"GF110 Fermi","transistor":"3,000,000,000","year":"2010","designer":"Nvidia","fab":"TSMC","process":"40 nm","area":"520 mm2","density":"5,769,000","ref":""}
+,
+{"processor":"GF104 Fermi","transistor":"1,950,000,000","year":"2011","designer":"Nvidia","fab":"TSMC","process":"40 nm","area":"332 mm2","density":"5,873,000","ref":""}
+,
+{"processor":"GF106 Fermi","transistor":"1,170,000,000","year":"2010","designer":"Nvidia","fab":"TSMC","process":"40 nm","area":"238 mm2","density":"4,916,000","ref":""}
+,
+{"processor":"GF108 Fermi","transistor":"585,000,000","year":"2011","designer":"Nvidia","fab":"TSMC","process":"40 nm","area":"116 mm2","density":"5,043,000","ref":""}
+,
+{"processor":"GF119 Fermi","transistor":"292,000,000","year":"2011","designer":"Nvidia","fab":"TSMC","process":"40 nm","area":"79 mm2","density":"3,696,000","ref":""}
+,
+{"processor":"Tahiti GCN1","transistor":"4,312,711,873","year":"2011","designer":"AMD","fab":"TSMC","process":"28 nm","area":"365 mm2","density":"11,820,000","ref":""}
+,
+{"processor":"Cape Verde GCN1","transistor":"1,500,000,000","year":"2012","designer":"AMD","fab":"TSMC","process":"28 nm","area":"123 mm2","density":"12,200,000","ref":""}
+,
+{"processor":"Pitcairn GCN1","transistor":"2,800,000,000","year":"2012","designer":"AMD","fab":"TSMC","process":"28 nm","area":"212 mm2","density":"13,210,000","ref":""}
+,
+{"processor":"GK110 Kepler","transistor":"7,080,000,000","year":"2012","designer":"Nvidia","fab":"TSMC","process":"28 nm","area":"561 mm2","density":"12,620,000","ref":""}
+,
+{"processor":"GK104 Kepler","transistor":"3,540,000,000","year":"2012","designer":"Nvidia","fab":"TSMC","process":"28 nm","area":"294 mm2","density":"12,040,000","ref":""}
+,
+{"processor":"GK106 Kepler","transistor":"2,540,000,000","year":"2012","designer":"Nvidia","fab":"TSMC","process":"28 nm","area":"221 mm2","density":"11,490,000","ref":""}
+,
+{"processor":"GK107 Kepler","transistor":"1,270,000,000","year":"2012","designer":"Nvidia","fab":"TSMC","process":"28 nm","area":"118 mm2","density":"10,760,000","ref":""}
+,
+{"processor":"GK208 Kepler","transistor":"1,020,000,000","year":"2013","designer":"Nvidia","fab":"TSMC","process":"28 nm","area":"79 mm2","density":"12,910,000","ref":""}
+,
+{"processor":"Oland GCN1","transistor":"1,040,000,000","year":"2013","designer":"AMD","fab":"TSMC","process":"28 nm","area":"90 mm2","density":"11,560,000","ref":""}
+,
+{"processor":"Bonaire GCN2","transistor":"2,080,000,000","year":"2013","designer":"AMD","fab":"TSMC","process":"28 nm","area":"160 mm2","density":"13,000,000","ref":""}
+,
+{"processor":"Durango (Xbox One)","transistor":"4,800,000,000","year":"2013","designer":"AMD","fab":"TSMC","process":"28 nm","area":"375 mm2","density":"12,800,000","ref":""}
+,
+{"processor":"Liverpool (PlayStation 4)","transistor":"?","year":"2013","designer":"AMD","fab":"TSMC","process":"28 nm","area":"348 mm2","density":"?","ref":""}
+,
+{"processor":"Hawaii GCN2","transistor":"6,300,000,000","year":"2013","designer":"AMD","fab":"TSMC","process":"28 nm","area":"438 mm2","density":"14,380,000","ref":""}
+,
+{"processor":"GM200 Maxwell","transistor":"8,000,000,000","year":"2015","designer":"Nvidia","fab":"TSMC","process":"28 nm","area":"601 mm2","density":"13,310,000","ref":""}
+,
+{"processor":"GM204 Maxwell","transistor":"5,200,000,000","year":"2014","designer":"Nvidia","fab":"TSMC","process":"28 nm","area":"398 mm2","density":"13,070,000","ref":""}
+,
+{"processor":"GM206 Maxwell","transistor":"2,940,000,000","year":"2014","designer":"Nvidia","fab":"TSMC","process":"28 nm","area":"228 mm2","density":"12,890,000","ref":""}
+,
+{"processor":"GM107 Maxwell","transistor":"1,870,000,000","year":"2014","designer":"Nvidia","fab":"TSMC","process":"28 nm","area":"148 mm2","density":"12,640,000","ref":""}
+,
+{"processor":"Tonga GCN3","transistor":"5,000,000,000","year":"2014","designer":"AMD","fab":"TSMC, GlobalFoundries","process":"28 nm","area":"366 mm2","density":"13,660,000","ref":""}
+,
+{"processor":"Fiji GCN3","transistor":"8,900,000,000","year":"2015","designer":"AMD","fab":"TSMC","process":"28 nm","area":"596 mm2","density":"14,930,000","ref":""}
+,
+{"processor":"Durango 2 (Xbox One S)","transistor":"5,000,000,000","year":"2016","designer":"AMD","fab":"TSMC","process":"16 nm","area":"240 mm2","density":"20,830,000","ref":""}
+,
+{"processor":"Neo (PlayStation 4 Pro)","transistor":"5,700,000,000","year":"2016","designer":"AMD","fab":"TSMC","process":"16 nm","area":"325 mm2","density":"17,540,000","ref":""}
+,
+{"processor":"Ellesmere/Polaris 10 GCN4","transistor":"5,700,000,000","year":"2016","designer":"AMD","fab":"Samsung, GlobalFoundries","process":"14 nm","area":"232 mm2","density":"24,570,000","ref":""}
+,
+{"processor":"Baffin/Polaris 11 GCN4","transistor":"3,000,000,000","year":"2016","designer":"AMD","fab":"Samsung, GlobalFoundries","process":"14 nm","area":"123 mm2","density":"24,390,000","ref":""}
+,
+{"processor":"Lexa/Polaris 12 GCN4","transistor":"2,200,000,000","year":"2017","designer":"AMD","fab":"Samsung, GlobalFoundries","process":"14 nm","area":"101 mm2","density":"21,780,000","ref":""}
+,
+{"processor":"GP100 Pascal","transistor":"15,300,000,000","year":"2016","designer":"Nvidia","fab":"TSMC, Samsung","process":"16 nm","area":"610 mm2","density":"25,080,000","ref":""}
+,
+{"processor":"GP102 Pascal","transistor":"11,800,000,000","year":"2016","designer":"Nvidia","fab":"TSMC, Samsung","process":"16 nm","area":"471 mm2","density":"25,050,000","ref":""}
+,
+{"processor":"GP104 Pascal","transistor":"7,200,000,000","year":"2016","designer":"Nvidia","fab":"TSMC","process":"16 nm","area":"314 mm2","density":"22,930,000","ref":""}
+,
+{"processor":"GP106 Pascal","transistor":"4,400,000,000","year":"2016","designer":"Nvidia","fab":"TSMC","process":"16 nm","area":"200 mm2","density":"22,000,000","ref":""}
+,
+{"processor":"GP107 Pascal","transistor":"3,300,000,000","year":"2016","designer":"Nvidia","fab":"Samsung","process":"14 nm","area":"132 mm2","density":"25,000,000","ref":""}
+,
+{"processor":"GP108 Pascal","transistor":"1,850,000,000","year":"2017","designer":"Nvidia","fab":"Samsung","process":"14 nm","area":"74 mm2","density":"25,000,000","ref":""}
+,
+{"processor":"Scorpio (Xbox One X)","transistor":"6,600,000,000","year":"2017","designer":"AMD","fab":"TSMC","process":"16 nm","area":"367 mm2","density":"17,980,000","ref":""}
+,
+{"processor":"Vega 10 GCN5","transistor":"12,500,000,000","year":"2017","designer":"AMD","fab":"Samsung, GlobalFoundries","process":"14 nm","area":"484 mm2","density":"25,830,000","ref":""}
+,
+{"processor":"GV100 Volta","transistor":"21,100,000,000","year":"2017","designer":"Nvidia","fab":"TSMC","process":"12 nm","area":"815 mm2","density":"25,890,000","ref":""}
+,
+{"processor":"TU102 Turing","transistor":"18,600,000,000","year":"2018","designer":"Nvidia","fab":"TSMC","process":"12 nm","area":"754 mm2","density":"24,670,000","ref":""}
+,
+{"processor":"TU104 Turing","transistor":"13,600,000,000","year":"2018","designer":"Nvidia","fab":"TSMC","process":"12 nm","area":"545 mm2","density":"24,950,000","ref":""}
+,
+{"processor":"TU106 Turing","transistor":"10,800,000,000","year":"2018","designer":"Nvidia","fab":"TSMC","process":"12 nm","area":"445 mm2","density":"24,270,000","ref":""}
+,
+{"processor":"TU116 Turing","transistor":"6,600,000,000","year":"2019","designer":"Nvidia","fab":"TSMC","process":"12 nm","area":"284 mm2","density":"23,240,000","ref":""}
+,
+{"processor":"TU117 Turing","transistor":"4,700,000,000","year":"2019","designer":"Nvidia","fab":"TSMC","process":"12 nm","area":"200 mm2","density":"23,500,000","ref":""}
+,
+{"processor":"Vega 20 GCN5","transistor":"13,230,000,000","year":"2018","designer":"AMD","fab":"TSMC","process":"7 nm","area":"331 mm2","density":"39,970,000","ref":""}
+,
+{"processor":"Navi 10 RDNA1","transistor":"10,300,000,000","year":"2019","designer":"AMD","fab":"TSMC","process":"7 nm","area":"251 mm2","density":"41,040,000","ref":""}
+,
+{"processor":"Navi 12 RDNA1","transistor":"?","year":"2020","designer":"AMD","fab":"TSMC","process":"7 nm","area":"?","density":"?","ref":""}
+,
+{"processor":"Navi 14 RDNA1","transistor":"6,400,000,000","year":"2019","designer":"AMD","fab":"TSMC","process":"7 nm","area":"158 mm2","density":"40,510,000","ref":""}
+,
+{"processor":"Arcturus CDNA1","transistor":"25,600,000,000","year":"2020","designer":"AMD","fab":"TSMC","process":"7 nm","area":"750 mm2","density":"34,100,000","ref":""}
+,
+{"processor":"GA100 Ampere","transistor":"54,200,000,000","year":"2020","designer":"Nvidia","fab":"TSMC","process":"7 nm","area":"826 mm2","density":"65,620,000","ref":""}
+,
+{"processor":"GA102 Ampere","transistor":"28,300,000,000","year":"2020","designer":"Nvidia","fab":"Samsung","process":"8 nm","area":"628 mm2","density":"45,035,000","ref":""}
+,
+{"processor":"GA104 Ampere","transistor":"17,400,000,000","year":"2020","designer":"Nvidia","fab":"Samsung","process":"8 nm","area":"392 mm²","density":"44,390,000","ref":""}
+,
+{"processor":"GA106 Ampere","transistor":"13,250,000,000","year":"2021","designer":"Nvidia","fab":"Samsung","process":"8 nm","area":"276 mm²","density":"48,010,000","ref":""}
+,
+{"processor":"Navi 21 RDNA2","transistor":"26,800,000,000","year":"2020","designer":"AMD","fab":"TSMC","process":"7 nm","area":"520 mm²","density":"51,540,000","ref":""}
+,
+{"processor":"Navi 22 RDNA2","transistor":"17,200,000,000","year":"2021","designer":"AMD","fab":"TSMC","process":"7 nm","area":"335 mm²","density":"51,340,000","ref":""}
+,
+{"processor":"Navi 23 RDNA2","transistor":"11,060,000,000","year":"2021","designer":"AMD","fab":"TSMC","process":"7 nm","area":"237 mm²","density":"46,670,000","ref":""}
+,
+{"processor":"Navi 24 RDNA2","transistor":"5,400,000,000","year":"2022","designer":"AMD","fab":"TSMC","process":"6 nm","area":"107 mm²","density":"50,470,000","ref":""}
+,
+{"processor":"Aldebaran CDNA2","transistor":"58,200,000,000","year":"2021","designer":"AMD","fab":"TSMC","process":"6 nm","area":"?","density":"?","ref":""}
+,
+{"processor":"GH100 Hopper","transistor":"80,000,000,000","year":"2022","designer":"Nvidia","fab":"TSMC","process":"4 nm","area":"814 mm²","density":"98,280,000","ref":""}
+,
+{"processor":"AD102 Ada Lovelace","transistor":"76,300,000,000","year":"2022","designer":"Nvidia","fab":"TSMC","process":"4 nm","area":"608.4 mm²","density":"125,411,000","ref":""}
+,
+{"processor":"AD103 Ada Lovelace","transistor":"45,900,000,000","year":"2022","designer":"Nvidia","fab":"TSMC","process":"4 nm","area":"378.6 mm²","density":"121,240,000","ref":""}
+,
+{"processor":"AD104 Ada Lovelace","transistor":"35,800,000,000","year":"2022","designer":"Nvidia","fab":"TSMC","process":"4 nm","area":"294.5 mm²","density":"121,560,000","ref":""}
+,
+{"processor":"Navi 31 RDNA3","transistor":"58,000,000,000","year":"2022","designer":"AMD","fab":"TSMC","process":"5 nm (GCD) 6 nm (MCD)","area":"531 mm² (MCM) 306 mm² (GCD) 6×37.5 mm² (MCD)","density":"109,200,000 (MCM) 132,400,000 (GCD)","ref":""}
+,
+{"processor":"Processor","transistor":"Transistor count","year":"Year","designer":"Designer(s)","fab":"Fab(s)","process":"MOS process","area":"Area","density":"Transistor density, tr./mm2","ref":"Ref"}
+]

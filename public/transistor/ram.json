@@ -1,0 +1,89 @@
+[
+{"Chip name":"—","Capacity (bits)":"1-bit","RAM type":"SRAM (cell)","Transistor count":"6","Date of introduction":"1963","Manufacturer(s)":"Fairchild","Process":"—","Area":"—","Transistor density, tr":{"/mm2":"?"},"Ref":""}
+,
+{"Chip name":"—","Capacity (bits)":"1-bit","RAM type":"DRAM (cell)","Transistor count":"1","Date of introduction":"1965","Manufacturer(s)":"Toshiba","Process":"—","Area":"—","Transistor density, tr":{"/mm2":"?"},"Ref":""}
+,
+{"Chip name":"?","Capacity (bits)":"8-bit","RAM type":"SRAM (bipolar)","Transistor count":"48","Date of introduction":"1965","Manufacturer(s)":"SDS, Signetics","Process":"?","Area":"?","Transistor density, tr":{"/mm2":"?"},"Ref":""},
+{"Chip name":"SP95","Capacity (bits)":"16-bit","RAM type":"SRAM (bipolar)","Transistor count":"80","Date of introduction":"1965","Manufacturer(s)":"IBM","Process":"?","Area":"?","Transistor density, tr":{"/mm2":"?"},"Ref":""},
+{"Chip name":"TMC3162","Capacity (bits)":"16-bit","RAM type":"SRAM (TTL)","Transistor count":"96","Date of introduction":"1966","Manufacturer(s)":"Transitron","Process":"—","Area":"?","Transistor density, tr":{"/mm2":"?"},"Ref":""}
+,
+{"Chip name":"?","Capacity (bits)":"?","RAM type":"SRAM (MOS)","Transistor count":"?","Date of introduction":"1966","Manufacturer(s)":"NEC","Process":"?","Area":"?","Transistor density, tr":{"/mm2":"?"},"Ref":""},
+{"Chip name":"?","Capacity (bits)":"256-bit","RAM type":"DRAM (IC)","Transistor count":"256","Date of introduction":"1968","Manufacturer(s)":"Fairchild","Process":"?","Area":"?","Transistor density, tr":{"/mm2":"?"},"Ref":""},
+{"Chip name":"?","Capacity (bits)":"64-bit","RAM type":"SRAM (PMOS)","Transistor count":"384","Date of introduction":"1968","Manufacturer(s)":"Fairchild","Process":"?","Area":"?","Transistor density, tr":{"/mm2":"?"},"Ref":""},
+{"Chip name":"?","Capacity (bits)":"144-bit","RAM type":"SRAM (NMOS)","Transistor count":"864","Date of introduction":"1968","Manufacturer(s)":"NEC","Process":"?","Area":"?","Transistor density, tr":{"/mm2":"?"},"Ref":""},
+{"Chip name":"1101","Capacity (bits)":"256-bit","RAM type":"SRAM (PMOS)","Transistor count":"1,536","Date of introduction":"1969","Manufacturer(s)":"Intel","Process":"12,000 nm","Area":"?","Transistor density, tr":{"/mm2":"?"},"Ref":""}
+,
+{"Chip name":"1102","Capacity (bits)":"1 Kb","RAM type":"DRAM (PMOS)","Transistor count":"3,072","Date of introduction":"1970","Manufacturer(s)":"Intel, Honeywell","Process":"?","Area":"?","Transistor density, tr":{"/mm2":"?"},"Ref":""},
+{"Chip name":"1103","Capacity (bits)":"1 Kb","RAM type":"DRAM (PMOS)","Transistor count":"3,072","Date of introduction":"1970","Manufacturer(s)":"Intel","Process":"8,000 nm","Area":"10 mm2","Transistor density, tr":{"/mm2":"307"},"Ref":""}
+,
+{"Chip name":"μPD403","Capacity (bits)":"1 Kb","RAM type":"DRAM (NMOS)","Transistor count":"3,072","Date of introduction":"1971","Manufacturer(s)":"NEC","Process":"?","Area":"?","Transistor density, tr":{"/mm2":"?"},"Ref":""}
+,
+{"Chip name":"?","Capacity (bits)":"2 Kb","RAM type":"DRAM (PMOS)","Transistor count":"6,144","Date of introduction":"1971","Manufacturer(s)":"General Instrument","Process":"?","Area":"12.7 mm2","Transistor density, tr":{"/mm2":"484"},"Ref":""}
+,
+{"Chip name":"2102","Capacity (bits)":"1 Kb","RAM type":"SRAM (NMOS)","Transistor count":"6,144","Date of introduction":"1972","Manufacturer(s)":"Intel","Process":"?","Area":"?","Transistor density, tr":{"/mm2":"?"},"Ref":""}
+,
+{"Chip name":"?","Capacity (bits)":"8 Kb","RAM type":"DRAM (PMOS)","Transistor count":"8,192","Date of introduction":"1973","Manufacturer(s)":"IBM","Process":"?","Area":"18.8 mm2","Transistor density, tr":{"/mm2":"436"},"Ref":""}
+,
+{"Chip name":"5101","Capacity (bits)":"1 Kb","RAM type":"SRAM (CMOS)","Transistor count":"6,144","Date of introduction":"1974","Manufacturer(s)":"Intel","Process":"?","Area":"?","Transistor density, tr":{"/mm2":"?"},"Ref":""}
+,
+{"Chip name":"2116","Capacity (bits)":"16 Kb","RAM type":"DRAM (NMOS)","Transistor count":"16,384","Date of introduction":"1975","Manufacturer(s)":"Intel","Process":"?","Area":"?","Transistor density, tr":{"/mm2":"?"},"Ref":""}
+,
+{"Chip name":"2114","Capacity (bits)":"4 Kb","RAM type":"SRAM (NMOS)","Transistor count":"24,576","Date of introduction":"1976","Manufacturer(s)":"Intel","Process":"?","Area":"?","Transistor density, tr":{"/mm2":"?"},"Ref":""}
+,
+{"Chip name":"?","Capacity (bits)":"4 Kb","RAM type":"SRAM (CMOS)","Transistor count":"24,576","Date of introduction":"1977","Manufacturer(s)":"Toshiba","Process":"?","Area":"?","Transistor density, tr":{"/mm2":"?"},"Ref":""}
+,
+{"Chip name":"?","Capacity (bits)":"64 Kb","RAM type":"DRAM (NMOS)","Transistor count":"65,536","Date of introduction":"1977","Manufacturer(s)":"NTT","Process":"?","Area":"35.4 mm2","Transistor density, tr":{"/mm2":"1851"},"Ref":""}
+,
+{"Chip name":"?","Capacity (bits)":"64 Kb","RAM type":"DRAM (VMOS)","Transistor count":"65,536","Date of introduction":"1979","Manufacturer(s)":"Siemens","Process":"?","Area":"25.2 mm2","Transistor density, tr":{"/mm2":"2601"},"Ref":""}
+,
+{"Chip name":"?","Capacity (bits)":"16 Kb","RAM type":"SRAM (CMOS)","Transistor count":"98,304","Date of introduction":"1980","Manufacturer(s)":"Hitachi, Toshiba","Process":"?","Area":"?","Transistor density, tr":{"/mm2":"?"},"Ref":""}
+,
+{"Chip name":"?","Capacity (bits)":"256 Kb","RAM type":"DRAM (NMOS)","Transistor count":"262,144","Date of introduction":"1980","Manufacturer(s)":"NEC","Process":"1,500 nm","Area":"41.6 mm2","Transistor density, tr":{"/mm2":"6302"},"Ref":""}
+,
+{"Chip name":"?","Capacity (bits)":"256 Kb","RAM type":"DRAM (NMOS)","Transistor count":"262,144","Date of introduction":"1980","Manufacturer(s)":"NTT","Process":"1,000 nm","Area":"34.4 mm2","Transistor density, tr":{"/mm2":"7620"},"Ref":""}
+,
+{"Chip name":"?","Capacity (bits)":"64 Kb","RAM type":"SRAM (CMOS)","Transistor count":"393,216","Date of introduction":"1980","Manufacturer(s)":"Matsushita","Process":"?","Area":"?","Transistor density, tr":{"/mm2":"?"},"Ref":""}
+,
+{"Chip name":"?","Capacity (bits)":"288 Kb","RAM type":"DRAM","Transistor count":"294,912","Date of introduction":"1981","Manufacturer(s)":"IBM","Process":"?","Area":"25 mm2","Transistor density, tr":{"/mm2":"11,800"},"Ref":""}
+,
+{"Chip name":"?","Capacity (bits)":"64 Kb","RAM type":"SRAM (NMOS)","Transistor count":"393,216","Date of introduction":"1982","Manufacturer(s)":"Intel","Process":"1,500 nm","Area":"?","Transistor density, tr":{"/mm2":"?"},"Ref":""}
+,
+{"Chip name":"?","Capacity (bits)":"256 Kb","RAM type":"SRAM (CMOS)","Transistor count":"1,572,864","Date of introduction":"1984","Manufacturer(s)":"Toshiba","Process":"1,200 nm","Area":"?","Transistor density, tr":{"/mm2":"?"},"Ref":""}
+,
+{"Chip name":"?","Capacity (bits)":"8 Mb","RAM type":"DRAM","Transistor count":"8,388,608","Date of introduction":"January 5, 1984","Manufacturer(s)":"Hitachi","Process":"?","Area":"?","Transistor density, tr":{"/mm2":"?"},"Ref":""},
+{"Chip name":"?","Capacity (bits)":"16 Mb","RAM type":"DRAM (CMOS)","Transistor count":"16,777,216","Date of introduction":"1987","Manufacturer(s)":"NTT","Process":"700 nm","Area":"148 mm2","Transistor density, tr":{"/mm2":"113,400"},"Ref":""}
+,
+{"Chip name":"?","Capacity (bits)":"4 Mb","RAM type":"SRAM (CMOS)","Transistor count":"25,165,824","Date of introduction":"1990","Manufacturer(s)":"NEC, Toshiba, Hitachi, Mitsubishi","Process":"?","Area":"?","Transistor density, tr":{"/mm2":"?"},"Ref":""}
+,
+{"Chip name":"?","Capacity (bits)":"64 Mb","RAM type":"DRAM (CMOS)","Transistor count":"67,108,864","Date of introduction":"1991","Manufacturer(s)":"Matsushita, Mitsubishi, Fujitsu, Toshiba","Process":"400 nm","Area":"?","Transistor density, tr":{"/mm2":"?"},"Ref":""}
+,
+{"Chip name":"KM48SL2000","Capacity (bits)":"16 Mb","RAM type":"SDRAM","Transistor count":"16,777,216","Date of introduction":"1992","Manufacturer(s)":"Samsung","Process":"?","Area":"?","Transistor density, tr":{"/mm2":"?"},"Ref":""}
+,
+{"Chip name":"?","Capacity (bits)":"16 Mb","RAM type":"SRAM (CMOS)","Transistor count":"100,663,296","Date of introduction":"1992","Manufacturer(s)":"Fujitsu, NEC","Process":"400 nm","Area":"?","Transistor density, tr":{"/mm2":"?"},"Ref":""}
+,
+{"Chip name":"?","Capacity (bits)":"256 Mb","RAM type":"DRAM (CMOS)","Transistor count":"268,435,456","Date of introduction":"1993","Manufacturer(s)":"Hitachi, NEC","Process":"250 nm","Area":"?","Transistor density, tr":{"/mm2":"?"},"Ref":""}
+,
+{"Chip name":"?","Capacity (bits)":"1 Gb","RAM type":"DRAM","Transistor count":"1,073,741,824","Date of introduction":"January 9, 1995","Manufacturer(s)":"NEC","Process":"250 nm","Area":"?","Transistor density, tr":{"/mm2":"?"},"Ref":""}
+,
+{"Chip name":"?","Capacity (bits)":"1 Gb","RAM type":"DRAM","Transistor count":"1,073,741,824","Date of introduction":"January 9, 1995","Manufacturer(s)":"Hitachi","Process":"160 nm","Area":"?","Transistor density, tr":{"/mm2":"?"},"Ref":""}
+,
+{"Chip name":"?","Capacity (bits)":"1 Gb","RAM type":"SDRAM","Transistor count":"1,073,741,824","Date of introduction":"1996","Manufacturer(s)":"Mitsubishi","Process":"150 nm","Area":"?","Transistor density, tr":{"/mm2":"?"},"Ref":""}
+,
+{"Chip name":"?","Capacity (bits)":"1 Gb","RAM type":"SDRAM (SOI)","Transistor count":"1,073,741,824","Date of introduction":"1997","Manufacturer(s)":"Hyundai","Process":"?","Area":"?","Transistor density, tr":{"/mm2":"?"},"Ref":""},
+{"Chip name":"?","Capacity (bits)":"4 Gb","RAM type":"DRAM (4-bit)","Transistor count":"1,073,741,824","Date of introduction":"1997","Manufacturer(s)":"NEC","Process":"150 nm","Area":"?","Transistor density, tr":{"/mm2":"?"},"Ref":""}
+,
+{"Chip name":"?","Capacity (bits)":"4 Gb","RAM type":"DRAM","Transistor count":"4,294,967,296","Date of introduction":"1998","Manufacturer(s)":"Hyundai","Process":"?","Area":"?","Transistor density, tr":{"/mm2":"?"},"Ref":""}
+,
+{"Chip name":"?","Capacity (bits)":"8 Gb","RAM type":"SDRAM (DDR3)","Transistor count":"8,589,934,592","Date of introduction":"April 2008","Manufacturer(s)":"Samsung","Process":"50 nm","Area":"?","Transistor density, tr":{"/mm2":"?"},"Ref":""}
+,
+{"Chip name":"?","Capacity (bits)":"16 Gb","RAM type":"SDRAM (DDR3)","Transistor count":"17,179,869,184","Date of introduction":"2008","Manufacturer(s)":"Samsung","Process":"50 nm","Area":"?","Transistor density, tr":{"/mm2":"?"},"Ref":""}
+,
+{"Chip name":"?","Capacity (bits)":"32 Gb","RAM type":"SDRAM (HBM2)","Transistor count":"34,359,738,368","Date of introduction":"2016","Manufacturer(s)":"Samsung","Process":"20 nm","Area":"?","Transistor density, tr":{"/mm2":"?"},"Ref":""}
+,
+{"Chip name":"?","Capacity (bits)":"64 Gb","RAM type":"SDRAM (HBM2)","Transistor count":"68,719,476,736","Date of introduction":"2017","Manufacturer(s)":"Samsung","Process":"20 nm","Area":"?","Transistor density, tr":{"/mm2":"?"},"Ref":""}
+,
+{"Chip name":"?","Capacity (bits)":"128 Gb","RAM type":"SDRAM (DDR4)","Transistor count":"137,438,953,472","Date of introduction":"2018","Manufacturer(s)":"Samsung","Process":"10 nm","Area":"?","Transistor density, tr":{"/mm2":"?"},"Ref":""}
+,
+{"Chip name":"?","Capacity (bits)":"?","RAM type":"RRAM (3DSoC)","Transistor count":"?","Date of introduction":"2019","Manufacturer(s)":"SkyWater Technology","Process":"90 nm","Area":"?","Transistor density, tr":{"/mm2":"?"},"Ref":""}
+
+]

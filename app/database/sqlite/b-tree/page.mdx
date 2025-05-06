@@ -1,0 +1,94 @@
+# B-tree
+
+The [`btree.c`](https://github.com/sqlite/sqlite/blob/master/src/btree.c) file is a core component of SQLite's storage engine. It implements the B-tree structures that manage how data is stored and retrieved from the database. a B-tree is a self-balancing tree data structure that maintains sorted data and allows searches, sequential access, insertions, and deletions in logarithmic time.
+
+```c
+rc = allocateBtreePage(pBt, &pPage, &pgno, nearby, flags);
+zeroPage(pPage, flags | PTF_LEAF);
+```
+
+The page header is the first 64 bytes of the page. The page header contains information about the page, such as the page type, the page number, and the page size.
+
+```c
+
+```
+
+```c
+rc = balance(pCur);
+```
+
+```c
+rc = btreeCreateTable(pBt, pTable, zName, nCol, aCol, aType, aColl, pSchema);
+```
+
+```c
+rc = sqlite3BtreeMovetoUnpacked(pCur, pKey, biasRight, &pCur->ix, &loc);
+```
+
+```c
+rc = sqlite3BtreeInsert(pCur, pKey, pData, nData, pRowid);
+rc = sqlite3BtreeDelete(pCur, pKey, pData, nData, pRowid);
+```
+
+```c
+rc = sqlite3BtreeClearCursor(pCur);
+rc = sqlite3BtreeCloseCursor(pCur);
+```
+
+```c
+rc = sqlite3BtreeClose(pBt);
+```
+
+```c
+rc = sqlite3BtreeGetPage(pBt, pgno, &pPage, flags);
+```
+
+## Page
+
+The page is the smallest unit of data in SQLite. The page is 512 bytes.
+
+```c
+sqlite3_prepare_v2(db, "SELECT * FROM test", -1, &stmt, NULL);
+sqlite3_step(stmt);
+sqlite3_finalize(stmt);
+```
+
+## Page header
+
+
+
+```c
+sqlite3_prepare_v2(db, "SELECT * FROM test", -1, &stmt, NULL);
+sqlite3_step(stmt);
+sqlite3_finalize(stmt);
+```
+
+## B-tree header
+
+The B-tree header is the next 64 bytes of the page. The B-tree header contains information about the B-tree, such as the root page number, the page type, and the page size.
+
+```c
+sqlite3_prepare_v2(db, "SELECT * FROM test", -1, &stmt, NULL);
+sqlite3_step(stmt);
+sqlite3_finalize(stmt); 
+```
+
+## B-tree leaf page
+
+The B-tree leaf page is the next 64 bytes of the page. The B-tree leaf page contains information about the B-tree, such as the root page number, the page type, and the page size.
+
+```c
+sqlite3_prepare_v2(db, "SELECT * FROM test", -1, &stmt, NULL);
+sqlite3_step(stmt);
+sqlite3_finalize(stmt);
+```
+
+## B-tree interior page
+
+The B-tree interior page is the next 64 bytes of the page. The B-tree interior page contains information about the B-tree, such as the root page number, the page type, and the page size.
+
+```c
+sqlite3_prepare_v2(db, "SELECT * FROM test", -1, &stmt, NULL);
+sqlite3_step(stmt);
+sqlite3_finalize(stmt);
+```
