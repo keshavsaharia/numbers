@@ -1,0 +1,97 @@
+# Maximum Weighted Independent Set
+
+The Maximum Weighted Independent Set (MWIS) problem is an extension of the [Maximum Independent Set](/theory/graph/max-independent-set) problem where each vertex has an associated weight. The goal is to find an independent set of vertices with the maximum total weight. An independent set is a set of vertices in a graph where no two vertices are adjacent.
+
+## Algorithm specification
+
+Given an undirected graph $$G = (V, E)$$ with a weight function $$w: V \rightarrow \mathbb{R}^+$$ find a subset $$S \subseteq V$$ such that no two vertices in $$S$$ are adjacent (independence property) and the sum of weights $$\sum_{v \in S} w(v)$$ is maximized.
+
+### Complexity
+
+The MWIS problem is [NP-hard](/theory/complexity/np-hard), meaning there is no known polynomial-time algorithm to solve it optimally. 
+
+To tackle the Maximum Weighted Independent Set problem, various strategies can be employed depending on the size and nature of the graph. For smaller graphs, exact algorithms such as Branch and Bound, Dynamic Programming (particularly effective for specific graph classes), and Integer Linear Programming are viable options. These methods aim to find the optimal solution by exhaustively exploring possibilities or leveraging mathematical formulations. 
+
+For larger graphs where exact solutions become computationally prohibitive, approximation algorithms are more suitable. These include greedy approaches, which iteratively build a solution by making locally optimal choices, local search methods that iteratively improve a solution by exploring its neighborhood, and LP relaxation-based algorithms that relax the problem constraints to find a near-optimal solution efficiently. 
+
+## Case of trees
+
+For trees, we can solve MWIS in $$O(n)$$ time using dynamic programming.
+
+```python
+def mwis_tree(tree, weights):
+    def dp(node, parent):
+        # Base case: leaf node
+        if len(tree[node]) == 1 and tree[node][0] == parent:
+            return {True: weights[node], False: 0}
+            
+        # Initialize including/excluding current node
+        inc = weights[node]  # Including this node
+        exc = 0             # Excluding this node
+        
+        # Process children
+        for child in tree[node]:
+            if child != parent:
+                child_result = dp(child, node)
+                inc += child_result[False]  # Can't include children
+                exc += max(child_result[True], child_result[False])
+                
+        return {True: inc, False: exc}
+    
+    result = dp(0, -1)
+    return max(result[True], result[False])
+```
+
+## Approximation Algorithm
+
+For general graphs, we can use a simple greedy approximation algorithm with a $$\frac{1}{\Delta}$$ approximation ratio, where $$\Delta$$ is the maximum degree of the graph:
+
+```python
+def mwis_approximation(graph, weights):
+    # Sort vertices by weight/degree ratio
+    vertices = list(range(len(graph)))
+    vertices.sort(key=lambda v: weights[v] / len(graph[v]), reverse=True)
+    
+    solution = set()
+    used = set()
+    
+    for v in vertices:
+        if v not in used:
+            solution.add(v)
+            used.add(v)
+            # Mark neighbors as used
+            for u in graph[v]:
+                used.add(u)
+    
+    return solution
+```
+
+## Applications
+
+The Maximum Weighted Independent Set (MWIS) approach is often used for the general application of optimizing selections under constraints. In scheduling, it is used to choose tasks that do not conflict with each other while considering their different priorities, ensuring an efficient allocation of time and resources. In the context of facility location, the problem helps in determining the optimal placement of facilities that have varying values, all while maintaining necessary minimum distances between them to avoid overlap or interference.
+
+In network analysis, MWIS is instrumental in identifying influential nodes within social networks, which can be crucial for understanding information flow and influence patterns. In molecular biology, the problem aids in protein structure prediction and drug design, where it is essential to select the most promising molecular structures or interactions. In resource allocation, MWIS assists in managing resources that have conflicts and varying levels of importance, ensuring that the most critical resources are prioritized and utilized effectively.
+
+## Implementation Considerations
+
+When implementing an MWIS algorithm, there are many implementation choices that are dependent on the representation of the graph. Adjacency lists are often preferred over adjacency matrices due to their efficiency, especially in sparse graphs, because adjacency lists only store edges that exist. This allows for reduced memory usage and faster traversal times compared to matrices, which require allocated space for all possible edges (including non-existent ones).
+
+The most important balance to strike is between solution quality and computational time. Exact algorithms, while providing optimal solutions, can be computationally expensive and impractical for large graphs. On the other hand, approximation algorithms offer a trade-off by providing near-optimal solutions in a fraction of the time.
+
+## Time and Space Complexity
+
+For different approaches:
+
+1. **Exact Solution (Brute Force)**
+   - Time Complexity: $$O(2^n)$$
+   - Space Complexity: $$O(n)$$
+
+2. **Dynamic Programming (Trees)**
+   - Time Complexity: $$O(n)$$
+   - Space Complexity: $$O(n)$$
+
+3. **Approximation Algorithm**
+   - Time Complexity: $$O(n \log n + m)$$
+   - Space Complexity: $$O(n)$$
+
+Where $$n$$ is the number of vertices and $$m$$ is the number of edges.

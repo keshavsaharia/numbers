@@ -24,3 +24,9 @@ export { KarnaughMap } from './circuit/karnaugh'
 
 // Graphs
 export { GridGraph } from './graph/grid'
+
+// Graphs
+export { GraphDiagram } from './graph/diagram/diagram'
+
+// Tables
+export { WikiTable } from './table/wikitable'

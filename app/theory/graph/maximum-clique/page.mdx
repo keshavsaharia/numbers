@@ -1,0 +1,169 @@
+# Maximum Weighted Clique
+
+The Maximum Weighted Clique (MWC) problem is an extension of the Maximum Clique problem where each vertex has an associated weight. The goal is to find a clique (a fully connected subgraph) with the maximum total weight.
+
+## Problem Definition
+
+Given an undirected graph $$G = (V, E)$$ with a weight function $$w: V \rightarrow \mathbb{R}^+$$, find a subset $$C \subseteq V$$ such that:
+1. Every pair of vertices in $$C$$ is connected by an edge (clique property)
+2. The sum of weights $$\sum_{v \in C} w(v)$$ is maximized
+
+## Complexity
+
+The MWC problem is NP-hard, being a generalization of the already NP-hard maximum clique problem. The problem becomes even more challenging with weights, as the greedy strategies that work well for unweighted cases may perform poorly.
+
+## Algorithms
+
+### 1. Branch and Bound Algorithm
+
+```python
+def max_weighted_clique(graph, weights):
+    n = len(graph)
+    best_weight = 0
+    best_clique = []
+    
+    def is_connected_to_all(vertex, clique):
+        return all(graph[vertex][v] for v in clique)
+    
+    def branch_and_bound(candidates, current_clique, current_weight):
+        nonlocal best_weight, best_clique
+        
+        # Update best solution if current is better
+        if current_weight > best_weight:
+            best_weight = current_weight
+            best_clique = current_clique.copy()
+        
+        # Upper bound calculation
+        potential = current_weight + sum(weights[v] for v in candidates)
+        if potential <= best_weight:
+            return
+        
+        # Try adding each candidate
+        for v in candidates:
+            if is_connected_to_all(v, current_clique):
+                new_candidates = [u for u in candidates 
+                                if u > v and graph[v][u]]
+                branch_and_bound(new_candidates, 
+                               current_clique + [v],
+                               current_weight + weights[v])
+    
+    initial_candidates = list(range(n))
+    branch_and_bound(initial_candidates, [], 0)
+    return best_clique, best_weight
+```
+
+### 2. Greedy Approximation
+
+```python
+def greedy_weighted_clique(graph, weights):
+    n = len(graph)
+    clique = []
+    vertices = list(range(n))
+    # Sort vertices by weight
+    vertices.sort(key=lambda v: weights[v], reverse=True)
+    
+    for v in vertices:
+        # Check if v can be added to clique
+        if all(graph[v][u] for u in clique):
+            clique.append(v)
+    
+    return clique, sum(weights[v] for v in clique)
+```
+
+## Advanced Techniques
+
+### 1. Color-based Branch and Bound
+
+This technique uses graph coloring to improve the upper bound:
+
+```python
+def color_based_bound(graph, weights, vertices):
+    colors = {}
+    weight_bounds = []
+    
+    for v in vertices:
+        # Find first available color
+        used_colors = {colors[u] for u in graph[v] 
+                      if u in colors}
+        color = 0
+        while color in used_colors:
+            color += 1
+        colors[v] = color
+        
+        # Update weight bounds for each color
+        while len(weight_bounds) <= color:
+            weight_bounds.append(0)
+        weight_bounds[color] = max(weight_bounds[color], 
+                                 weights[v])
+    
+    return sum(sorted(weight_bounds, reverse=True))
+```
+
+## Applications
+
+1. **Social Network Analysis**: Finding closely connected groups with weighted importance
+2. **Portfolio Optimization**: Selecting groups of compatible investments
+3. **Pattern Recognition**: Identifying strongly related features
+4. **Molecular Biology**: Protein interaction network analysis
+5. **Market Analysis**: Finding groups of related products with weights based on profitability
+
+## Implementation Considerations
+
+1. **Graph Representation**
+   - Adjacency matrix for dense graphs
+   - Adjacency list for sparse graphs
+   - Bit-parallel operations for efficiency
+
+2. **Weight Handling**
+   - Efficient weight storage and access
+   - Handling floating-point precision
+   - Normalization techniques
+
+3. **Performance Optimization**
+   - Vertex ordering heuristics
+   - Pruning strategies
+   - Parallel processing for large graphs
+
+## Time and Space Complexity
+
+1. **Exact Solution (Branch and Bound)**
+   - Time Complexity: $$O(2^n)$$ worst case
+   - Space Complexity: $$O(n^2)$$
+
+2. **Greedy Approximation**
+   - Time Complexity: $$O(n^2)$$
+   - Space Complexity: $$O(n)$$
+
+3. **Color-based Branch and Bound**
+   - Time Complexity: $$O(n \cdot 2^n)$$ worst case
+   - Space Complexity: $$O(n^2)$$
+
+Where $$n$$ is the number of vertices.
+
+## Theoretical Bounds
+
+1. **Approximation Hardness**
+   - Cannot be approximated within factor $$n^{1-\epsilon}$$ unless P = NP
+   - Best known polynomial-time approximation ratio: $$O(n/\log^2 n)$$
+
+2. **Special Cases**
+   - Perfect graphs: Polynomial time solvable
+   - Planar graphs: Remains NP-hard
+   - Bipartite graphs: Polynomial time solvable
+
+## Best Practices
+
+1. **Input Validation**
+   - Check graph connectivity
+   - Verify weight positivity
+   - Handle special cases
+
+2. **Solution Verification**
+   - Confirm clique property
+   - Validate weight calculations
+   - Check optimality conditions
+
+3. **Performance Monitoring**
+   - Track computation time
+   - Memory usage optimization
+   - Solution quality metrics"

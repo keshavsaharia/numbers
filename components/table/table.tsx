@@ -4,7 +4,7 @@ import clsx from "clsx";
 
 const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(
   ({ className, ...props }, ref) => (
-    <div className="relative w-full overflow-auto">
+    <div className="relative w-full overflow-auto border-t border-zinc-700">
       <table ref={ref} className={clsx("w-full caption-bottom text-sm", className)} {...props} />
     </div>
   ),
@@ -32,7 +32,7 @@ const TableFooter = React.forwardRef<
   <tfoot
     ref={ref}
     className={clsx(
-      "border-t border-border bg-muted/50 font-medium [&>tr]:last:border-b-0",
+      "border-t border-zinc-200 dark:border-zinc-700 font-medium [&>tr]:last:border-b-0",
       className,
     )}
     {...props}
@@ -45,7 +45,7 @@ const TableRow = React.forwardRef<HTMLTableRowElement, React.HTMLAttributes<HTML
     <tr
       ref={ref}
       className={clsx(
-        "border-b border-border transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
+        "border-b border-zinc-300 dark:border-zinc-700 transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
         className,
       )}
       {...props}

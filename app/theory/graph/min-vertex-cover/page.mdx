@@ -1,0 +1,118 @@
+# Minimum Vertex Cover
+
+A vertex cover of an undirected graph is a set of vertices such that each edge of the graph is incident to at least one vertex in the set. The Minimum Vertex Cover (MVC) problem seeks to find a vertex cover of minimum size.
+
+## Problem Definition
+
+Given an undirected graph $$G = (V, E)$$, find a subset $$C \subseteq V$$ of minimum cardinality such that:
+- For every edge $$(u, v) \in E$$, either $$u \in C$$ or $$v \in C$$ (or both)
+
+## Complexity
+
+The MVC problem is NP-hard for general graphs. However, it can be solved efficiently for some special classes of graphs:
+- Trees: $$O(n)$$ time
+- Bipartite graphs: Polynomial time using maximum matching
+- Fixed-parameter tractable with respect to solution size
+
+## Algorithms
+
+### 1. Approximation Algorithm
+
+A simple 2-approximation algorithm:
+
+```python
+def approximate_vertex_cover(graph):
+    cover = set()
+    edges = list(graph.edges())  # Make a copy of edges
+    
+    while edges:
+        # Pick any edge (u,v)
+        u, v = edges[0]
+        # Add both endpoints to cover
+        cover.add(u)
+        cover.add(v)
+        # Remove all edges incident to u or v
+        edges = [edge for edge in edges 
+                if u not in edge and v not in edge]
+    
+    return cover
+```
+
+### 2. Exact Algorithm for Trees
+
+For trees, we can use dynamic programming:
+
+```python
+def mvc_tree(tree, root):
+    def dp(node, parent, must_cover):
+        if not tree[node]:
+            return 1 if must_cover else 0
+            
+        if must_cover:
+            # Must include this node
+            return 1 + sum(dp(child, node, False) 
+                         for child in tree[node] if child != parent)
+        else:
+            # Try both including and excluding
+            include = 1 + sum(dp(child, node, False) 
+                            for child in tree[node] if child != parent)
+            exclude = sum(dp(child, node, True) 
+                        for child in tree[node] if child != parent)
+            return min(include, exclude)
+    
+    return dp(root, None, False)
+```
+
+## Integer Linear Programming Formulation
+
+The MVC problem can be formulated as an integer linear program:
+
+$$
+\begin{align*}
+\text{minimize} & \sum_{v \in V} x_v \\
+\text{subject to} & x_u + x_v \geq 1 & \forall (u,v) \in E \\
+& x_v \in \{0,1\} & \forall v \in V
+\end{align*}
+$$
+
+Where $$x_v$$ is 1 if vertex $$v$$ is in the cover, and 0 otherwise.
+
+## Applications
+
+1. **Network Security**: Monitoring network traffic with minimum number of nodes
+2. **Resource Allocation**: Covering services with minimal facilities
+3. **Biological Networks**: Identifying key proteins in protein-protein interaction networks
+4. **Circuit Design**: Minimizing test points in electronic circuits
+5. **Transportation**: Optimal placement of emergency services
+
+## Relationship to Other Problems
+
+The MVC problem is closely related to several other graph problems:
+
+1. **Maximum Independent Set**: The complement of a minimum vertex cover is a maximum independent set
+2. **Maximum Matching**: In bipartite graphs, the size of a minimum vertex cover equals the size of a maximum matching (König's theorem)
+3. **Set Cover**: Vertex cover is a special case of the set cover problem
+
+## Time and Space Complexity
+
+1. **Exact Solution (Brute Force)**
+   - Time Complexity: $$O(2^n)$$
+   - Space Complexity: $$O(n)$$
+
+2. **2-Approximation Algorithm**
+   - Time Complexity: $$O(V + E)$$
+   - Space Complexity: $$O(V)$$
+
+3. **Dynamic Programming (Trees)**
+   - Time Complexity: $$O(n)$$
+   - Space Complexity: $$O(n)$$
+
+Where $$n = |V|$$ is the number of vertices.
+
+## Implementation Tips
+
+1. **Graph Representation**: Choose appropriate data structures (adjacency list/matrix)
+2. **Edge Processing**: Efficient edge removal in approximation algorithms
+3. **Solution Verification**: Check if all edges are covered
+4. **Memory Management**: Consider space efficiency in large graphs
+5. **Parallelization**: Possible for large-scale graphs
