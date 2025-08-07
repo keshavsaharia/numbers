@@ -1,0 +1,22 @@
+# LLM Inference
+
+Scaling LLM inference is a complex problem that requires a deep understanding of the underlying hardware and software.
+
+## GPT OSS 120B
+
+MoE setup: 36 layers, 128 experts, 4 active per token.
+
+Large model (117 B parameters) but only sparse activation ensures efficiency
+
+Runtime optimizations: Custom kernels, speculation engines, optional quantization, key-value (KV) cache management, topology-aware parallelism, continuous batching, request prioritization 
+
+Infrastructure: Intelligent request routing, autoscaling (SLA-aware), disaggregating prefill vs decode phases, geo-aware load balancing, multi-cloud capacity support .
+
+<SectionListBox sections={[
+  {
+    title: 'vLLM',
+    description: 'vLLM is an open-source, high-performance inference engine for large language models.',
+    link: '/llm/inference/vllm',
+    path: 'vllm'
+  }
+]}/>

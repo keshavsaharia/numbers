@@ -1,0 +1,19 @@
+# SGLang streaming
+
+SGLang supports streaming responses. Here's an example using curl:
+
+```bash
+curl http://localhost:8000/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "meta-llama/Llama-2-7b-chat-hf",
+    "messages": [{"role": "user", "content": "Write a short poem about robots"}],
+    "stream": true
+```
+
+Or in Python:
+
+```python
+for chunk in sg.chat_func().run(stream=True):
+    print(chunk.text, end="", flush=True)
+```

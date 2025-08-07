@@ -9,24 +9,34 @@ Digital logic gates execute logical operations on binary data. They are the buil
 
 A transistor is an electronic switch that controls the flow of an electrical signals. By configuring transistors in various arrangements, the various logic gates shown below can be created. Since the invention of the transistor in 1947, the number of transistors in a device has increased exponentially - a phenomenon known as **Moore's Law**.
 
-<WikiTable source="transistor/cpu.csv" />
-
-<MooresLaw/>
+<WikiTable source="transistor/cpu.csv" attribution="https://en.wikipedia.org/wiki/Transistor_count#Transistor_count" />
 
 
 To give some sense of just how many transistors are in modern devices, here are a few examples, which estimate that it takes an average of 4 transistors per logic gate (some require a few more, and some a few less). 
 
 # NOT gates
 
-A **not gate** takes a single input and returns the opposite value.
+Known also as an **inverter**, this singular gate performs a function of exquisite symmetry: it accepts a single input and produces an output that is its exact logical complement.
+
+Mathematically denoted as $$¬A$$, $$A̅$$, or $$\text{NOT} A$$, the gate's sole purpose is to negate—to turn a logical $$1$$ into a $$0$$, and vice versa. In doing so, the NOT gate orchestrates one of the most fundamental operations in Boolean algebra: the logical inversion.
+
+At a glance, the function of a NOT gate may appear trivial. This deceptively simple component lies at the heart of conditional logic, signal conditioning, timing control, and arithmetic operations. The very act of decision-making in a computer - whether to act or to abstain - is often framed through the inversion of a logical state.
 
 <BooleanGate type="not" />
 
+In CMOS technology, a NOT gate is constructed using a pair of transistors: one n-type and one p-type. When the input is high, the n-type transistor conducts, grounding the output. When the input is low, the p-type transistor conducts, pulling the output high. This complementary action results in low power consumption and high noise immunity.
+
 # AND gates
 
-An **and gate** is a gate that takes two inputs and returns true if both inputs are true.
+The AND gate reigns as a gate of agreement - a digital arbiter that yields affirmation only in the presence of unanimous consent. It is a gate of conjunction, where multiple logical conditions must all be satisfied before permission is granted to proceed.
+
+The AND gate, conceptually simple yet structurally essential, performs a fundamental Boolean operation: it outputs a logical $$1$$ only if all of its inputs are $$1$$. In any other case - even if a single input deviates to $$0$$ - the gate responds with silence: a $$0$$. This behavior makes it a powerful mechanism for enforcing simultaneous conditions in digital circuits.
 
 <BooleanGate type="and" />
+
+In CMOS logic, a basic 2-input AND gate is often realized by cascading NAND and NOT gates (since NAND is more fundamental at the transistor level). However, it can also be directly constructed using complementary pairs of transistors arranged such that the output is driven high only when both inputs are high.
+
+# NAND gates
 
 A **nand gate** returns the opposite result of an and gate.
 

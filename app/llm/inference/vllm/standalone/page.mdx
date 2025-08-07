@@ -1,0 +1,26 @@
+# Running vLLM in standalone mode
+
+vLLM can be run in standalone mode, which means it will not be integrated with any other service. This is useful for testing and development.
+
+```python
+from vllm import LLM, SamplingParams
+
+# Load model
+llm = LLM(model="mistralai/Mistral-7B-Instruct-v0.1")
+
+# Define sampling parameters
+params = SamplingParams(temperature=0.8, top_p=0.9, max_tokens=128)
+
+# Run inference
+prompts = [
+    "Write a haiku about the moon.",
+    "What are the key differences between Python and Java?"
+]
+outputs = llm.generate(prompts, sampling_params=params)
+
+for output in outputs:
+    print(f"Prompt: {output.prompt}")
+    print(f"Response: {output.outputs[0].text}\n")
+```
+
+This is useful for batch inference, testing, or embedding LLM inference in custom apps.

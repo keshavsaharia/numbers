@@ -1,0 +1,15 @@
+# vLLM streaming
+
+vLLM supports streaming responses. Here's an example using curl:
+
+```bash
+curl http://localhost:8000/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "meta-llama/Llama-2-7b-chat-hf",
+    "messages": [{"role": "user", "content": "Write a short poem about robots"}],
+    "stream": true
+}'
+```
+
+The output will arrive token-by-token, ideal for UIs or low-latency applications.

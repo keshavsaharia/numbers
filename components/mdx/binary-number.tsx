@@ -24,7 +24,7 @@ export function BinaryNumber({ unsigned, length, showTotal, showSum }: {
     }
 
     return (<>
-        <div className={clsx('flex flex-wrap gap-1')}>
+        <div className={clsx('flex flex-wrap gap-1 leading-6')}>
             { unsigned ? null : <Digit 
                 key='sign'
                 digit={ signBit || 0 } 
@@ -99,8 +99,8 @@ function BinaryTotal({ bits, sign }: { bits: number[], sign: number | null }) {
     }
 
     return (<>
-        <span className="font-mono text-md text-gray-500">=</span>
-        <span className="font-mono text-md text-emerald-500">{ getTotal() }</span>
+        <span className="font-mono text-md leading-6 pt-1 text-gray-500">=</span>
+        <span className="font-mono text-md leading-6 pt-1 text-emerald-500">{ getTotal() }</span>
     </>)
 }
 
@@ -111,8 +111,8 @@ function BinarySum({ bits, sign }: { bits: number[], sign: number | null }) {
 
     return (<>
         { bitIndexes.length > 0 && 
-        <span className="font-mono text-md text-gray-500" key='equal'>= </span> }
-        <span className="font-mono text-md text-emerald-600">
+        <span className="font-mono text-md leading-6 pt-1 text-gray-500" key='equal'>= </span> }
+        <span className="font-mono text-md leading-6 pt-1 text-emerald-600">
             { sign === 1 && <span key='inv0'>-1 &#215; &#40;1</span> }
             { bitIndexes.map((index, i) => <span key={ 'bit' + index }>
                 <span>{ sign == null ? (i > 0 ? ' + ' : '') : ' + ' }</span>2<sup>{ index }</sup>
