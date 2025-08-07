@@ -2,11 +2,35 @@ import { fp } from '@/data/fp'
 
 # Single precision (FP32)
 
-Single precision floating point numbers, also known as `FP32`, are a floating point format that uses 32 bits (4 bytes) of storage.
-
-This format allows for numbers ranging from approximately $$\pm1.18 \times 10^{-38}$$ to $$\pm3.4 \times 10^{38}$$, making it the default choice for many hardware architectures and software frameworks due to its practical balance between range, precision, and memory footprint.
+Single precision floating point numbers, also known as `FP32`, uses 32 bits (4 bytes) of memory to represent a numeric value. This allows for numbers ranging from approximately $$\pm1.18 \times 10^{-38}$$ to $$\pm3.4 \times 10^{38}$$.
 
 <FloatViewer format={ 'fp32' } fp={ fp.fp32 }/>
+
+## Practical usage
+
+Various linear algebra and machine learning libraries allow you to perform calculations on `FP32` values.
+
+```python
+import numpy as np
+
+# Create two float32 matrices
+a = np.array([[1.0, 2.0], [3.0, 4.0]], dtype=np.float32)
+b = np.array([[5.0, 6.0], [7.0, 8.0]], dtype=np.float32)
+
+# Matrix multiplication
+result = np.matmul(a, b)
+
+print(result)
+print(result.dtype)  # Output: float32
+```
+
+In JavaScript and WebGL, you can explicitly use `Float32Array` to represent `FP32` values.
+
+```javascript
+const a = new Float32Array([1.0, 2.0, 3.0, 4.0]);
+const b = new Float32Array([5.0, 6.0, 7.0, 8.0]);
+const result = new Float32Array(a.length);
+```
 
 ## Specification
 

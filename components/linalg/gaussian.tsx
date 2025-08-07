@@ -21,12 +21,14 @@ const variables: string[][] = [
   ['u', 'v', 'x', 'y', 'z']
 ]
 
-export function GaussianElimination() {
-  const [equations, setEquations] = useState<LinearEquation[]>([
-    { coefficient: [1, -2, 1], constant: 0 },
-    { coefficient: [2, 1, -3], constant: 5 },
-    { coefficient: [4, -7, 1], constant: -1 }
-  ])
+const defaultEquations: LinearEquation[] = [
+  { coefficient: [1, -2, 1], constant: 0 },
+  { coefficient: [2, 1, -3], constant: 5 },
+  { coefficient: [4, -7, 1], constant: -1 }
+]
+
+export function GaussianElimination({ equations: initialEquations = defaultEquations }: { equations?: LinearEquation[] }) {
+  const [equations, setEquations] = useState<LinearEquation[]>(initialEquations)
   const vars = variables[equations.length]
 
   const [solution, setSolution] = useState<GaussianSolution | null>(null)
