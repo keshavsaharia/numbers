@@ -1,124 +1,267 @@
 # SGLang on Kubernetes
 
-This is a guide based on the [official Kubernetes deployment instructions](https://docs.sglang.ai/start/install.html).
+This is a guide based on the [official Kubernetes deployment instructions](https://docs.sglang.ai/start/install.html). The containerized nature of SGLang makes it well-suited for Kubernetes deployment.
 
+  ### Basic Kubernetes Deployment
+
+Here is a basic deployment manifest for SGLang.
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sglang-deployment
+  labels:
+    app: sglang
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sglang
+  template:
+    metadata:
+      labels:
+        app: sglang
+    spec:
+      containers:
+      - name: sglang
+        image: sglang-cpu:main
+        ports:
+        - containerPort: 30000
+        env:
+        - name: HF_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: huggingface-secret
+              key: token
+        resources:
+          requests:
+            memory: "8Gi"
+            cpu: "4"
+          limits:
+            memory: "16Gi"
+            cpu: "8"
+        volumeMounts:
+        - name: model-cache
+          mountPath: /root/.cache/huggingface
+        - name: shm
+          mountPath: /dev/shm
+      volumes:
+      - name: model-cache
+        persistentVolumeClaim:
+          claimName: model-cache-pvc
+      - name: shm
+        emptyDir:
+          medium: Memory
+          sizeLimit: 2Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sglang-service
+spec:
+  selector:
+    app: sglang
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 30000
+  type: LoadBalancer
+```
+
+### GPU-Enabled Deployment
+
+For GPU workloads, you will need to configure GPU resources and node selectors.
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sglang-gpu-deployment
+  labels:
+    app: sglang-gpu
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sglang-gpu
+  template:
+    metadata:
+      labels:
+        app: sglang-gpu
+    spec:
+      nodeSelector:
+        accelerator: nvidia-tesla-v100
+      containers:
+      - name: sglang
+        image: sglang-gpu:latest
+        ports:
+        - containerPort: 30000
+        env:
+        - name: CUDA_VISIBLE_DEVICES
+          value: "0"
+        - name: HF_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: huggingface-secret
+              key: token
+        resources:
+          requests:
+            memory: "16Gi"
+            cpu: "8"
+            nvidia.com/gpu: 1
+          limits:
+            memory: "32Gi"
+            cpu: "16"
+            nvidia.com/gpu: 1
+        volumeMounts:
+        - name: model-cache
+          mountPath: /root/.cache/huggingface
+        - name: shm
+          mountPath: /dev/shm
+      volumes:
+      - name: model-cache
+        persistentVolumeClaim:
+          claimName: model-cache-pvc
+      - name: shm
+        emptyDir:
+          medium: Memory
+          sizeLimit: 8Gi
+```
+
+### Persistent Volume Configuration
+
+Create a persistent volume claim for model caching to improve startup times.
 
 ```yaml
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: llama-31-8b-sglang
+  name: model-cache-pvc
 spec:
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
-      storage: 30Gi
-  storageClassName: default # change this to your preferred storage class
-  volumeMode: Filesystem
----
-apiVersion: node.k8s.io/v1
-kind: RuntimeClass
+      storage: 100Gi
+  storageClassName: fast-ssd
+```
+
+### Secrets Configuration
+
+Store your Hugging Face token securely using Kubernetes secrets.
+
+```bash
+kubectl create secret generic huggingface-secret \
+  --from-literal=token=your_huggingface_token_here
+```
+
+### Horizontal Pod Autoscaler
+
+For dynamic scaling based on CPU utilization, you can use the following manifest to configure the Horizontal Pod Autoscaler.
+
+```yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
 metadata:
-  name: nvidia
-handler: nvidia
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: meta-llama-31-8b-instruct-sglang
+  name: sglang-hpa
 spec:
-  replicas: 1
-  strategy:
-    type: Recreate
-  selector:
-    matchLabels:
-      app: meta-llama-31-8b-instruct-sglang
-  template:
-    metadata:
-      labels:
-        app: meta-llama-31-8b-instruct-sglang
-        model: meta-llama-31-8b-instruct
-        engine: sglang
-    spec:
-      restartPolicy: Always
-      runtimeClassName: nvidia
-      containers:
-        - name: meta-llama-31-8b-instruct-sglang
-          image: docker.io/lmsysorg/sglang:latest
-          imagePullPolicy: Always # IfNotPresent or Never
-          ports:
-            - containerPort: 30000
-          command: ["python3", "-m", "sglang.launch_server"]
-          args:
-            [
-              "--model-path",
-              "meta-llama/Llama-3.1-8B-Instruct",
-              "--host",
-              "0.0.0.0",
-              "--port",
-              "30000",
-            ]
-          env:
-            - name: HF_TOKEN
-              value: <secret>
-          resources:
-            limits:
-              nvidia.com/gpu: 1
-              cpu: 8
-              memory: 40Gi
-            requests:
-              cpu: 2
-              memory: 16Gi
-              nvidia.com/gpu: 1
-          volumeMounts:
-            - name: shm
-              mountPath: /dev/shm
-            - name: hf-cache
-              mountPath: /root/.cache/huggingface
-            - name: localtime
-              mountPath: /etc/localtime
-              readOnly: true
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: 30000
-            initialDelaySeconds: 120
-            periodSeconds: 15
-            timeoutSeconds: 10
-            failureThreshold: 3
-          readinessProbe:
-            httpGet:
-              path: /health_generate
-              port: 30000
-            initialDelaySeconds: 120
-            periodSeconds: 15
-            timeoutSeconds: 10
-            failureThreshold: 3
-            successThreshold: 1
-      volumes:
-        - name: shm
-          emptyDir:
-            medium: Memory
-            sizeLimit: 10Gi
-        - name: hf-cache
-          persistentVolumeClaim:
-            claimName: llama-31-8b-sglang
-        - name: localtime
-          hostPath:
-            path: /etc/localtime
-            type: File
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: meta-llama-31-8b-instruct-sglang
-spec:
-  selector:
-    app: meta-llama-31-8b-instruct-sglang
-  ports:
-    - protocol: TCP
-      port: 80 # port on host
-      targetPort: 30000 # port in container
-  type: LoadBalancer # change to ClusterIP if needed
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: sglang-deployment
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+```
+
+### Production Considerations
+
+The time complexity for model loading is **O(n)** where n is the model size, while inference time complexity varies by model architecture but is typically **O(s·d)** where s is sequence length and d is model dimension. Space complexity is **O(m + c)** where m is model parameters and c is context cache size.
+
+**Resource Requirements**. SGLang can be memory-intensive, especially when loading large models. Plan for adequate memory allocation with a typical requirement of 8-32 GB RAM depending on model size. GPU deployments may require 16-80 GB VRAM for larger models.
+
+**Model Caching Strategy**. Use persistent volumes to cache downloaded models, reducing startup time from minutes to seconds. Consider using a shared filesystem like NFS or distributed storage for multi-pod access to the same models.
+
+**Network Configuration**. Configure appropriate ingress controllers and load balancers to handle external traffic. Consider using service mesh technologies like Istio for advanced traffic management and observability.
+
+**Monitoring and Observability**. Implement comprehensive monitoring using Prometheus and Grafana to track model performance, request latency, and resource utilization. Set up alerts for memory pressure, GPU utilization, and response time degradation.
+
+**Security**. Use Pod Security Standards to enforce security policies, implement network policies to restrict inter-pod communication, and regularly update container images to address security vulnerabilities.
+
+### Helm Chart Deployment
+
+For simplified Kubernetes deployments, you can create a Helm chart, as shown below in the `values.yaml` configuration.
+
+```yaml
+# values.yaml
+replicaCount: 1
+
+image:
+  repository: sglang-cpu
+  tag: main
+  pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer
+  port: 80
+  targetPort: 30000
+
+resources:
+  requests:
+    memory: "8Gi"
+    cpu: "4"
+  limits:
+    memory: "16Gi"
+    cpu: "8"
+
+# GPU configuration
+gpu:
+  enabled: false
+  count: 1
+  nodeSelector:
+    accelerator: nvidia-tesla-v100
+
+# Model caching
+persistence:
+  enabled: true
+  size: 100Gi
+  storageClass: fast-ssd
+
+# Hugging Face configuration
+huggingface:
+  token: ""  # Set via --set huggingface.token=your_token
+
+# Autoscaling
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+
+# Monitoring
+monitoring:
+  enabled: false
+  serviceMonitor:
+    enabled: false
+```
+
+You can now deploy the chart using Helm.
+
+```bash
+# Install the chart
+helm install sglang ./sglang-chart \
+  --set huggingface.token=your_huggingface_token \
+  --set gpu.enabled=true
+
+# Upgrade deployment
+helm upgrade sglang ./sglang-chart \
+  --set replicaCount=3 \
+  --set autoscaling.enabled=true
 ```

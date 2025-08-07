@@ -13,6 +13,7 @@ import {
   Edge,
   EdgeTypes,
   Connection,
+  DefaultEdgeOptions,
 } from '@xyflow/react';
  
 import '@xyflow/react/dist/style.css';
@@ -73,9 +74,10 @@ const edgeTypes: EdgeTypes = {
   floating: FloatingEdge,
 };
  
-const defaultEdgeOptions = {
+const defaultEdgeOptions: DefaultEdgeOptions = {
   type: 'floating',
   markerEnd: {
+    type: MarkerType.ArrowClosed,
     color: '#9f9f9f',
   },
 };
