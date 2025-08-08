@@ -18,6 +18,24 @@
   ::file-selector-button {
     border-color: var(--color-gray-200, currentColor);
   }
+
+  :root {
+    /* Mathematical visualization colors */
+    --math-grid: 216 19% 35%;
+    --math-axis: 213 27% 84%;
+    --math-vector: 195 100% 50%;
+    --math-eigenvector: 120 100% 50%;
+    --math-transformed: 45 100% 60%;
+  }
+
+  .light {
+    /* Mathematical visualization colors */
+    --math-grid: 214 32% 85%;
+    --math-axis: 215 25% 27%;
+    --math-vector: 195 100% 40%;
+    --math-eigenvector: 120 60% 40%;
+    --math-transformed: 45 100% 50%;
+  }
 }
 
 mjx-container[jax="SVG"] {
