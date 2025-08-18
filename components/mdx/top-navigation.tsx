@@ -1,5 +1,3 @@
-import theorems from '@/data/theorems'
-
 import {
     Pagination,
     PaginationContent,
@@ -10,14 +8,15 @@ import {
     PaginationPrevious
   } from "@/components/navbar/pagination"
 import Link from 'next/link'
+import { SectionGroup } from '../types'
 
-export function Theorem({ id }: { id: string }) {
-    const theorem = theorems.sections.find((t) => t.path == id)
-    const theoremNumber = parseInt(id)
+export function TopNavigation({ id, group }: { id: string, group: SectionGroup }) {
+    const theorem = group.sections.find((t) => t.path == id)
+    const sectionNumber = parseInt(id)
     const threshold = 5
 
-    const firstTheorem = theorems.sections[0]
-    const lastTheorem = theorems.sections[theorems.sections.length - 1]
+    const firstSection = group.sections[0]
+    const lastSection = group.sections[group.sections.length - 1]
 
 
     if (! theorem)
@@ -30,12 +29,12 @@ export function Theorem({ id }: { id: string }) {
                     <PaginationItem className='mx-4 font-bold'>
                         <Link href="/theorem">Theorem</Link>
                     </PaginationItem>
-                    { id != firstTheorem.path && <PaginationItem>
-                        <PaginationPrevious href={ theorems.base + '/' + firstTheorem.path } />
+                    { id != firstSection.path && <PaginationItem>
+                        <PaginationPrevious href={ group.base + '/' + firstSection.path } />
                     </PaginationItem> }
-                    { theorems.sections.map((section) => {
-                        const sectionNumber = parseInt(section.path)
-                        const distance = Math.abs(theoremNumber - sectionNumber)
+                    { group.sections.map((section) => {
+                        const sectionNumber = parseInt(section.path || '0')
+                        const distance = Math.abs(sectionNumber - sectionNumber)
                         if (distance > threshold) {
                             return null
                         }
@@ -50,14 +49,14 @@ export function Theorem({ id }: { id: string }) {
                         <PaginationItem key={ section.path }>
                             <PaginationLink 
                                 isActive={ id == section.path }
-                                href={ theorems.base + '/' + section.path }>
+                                href={ '/theorem/' + section.path }>
                                     { section.path }
                                 </PaginationLink>
                         </PaginationItem>)
                     }) }
-                    { id != lastTheorem.path && 
+                    { id != lastSection.path && 
                     <PaginationItem>
-                        <PaginationNext href={ theorems.base + '/' + lastTheorem.path } />
+                        <PaginationNext href={ group.base + '/' + lastSection.path } />
                     </PaginationItem> }
                 </PaginationContent>
             </Pagination>

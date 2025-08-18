@@ -14,6 +14,7 @@ import { References } from '@/components/mdx/references'
 import { CodeBlock } from '@/components/code/code-block'
 import { MatrixRain } from '@/components/ui/matrix-code'
 import { ASCIIViewer } from '@/components/string/ascii-viewer'
+import { TopNavigation } from '@/components/mdx/top-navigation'
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -30,7 +31,8 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     References,
     pre: pre,
     Center: center,
-    wrapper
+    wrapper,
+    TopNavigation
   }
 }
 
