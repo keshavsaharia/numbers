@@ -1,0 +1,40 @@
+# Binomial Coefficient
+
+The binomial coefficient, also known as "n choose k", calculates the number of ways to choose $$k$$ items from a set of $$n$$ items without regard to the order of selection. It is often denoted as $$C(n, k)$$ or $$\binom{n}{k}$$.
+
+## Formula
+
+The closed form solution to calculate the binomial coefficient given $$n$$ and $$k$$ is:
+
+$$C(n, k) = \frac{n!}{k!(n-k)!}$$
+
+However, this formula is inefficient for large values of $$n$$ and $$k$$.
+
+## Implementation
+
+A better implementation is to use dynamic programming to calculate the binomial coefficient. This is more efficient because it avoids calculating factorials and only calculates the necessary values.
+
+```typescript
+/**
+ * Calculate the binomial coefficient (n choose k)
+ *
+ * @param {Number} available choices
+ * @param {Number} number chosen
+ * @return {Number} number of possible choices
+ */
+function binomialCoefficient(n: number, k: number) {
+  const arr:number[][] = [];
+
+  function binomial(n: number, k: number) {
+    if (n >= 0 && k === 0) return 1;
+    if (n === 0 && k > 0) return 0;
+    if (arr[n] && arr[n][k] > 0) return arr[n][k];
+    if (!arr[n]) arr[n] = [];
+
+    arr[n][k] = binomial(n - 1, k - 1) + binomial(n - 1, k);
+    return arr[n][k];
+  }
+
+  return binomial(n, k);
+};
+```

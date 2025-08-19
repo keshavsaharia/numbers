@@ -1,12 +1,25 @@
-export const metadata = {
-  title: 'Vectors',
-  description: 'Vectors are a sequence of numbers that often represent a magnitude and direction in a coordinate system.',
-  path: 'vectors'
-}
+import { getMetadata } from '@/data/metadata'
+import linearAlgebra from '@/data/linear-algebra'
+export const metadata = getMetadata(linearAlgebra, 'vectors')
+
+<TopNavigation id="vectors" group={linearAlgebra} />
 
 # Vectors
 
-A vector is a mathematical object that has both magnitude and direction. In linear algebra, vectors are typically represented as ordered lists of numbers, called components. These components describe the vector's position in a coordinate system.
+A vector is a mathematical object that has both magnitude and direction. Here is an example of a mathematical object that *only* has magnitude:
+
+- Number line visualization with draggable slider
+
+Here is an example of a mathematical object that *only* has direction:
+
+- Arrow pointing in a direction that can be moved
+
+By combining these two, we can intuitively understand a vector as a "movement in space".
+
+- Arrow pointing in a direction with a specific length along that direction
+
+
+In linear algebra, vectors are typically represented as ordered lists of numbers, called components. These components describe the vector's position in a coordinate system.
 
 ### Vector Representation
 

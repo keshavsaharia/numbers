@@ -8,7 +8,7 @@ Each digit corresponds to a power of 10. Humans also occassionally write numbers
 
 <ColorPicker initialValue='#1ea3eb'/>
 
-Regardless of which human representation you choose, a computer will represent that number in **base 2**, with only the digits 0 and 1. This roughly corresponds to the presence or absence of an electrical current.
+Regardless of which human representation you choose, a computer will represent that number in **base 2**, with only the digits 0 and 1. In computer hardware, this corresponds to the presence or absence of an electrical current.
 
 <MatrixRain/>
 <br/><br/>
@@ -39,6 +39,57 @@ Just as we express long distances with kilometers instead of meters, we can expr
 
 Here is what one kilobyte (1024 bytes) of information looks like. This isn't just any kilobyte though - it is *[De rerum natura](https://en.wikipedia.org/wiki/De_rerum_natura)*, the ancient wisdom of [Lucretius](https://en.wikipedia.org/wiki/Lucretius).
 
-- ASCIIViewer - text
+<ASCIIViewer text={`Mother of Rome, delight of Gods and men,
+Dear Venus that beneath the gliding stars
+Makest to teem the many-voyaged main
+And fruitful lands- for all of living things
+Through thee alone are evermore conceived,
+Through thee are risen to visit the great sun-
+Before thee, Goddess, and thy coming on,
+Flee stormy wind and massy cloud away,
+For thee the daedal Earth bears scented flowers,
+For thee waters of the unvexed deep
+Smile, and the hollows of the serene sky
+Glow with diffused radiance for thee!
+For soon as comes the springtime face of day,
+And procreant gales blow from the West unbarred,
+First fowls of air, smit to the heart by thee,
+Foretoken thy approach, O thou Divine,
+And leap the wild herds round the happy fields
+Or swim the bounding torrents. Thus amain,
+Seized with the spell, all creatures follow thee
+Whithersoever thou walkest forth to lead,
+And thence through seas and mountains and swift streams,
+Through leafy homes of birds and greening plains,
+Kindling the lure of love in every breast,
+Thou bringest the eternal generations forth,
+Kind after kind. And since 'tis thou alone
+Guidest the Cosmos, and without thee naught
+Is risen to reach the shining shores of light,
+Nor aught of joyful or of lovely born,
+Thee do I crave co-partner in that verse
+Which I presume on Nature to compose
+For Memmius mine, whom thou hast willed to be
+Peerless in every grace at every hour-
+Wherefore indeed, Divine one, give my words
+Immortal charm. Lull to a timely rest
+O'er sea and land the savage works of war,
+For thou alone hast power with public peace
+To aid mortality; since he who rules
+The savage works of battle, puissant Mars,
+How often to thy bosom flings his strength
+O'ermastered by the eternal wound of love-
+And there, with eyes and full throat backward thrown,
+Gazing, my Goddess, open-mouthed at thee,
+Pastures on love his greedy sight, his breath
+Hanging upon thy lips. Him thus reclined
+Fill with thy holy body, round, above!
+Pour from those lips soft syllables to win
+Peace for the Romans, glorious Lady, peace!
+For in a season troublous to the state
+Neither may I attend this task of mine
+With thought untroubled, nor mid such events
+The illustrious scion of the Memmian house
+Neglect the civic cause.`}/>
 
 Each character of Lucretius' poem is [encoded](/encoding) with a single byte, using a format called [ASCII](/encoding/ascii). This format works well for English letters, but is woefully inadequate for modern text which contains a wide range of characters like emojis and Chinese letters. Most modern systems use encoding formats like [UTF-8](/encoding/utf8) and [UTF-16](/encoding/utf16), which can use multiple bytes to encode each character.

@@ -1,69 +1,73 @@
-import {
-    Pagination,
-    PaginationContent,
-    PaginationEllipsis,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious
-  } from "@/components/navbar/pagination"
-import Link from 'next/link'
-import { SectionGroup } from '../types'
+"use client"
 
-export function TopNavigation({ id, group }: { id: string, group: SectionGroup }) {
-    const theorem = group.sections.find((t) => t.path == id)
-    const sectionNumber = parseInt(id)
-    const threshold = 5
+import React, { useEffect, useState } from "react"
+import { motion } from "framer-motion"
+import Link from "next/link"
+import clsx from "clsx" 
+import { SectionGroup } from "../types"
 
-    const firstSection = group.sections[0]
-    const lastSection = group.sections[group.sections.length - 1]
+interface NavBarProps {
+  group: SectionGroup
+  id: string
+  className?: string
+}
 
+export function TopNavigation({ group, id, className }: NavBarProps) {
+  const [activeTab, setActiveTab] = useState(id)
+  const [isMobile, setIsMobile] = useState(false)
 
-    if (! theorem)
-        return <div>not found</div>
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
 
-    return (
-        <div>
-            <Pagination>
-                <PaginationContent className="gap-0.5 rounded-lg border border-zinc-100 dark:border-zinc-800 p-1">
-                    <PaginationItem className='mx-4 font-bold'>
-                        <Link href="/theorem">Theorem</Link>
-                    </PaginationItem>
-                    { id != firstSection.path && <PaginationItem>
-                        <PaginationPrevious href={ group.base + '/' + firstSection.path } />
-                    </PaginationItem> }
-                    { group.sections.map((section) => {
-                        const sectionNumber = parseInt(section.path || '0')
-                        const distance = Math.abs(sectionNumber - sectionNumber)
-                        if (distance > threshold) {
-                            return null
-                        }
-                        else if (distance == threshold) {
-                            return (
-                                <PaginationItem key={ section.path }>
-                                    <PaginationEllipsis />
-                                </PaginationItem>
-                            )
-                        }
-                        return (
-                        <PaginationItem key={ section.path }>
-                            <PaginationLink 
-                                isActive={ id == section.path }
-                                href={ '/theorem/' + section.path }>
-                                    { section.path }
-                                </PaginationLink>
-                        </PaginationItem>)
-                    }) }
-                    { id != lastSection.path && 
-                    <PaginationItem>
-                        <PaginationNext href={ group.base + '/' + lastSection.path } />
-                    </PaginationItem> }
-                </PaginationContent>
-            </Pagination>
-            <h1 className="text-2xl font-bold mt-12 mb-8">
-                {/* <span className="text-lg px-4 py-2 border bg-zinc-100 border-zinc-200 dark:border-zinc-700 dark:bg-zinc-800 rounded-lg mr-4">{ theorem.path }</span> */}
-                { theorem.title }
-            </h1>
-        </div>
-    )
+    handleResize()
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
+
+  return (
+    <div
+      className={className}
+    >
+      <div className="flex items-center gap-3 bg-background/5 border border-zinc-100 dark:border-zinc-800 backdrop-blur-lg py-1 px-1 rounded-full shadow-lg">
+        {group.sections.map((section) => {
+          const isActive = activeTab === section.id
+
+          return (
+            <Link
+              key={section.id ?? section.title}
+              href={group.base + '/' + section.path}
+              onClick={() => setActiveTab(section.id)}
+              className={clsx(
+                "relative cursor-pointer text-sm font-semibold px-6 py-2 rounded-full transition-colors",
+                "text-foreground/80 hover:text-primary",
+                isActive && "bg-muted text-primary",
+              )}
+            >
+              <span className="hidden md:inline">{section.title}</span>
+              {isActive && (
+                <motion.div
+                  layoutId="lamp"
+                  className="absolute inset-0 w-full bg-black/5 dark:bg-white/5 rounded-full -z-10"
+                  initial={false}
+                  transition={{
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 30,
+                  }}
+                >
+                  <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-1 bg-primary rounded-t-full">
+                    <div className="absolute w-12 h-6 bg-primary/20 rounded-full blur-md -top-2 -left-2" />
+                    <div className="absolute w-8 h-6 bg-primary/20 rounded-full blur-md -top-1" />
+                    <div className="absolute w-4 h-4 bg-primary/20 rounded-full blur-sm top-0 left-2" />
+                  </div>
+                </motion.div>
+              )}
+            </Link>
+          )
+        })}
+      </div>
+    </div>
+  )
 }

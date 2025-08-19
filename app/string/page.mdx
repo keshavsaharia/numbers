@@ -1,14 +1,18 @@
+import { encodings } from "@/data/string/encodings";
+
 # Strings
 
-A string is a sequence of characters, and is a fundamental data type in computer science and programming. Strings are sometimes simply referred to as **text**, but behind the scenes they are really just sequences of numbers.
+A string is a sequence of characters. This sentence you are currently reading is stored somewhere on your computer as a *string* of characters. Each character is really just a number.
 
-The formal mathematical definition of a string is a sequence of characters from a finite alphabet, which is a set of symbols. The set of all strings over an alphabet $$\Sigma$$ is denoted as $$\Sigma^*$$.
+The formal mathematical definition of a string is *a sequence of characters from a finite alphabet*. The set of all strings over an alphabet $$\Sigma$$ is denoted as $$\Sigma^*$$.
 
 <Center>
 $$ \Sigma^* = \{ \epsilon, a, aa, ab, ba, abb, \ldots \} $$
 </Center>
 
-The empty string $$\epsilon$$ is a string of length 0.
+The empty string $$\epsilon$$ is a string of length 0. Just as it is useful to have the number 0 when mathematically reasoning about numbers, it is useful to have the empty string when reasoning about strings.
+
+<SectionListBox { ...encodings } />
 
 ## ASCII
 

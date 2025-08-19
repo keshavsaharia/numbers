@@ -1,38 +1,12 @@
 import { GaussianElimination } from '@/components/linalg/gaussian'
+import linearAlgebra from '@/data/linear-algebra'
 
 # Linear Algebra
 
-Linear algebra is a fundamental area of mathematics focused on the study of vectors, matrices, and linear transformations. It provides the theoretical framework for solving systems of linear equations, which is crucial in various scientific and engineering applications. 
-
-One of the key techniques in linear algebra is [Gaussian elimination](/linalg/solver/gaussian), a technique that first appeared in [ancient Chinese mathematics](/linalg/fangcheng) and was later formalized by European mathematicians in the 18th century.
+Linear algebra is the study of structure and change through linear transformations. It first appeared in [ancient Chinese mathematics](/linalg/fangcheng) as a technique that we know today as [Gaussian elimination](/linalg/solver/gaussian) - a step-by-step method for solving systems of linear equations by reducing them to a simpler "diagonalized" form.
 
 <GaussianElimination/>
 
-These guides to linear algebra use dynamic visualizations, similar to the one above, that hopefully provide an intuitive explanation of the underlying concepts.
+These guides to linear algebra use interactive visualizations, similar to the one above, to provide a more intuitive explanation of the underlying concepts.
 
-<SectionListBox sections={[
-  {
-    title: 'Vectors',
-    description: 'Vectors are a sequence of numbers that often represent a magnitude and direction in a coordinate system.',
-    link: '/linalg/vectors',
-    path: 'vectors'
-  },
-  {
-    title: 'Matrices',
-    description: 'Matrices are rectangular arrays of numbers that are often used to represent linear transformations.',
-    link: '/linalg/matrices',
-    path: 'matrices'
-  },
-  {
-    title: 'Linear Transformations',
-    description: 'Linear transformations are functions that map vectors to other vectors, often represented as matrices.',
-    link: '/linalg/linear-transformations',
-    path: 'linear-transformations'
-  },
-  {
-    title: 'Eigenvalues and Eigenvectors',
-    description: 'Eigenvalues and eigenvectors are important concepts in linear algebra. Eigenvalues are the values that scale the eigenvectors when a linear transformation is applied to them. Eigenvectors are the vectors that are scaled by the eigenvalues when a linear transformation is applied to them.',
-    link: '/linalg/eigenvalues-and-eigenvectors',
-    path: 'eigenvalues-and-eigenvectors'
-  }
-]}/>
+<SectionListBox sections={linearAlgebra.sections} />
