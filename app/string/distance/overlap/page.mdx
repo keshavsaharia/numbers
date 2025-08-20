@@ -1,6 +1,17 @@
+import { BigOComplexityTable } from '@/components/algorithms/big-o'
+import { stringDistance } from '@/data/string-distance'
+import { stringNavigation } from '@/data/string/navigation'
+import { getMetadata } from '@/data/metadata'
+
+<TopNavigation id="distance" group={ stringNavigation } />
+
+export const metadata = getMetadata(stringDistance, 'overlap')
+
 # Overlap Coefficient
 
 The Overlap coefficient is a similarity measure between two strings that compares the size of their intersection to the size of the smaller set. It is particularly useful when comparing strings of different lengths, as it normalizes the similarity score based on the smaller string.
+
+<BigOComplexityTable algorithms={stringDistance.sections} selected="overlap"/>
 
 ## Mathematical Definition
 

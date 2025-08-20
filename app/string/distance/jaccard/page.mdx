@@ -1,6 +1,17 @@
+import { BigOComplexityTable } from '@/components/algorithms/big-o'
+import { stringDistance } from '@/data/string-distance'
+import { getMetadata } from '@/data/metadata'
+import { stringNavigation } from '@/data/string/navigation'
+
+export const metadata = getMetadata(stringDistance, 'jaccard')
+
+<TopNavigation id="distance" group={ stringNavigation } />
+
 # Jaccard Distance
 
 The Jaccard distance is a measure of dissimilarity between two sets. When applied to strings, the sets are typically created using character n-grams or word sets. The distance is calculated as one minus the Jaccard similarity coefficient.
+
+<BigOComplexityTable algorithms={stringDistance.sections} selected="jaccard"/>
 
 ## Mathematical Definition
 

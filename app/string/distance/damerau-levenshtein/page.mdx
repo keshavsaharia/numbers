@@ -1,6 +1,17 @@
+import { BigOComplexityTable } from '@/components/algorithms/big-o'
+import { stringDistance } from '@/data/string-distance'
+import { stringNavigation } from '@/data/string/navigation'
+import { getMetadata } from '@/data/metadata'
+
+export const metadata = getMetadata(stringDistance, 'damerau-levenshtein')
+
+<TopNavigation id="distance" group={ stringNavigation } />
+
 # Damerau-Levenshtein Distance
 
 The Damerau-Levenshtein distance is a string metric that measures the edit distance between two strings by counting the minimum number of operations (insertions, deletions, substitutions, and transpositions of adjacent characters) required to transform one string into another.
+
+<BigOComplexityTable algorithms={stringDistance.sections} selected="damerau-levenshtein"/>
 
 ## Mathematical Definition
 

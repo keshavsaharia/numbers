@@ -1,6 +1,18 @@
+import { BigOComplexityTable } from '@/components/algorithms/big-o'
+import { LevenshteinDistance } from '@/components/string/distance/levenshtein'
+import { stringDistance } from '@/data/string-distance'
+import { stringNavigation } from '@/data/string/navigation'
+import { getMetadata } from '@/data/metadata'
+
+<TopNavigation id="distance" group={ stringNavigation } />
+
+export const metadata = getMetadata(stringDistance, 'levenshtein')
+
 # Levenshtein Distance
 
 The Levenshtein distance is a string metric for measuring the difference between two sequences. It is defined as the minimum number of single-character edits (insertions, deletions, or substitutions) required to change one string into another.
+
+<BigOComplexityTable algorithms={stringDistance.sections} selected="levenshtein"/>
 
 ## History
 
@@ -24,6 +36,8 @@ d_{lev}(s_1[1:], s_2[1:])
 $$
 
 where $|s|$ denotes the length of string $s$, $s[0]$ denotes the first character of $s$, and $s[i:]$ denotes the substring of $s$ starting from index $i$.
+
+<LevenshteinDistance />
 
 The Levenshtein distance produces a non-negative value that ranges from 0 to infinity, where 0 indicates identical strings. The distance is symmetric, meaning the distance from string A to B is the same as from B to A. Most importantly, it satisfies the triangle inequality, making it a **proper metric**. This means that for any three strings A, B, and C, the distance from A to C will never be greater than the sum of the distances from A to B and B to C.
 

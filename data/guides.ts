@@ -6,8 +6,14 @@ export default {
   base: '/guides',
   sections: [
     {
+      title: 'Strings',
+      description: 'A deep dive into string encodings and string algorithms for searching, fuzzy matching, regular expressions, and finite automata.',
+      link: '/string',
+      path: 'string',
+    },
+    {
       title: 'Linear Algebra',
-      description: 'A visual guide to linear algebra, with interactive visualizations to aid the less mathematically inclined.',
+      description: 'A visual guide to linear algebra, with interactive visualizations to provide intuitive understanding of the underlying concepts.',
       link: '/linalg',
       path: 'linalg',
     },

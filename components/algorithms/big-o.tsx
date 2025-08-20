@@ -82,10 +82,11 @@ export function BigOComplexityTable({ algorithms, selected }: { algorithms: Algo
                 >
                 {spaceKeys.map((spaceKey) => {
                   const algorithms = timeComplexity[spaceKey]
+                  const spaceSelected = selected == null || algorithms?.some((algorithm) => algorithm.path === selected)
 
                   return (
                     <div key={spaceKey} className={ clsx(
-                      algorithms ? timeColor : '', 
+                      algorithms ? (spaceSelected ? timeColor : 'bg-zinc-100 dark:bg-zinc-800') : '',
                       'rounded-md overflow-hidden')
                     }>
                       { algorithms && <div className='flex gap-1 justify-center items-center bg-black/10'>

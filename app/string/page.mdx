@@ -1,4 +1,12 @@
 import { encodings } from "@/data/string/encodings";
+import searchAlgorithms from "@/data/string/search-algorithms";
+import { stringDistance } from '@/data/string-distance';
+import { stringNavigation } from '@/data/string/navigation'
+import { getGroupMetadata } from '@/data/metadata'
+
+export const metadata = getGroupMetadata(stringNavigation)
+
+<TopNavigation id="string" group={ stringNavigation } />
 
 # Strings
 
@@ -13,6 +21,16 @@ $$ \Sigma^* = \{ \epsilon, a, aa, ab, ba, abb, \ldots \} $$
 The empty string $$\epsilon$$ is a string of length 0. Just as it is useful to have the number 0 when mathematically reasoning about numbers, it is useful to have the empty string when reasoning about strings.
 
 <SectionListBox { ...encodings } />
+
+# String Algorithms
+
+These are some of the algorithms that are useful for working with strings.
+
+<SectionListBox { ...searchAlgorithms } />
+
+<SectionListBox { ...stringDistance } />
+
+
 
 ## ASCII
 

@@ -1,9 +1,11 @@
 import { stringDistance } from '@/data/string-distance'
+import { stringNavigation } from '@/data/string/navigation'
+import { getGroupMetadata } from '@/data/metadata'
+import { LevenshteinDistance } from '@/components/string/distance/levenshtein'
 
-export const metadata = {
-  title: 'String distance',
-  description: 'A collection of string distance functions with code implementations as well as their mathematical definitions.'
-}
+export const metadata = getGroupMetadata(stringDistance)
+
+<TopNavigation id="distance" group={ stringNavigation } />
 
 # String distance
 
@@ -13,7 +15,9 @@ A **string distance** is a measure of the similarity between two strings. Formal
 $$ f : \Sigma^* \times \Sigma^* \to \mathbb{R} $$
 </Center>
 
-String distance is a fundamental concept in computer science and natural language processing, used for tasks such as spell checking, text comparison, and pattern matching. The following list is a collection of string distance functions with code implementations as well as their mathematical definitions.
+<LevenshteinDistance />
+
+String distance is commonly computed by a spellchecker. The following list is a collection of string distance functions with code implementations as well as their mathematical definitions.
 
 <SectionListBox sections={stringDistance.sections}/>
 

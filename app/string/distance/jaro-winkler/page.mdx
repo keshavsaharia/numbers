@@ -1,6 +1,17 @@
+import { BigOComplexityTable } from '@/components/algorithms/big-o'
+import { stringDistance } from '@/data/string-distance'
+import { stringNavigation } from '@/data/string/navigation'
+import { getMetadata } from '@/data/metadata'
+
+<TopNavigation id="distance" group={ stringNavigation } />
+
+export const metadata = getMetadata(stringDistance, 'jaro-winkler')
+
 # Jaro-Winkler Distance
 
 The Jaro-Winkler distance is a sophisticated string similarity metric designed to measure how alike two strings are. It builds upon the Jaro distance metric by incorporating an additional factor that gives a higher score to strings that share a common prefix. This makes it particularly useful in applications where the beginning of the strings is more significant, such as in name matching.
+
+<BigOComplexityTable algorithms={stringDistance.sections} selected="jaro-winkler"/>
 
 ## Mathematical Definition
 

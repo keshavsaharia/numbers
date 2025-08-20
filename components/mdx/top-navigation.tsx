@@ -40,12 +40,13 @@ export function TopNavigation({ group, id, className }: NavBarProps) {
               href={group.base + '/' + section.path}
               onClick={() => setActiveTab(section.id)}
               className={clsx(
-                "relative cursor-pointer text-sm font-semibold px-6 py-2 rounded-full transition-colors",
+                "relative w-full cursor-pointer text-xs md:text-sm font-semibold px-4 py-2 rounded-full transition-colors",
+                "text-center",
                 "text-foreground/80 hover:text-primary",
                 isActive && "bg-muted text-primary",
               )}
             >
-              <span className="hidden md:inline">{section.title}</span>
+              <span className="inline">{section.title}</span>
               {isActive && (
                 <motion.div
                   layoutId="lamp"

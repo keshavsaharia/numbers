@@ -8,3 +8,11 @@ export function getMetadata(group: SectionGroup, id: string) {
     path: section?.path
   }
 }
+
+export function getGroupMetadata(group: SectionGroup) {
+  return {
+    title: group.title,
+    description: group.description,
+    path: group.base
+  }
+}

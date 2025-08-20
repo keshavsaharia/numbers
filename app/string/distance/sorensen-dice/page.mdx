@@ -1,6 +1,17 @@
+import { BigOComplexityTable } from '@/components/algorithms/big-o'
+import { stringDistance } from '@/data/string-distance'
+import { stringNavigation } from '@/data/string/navigation'
+import { getMetadata } from '@/data/metadata'
+
+<TopNavigation id="distance" group={ stringNavigation } />
+
+export const metadata = getMetadata(stringDistance, 'sorensen-dice')
+
 # Sorensen-Dice Coefficient
 
 The Sorensen-Dice coefficient is a statistical measure of similarity between two strings based on the presence of shared character pairs (bigrams). It is particularly useful for comparing strings where the order of characters is important but exact matches are not required.
+
+<BigOComplexityTable algorithms={stringDistance.sections} selected="sorensen-dice"/>
 
 ## Mathematical Definition
 

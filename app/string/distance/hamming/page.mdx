@@ -1,10 +1,11 @@
-export const metadata = {
-  title: 'Hamming Distance',
-  description: 'The Hamming distance is a metric for comparing two equal-length strings by counting the number of positions at which the corresponding characters are different.'
-}
-
 import { BigOComplexityTable } from '@/components/algorithms/big-o'
 import { stringDistance } from '@/data/string-distance'
+import { getMetadata } from '@/data/metadata'
+import { stringNavigation } from '@/data/string/navigation'
+
+<TopNavigation id="distance" group={ stringNavigation } />
+
+export const metadata = getMetadata(stringDistance, 'hamming')
 
 # Hamming Distance
 
