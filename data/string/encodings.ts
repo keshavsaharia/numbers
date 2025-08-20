@@ -3,6 +3,7 @@ import { SectionGroup } from "@/components/types";
 export const encodings = {
   title: "Encodings",
   description: "How strings are encoded in different ways.",
+  base: "/string/encoding",
   sections: [
     {
       title: "ASCII",
