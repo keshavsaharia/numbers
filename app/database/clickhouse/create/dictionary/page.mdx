@@ -1,0 +1,100 @@
+# Dictionaries
+
+In ClickHouse, dictionaries provide a powerful mechanism for mapping keys to values, facilitating efficient data retrieval while significantly reducing storage requirements. To create a dictionary, one specifies its structure, source, layout, and refresh settings through SQL-like syntax.
+
+## Syntax Overview
+
+The basic syntax for creating a dictionary in ClickHouse is as follows:
+
+```sql
+CREATE [OR REPLACE] DICTIONARY [IF NOT EXISTS] [db.]dictionary_name [ON CLUSTER cluster]
+(
+    key1 type1  [DEFAULT|EXPRESSION expr1] [IS_OBJECT_ID],
+    key2 type2  [DEFAULT|EXPRESSION expr2],
+    attr1 type2 [DEFAULT|EXPRESSION expr3] [HIERARCHICAL|INJECTIVE],
+    attr2 type2 [DEFAULT|EXPRESSION expr4] [HIERARCHICAL|INJECTIVE]
+)
+PRIMARY KEY key1, key2
+SOURCE(SOURCE_NAME([param1 value1 ... paramN valueN]))
+LAYOUT(LAYOUT_NAME([param_name param_value]))
+LIFETIME({MIN min_val MAX max_val | max_val})
+SETTINGS(setting_name = setting_value, setting_name = setting_value, ...)
+COMMENT 'Comment'
+```
+
+Here, you can choose to create a dictionary on a cluster using the `ON CLUSTER` clause, which allows for distributed data definition language (DDL) operations. The dictionary's attributes are defined similarly to table columns, with the `PRIMARY KEY` indicating the dictionary's key attributes. Various sources can supply the dictionary's data, from local tables to remote services, and the layout dictates the storage format in memory.
+
+## Dictionary Sources
+
+A dictionary's source defines where it retrieves data. Options include local ClickHouse tables, remote ClickHouse tables, HTTP(S) accessible files, and other databases.
+
+### Local ClickHouse Table
+
+To create a dictionary from a local table in ClickHouse, use a syntax structure like this:
+
+```sql
+CREATE DICTIONARY id_value_dictionary
+(
+    id UInt64,
+    value String
+)
+PRIMARY KEY id
+SOURCE(CLICKHOUSE(TABLE 'source_table'))
+LAYOUT(FLAT())
+LIFETIME(MIN 0 MAX 1000)
+```
+
+This example constructs a dictionary from `source_table`, referencing its `id` as the primary key. The `FLAT()` layout is specified, and the data is refreshed with a minimum lifetime of 0 and a maximum of 1000 seconds.
+
+### Remote ClickHouse Table
+
+To source a dictionary from a remote ClickHouse service, define the host, port, and authentication details. Here's an example:
+
+```sql
+CREATE DICTIONARY id_value_dictionary
+(
+    id UInt64,
+    value String
+)
+PRIMARY KEY id
+SOURCE(CLICKHOUSE(HOST 'HOSTNAME' PORT 9000 USER 'default' PASSWORD 'PASSWORD' TABLE 'source_table' DB 'default'))
+LAYOUT(FLAT())
+LIFETIME(MIN 0 MAX 1000)
+```
+
+### HTTP(S) Files
+
+Dictionaries can also be created from data files available over HTTP(S). For example:
+
+```sql
+CREATE DICTIONARY default.taxi_zone_dictionary
+(
+    `LocationID` UInt16 DEFAULT 0,
+    `Borough` String,
+    `Zone` String,
+    `service_zone` String
+)
+PRIMARY KEY LocationID
+SOURCE(HTTP(URL 'https://datasets-documentation.s3.eu-west-3.amazonaws.com/nyc-taxi/taxi_zone_lookup.csv' FORMAT 'CSVWithNames'))
+LIFETIME(MIN 0 MAX 0)
+LAYOUT(HASHED())
+```
+
+Here, data is directly read from the specified CSV file, and `HASHED()` layout is employed.
+
+### Other Databases
+
+Dictionaries may alternatively source data from other types of databases; further details can be found in the [dictionary sources documentation](../../../sql-reference/dictionaries/index.md).
+
+## Key Considerations
+
+When using the ClickHouse Cloud, ensure that you designate a user and password for dictionary operations within the SQL console, as shown below:
+
+```sql
+CREATE USER IF NOT EXISTS clickhouse_admin
+IDENTIFIED WITH sha256_password BY 'passworD43$x';
+
+GRANT default_role TO clickhouse_admin;
+```
+
+By efficiently structuring dictionaries with these capabilities, you enhance query performance and data handling within your ClickHouse environment. For a comprehensive understanding, consult the [system.dictionaries] table which contains meta-information on all dictionaries within your ClickHouse setup.

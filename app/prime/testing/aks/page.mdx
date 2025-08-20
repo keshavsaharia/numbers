@@ -1,0 +1,241 @@
+# AKS Primality Test
+
+The AKS (Agrawal-Kayal-Saxena) primality test is a groundbreaking deterministic primality testing algorithm published in 2002. It is the first primality test that is both deterministic and polynomial-time, resolving a long-standing open problem in number theory and computer science.
+
+## Mathematical Foundation
+
+The AKS test is based on a generalization of [Fermat's Little Theorem](https://en.wikipedia.org/wiki/Fermat%27s_little_theorem) using polynomial congruences. The key insight is that a number $$n > 1$$ is prime if and only if $$(X + a)^n \equiv X^n + a \pmod{n}$$ for some suitable $$a$$ coprime to $$n$$. The actual test uses a more sophisticated version of this congruence.
+
+The complete theorem states that n is prime if and only if $$(X + a)^n - (X^n + a) \equiv 0 \pmod{(n, X^r - 1)}$$, where $$r$$ is a carefully chosen parameter.
+
+## Time and Space Complexity
+
+The time complexity of the original AKS algorithm is $$O(\log^{12} n)$$, but with optimizations, this can be reduced to $$O(\log^{6} n)$$. The space complexity is $$O(\log^2 n)$$.
+
+## Implementation
+
+Click to open an implementation of the AKS primality test.
+
+```javascript
+class Polynomial {
+    constructor(coefficients) {
+        this.coefficients = coefficients;
+    }
+    
+    static add(p1, p2, mod) {
+        const maxLength = Math.max(p1.coefficients.length, p2.coefficients.length);
+        const result = new Array(maxLength).fill(0);
+        
+        for (let i = 0; i < maxLength; i++) {
+            const a = i < p1.coefficients.length ? p1.coefficients[i] : 0;
+            const b = i < p2.coefficients.length ? p2.coefficients[i] : 0;
+            result[i] = (a + b) % mod;
+        }
+        
+        return new Polynomial(result);
+    }
+    
+    static multiply(p1, p2, mod, degree) {
+        const result = new Array(degree).fill(0);
+        
+        for (let i = 0; i < p1.coefficients.length; i++) {
+            for (let j = 0; j < p2.coefficients.length; j++) {
+                if (i + j < degree) {
+                    result[i + j] = (result[i + j] + p1.coefficients[i] * p2.coefficients[j]) % mod;
+                }
+            }
+        }
+        
+        return new Polynomial(result);
+    }
+    
+    static modPow(base, exponent, mod, degree) {
+        if (exponent === 0) {
+            return new Polynomial([1]);
+        }
+        
+        let result = new Polynomial([1]);
+        let power = base;
+        
+        while (exponent > 0) {
+            if (exponent % 2 === 1) {
+                result = Polynomial.multiply(result, power, mod, degree);
+            }
+            power = Polynomial.multiply(power, power, mod, degree);
+            exponent = Math.floor(exponent / 2);
+        }
+        
+        return result;
+    }
+}
+
+function findPrimitiveRoot(n) {
+    for (let r = 2; r < n; r++) {
+        let isPrimitive = true;
+        for (let i = 2; i <= Math.sqrt(n); i++) {
+            if (n % i === 0) {
+                if (modPow(r, (n - 1) / i, n) === 1) {
+                    isPrimitive = false;
+                    break;
+                }
+            }
+        }
+        if (isPrimitive) return r;
+    }
+    return -1;
+}
+
+function modPow(base, exponent, modulus) {
+    if (modulus === 1) return 0;
+    let result = 1;
+    base = base % modulus;
+    while (exponent > 0) {
+        if (exponent % 2 === 1) {
+            result = (result * base) % modulus;
+        }
+        base = (base * base) % modulus;
+        exponent = Math.floor(exponent / 2);
+    }
+    return result;
+}
+
+function aksTest(n) {
+    // Step 1: Check if n is a perfect power
+    const maxLogN = Math.floor(Math.log2(n));
+    for (let b = 2; b <= maxLogN; b++) {
+        const a = Math.pow(n, 1/b);
+        if (Math.pow(Math.floor(a), b) === n) {
+            return false;
+        }
+    }
+    
+    // Step 2: Find r such that ord_r(n) > log^2(n)
+    const logSquared = Math.pow(Math.log2(n), 2);
+    let r = 2;
+    while (r < n) {
+        if (findPrimitiveRoot(r) !== -1) {
+            let shouldBreak = true;
+            for (let i = 1; i <= logSquared; i++) {
+                if (modPow(n, i, r) === 0) {
+                    shouldBreak = false;
+                    break;
+                }
+            }
+            if (shouldBreak) break;
+        }
+        r++;
+    }
+    
+    // Step 3: Check if n has small factors
+    for (let a = 2; a <= Math.min(r, n - 1); a++) {
+        if (n % a === 0) return false;
+    }
+    
+    // Step 4: If n ≤ r, n is prime
+    if (n <= r) return true;
+    
+    // Step 5: Check polynomial congruences
+    const limit = Math.floor(Math.sqrt(r) * Math.log2(n));
+    
+    for (let a = 1; a <= limit; a++) {
+        // Check if (X + a)^n ≡ X^n + a (mod n, X^r - 1)
+        const left = new Polynomial([a, 1]); // X + a
+        const leftPow = Polynomial.modPow(left, n, n, r);
+        
+        const right = new Polynomial(new Array(r).fill(0));
+        right.coefficients[0] = a;
+        right.coefficients[n % r] = 1;
+        
+        if (leftPow.coefficients.join(',') !== right.coefficients.join(',')) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+// Example usage:
+console.log(aksTest(17));  // true
+console.log(aksTest(24));  // false
+```
+
+## Optimizations
+
+Several optimizations have been proposed for the AKS test to enhance its efficiency and practicality. One significant area of improvement is the selection of the parameter $$r$$. The choice of $$r$$ is crucial because it affects the overall performance of the algorithm. Researchers have developed better methods for selecting $$r$$, which can lead to a reduction in the number of computations required, thereby speeding up the test. By optimizing this parameter, the AKS test can be made more efficient, especially for larger numbers.
+
+Another area of optimization is in polynomial arithmetic. The AKS test involves operations on polynomials, and using fast polynomial multiplication algorithms can significantly reduce the time complexity of these operations. Techniques such as the Fast Fourier Transform (FFT) can be employed to perform polynomial multiplications more quickly, which is essential for handling the large polynomials that arise in the test.
+
+Modular arithmetic is also a key component of the AKS test, particularly in the context of modular exponentiation. Efficient algorithms for modular exponentiation can greatly enhance the performance of the test. By employing methods such as the square-and-multiply algorithm, the AKS test can perform modular exponentiation more rapidly, which is crucial for maintaining the polynomial time complexity of the algorithm.
+
+Finally, memory management is an important consideration in optimizing the AKS test. The test can be memory-intensive, especially when dealing with large numbers. Techniques to reduce space complexity, such as using more efficient data structures or optimizing memory usage during polynomial operations, can help in managing the memory footprint of the test. By addressing these memory concerns, the AKS test can be made more feasible for practical applications, allowing it to handle larger inputs without excessive resource consumption.
+
+## Applications
+
+The AKS primality test holds significant theoretical interest for several reasons. Firstly, its historical significance cannot be overstated. The AKS test was the first to demonstrate that primality testing could be performed in polynomial time, thereby proving that this problem belongs to the complexity class P. This was a groundbreaking achievement in computational number theory, as it resolved a long-standing open question about the nature of primality testing and its place within the broader landscape of computational complexity.
+
+Another key aspect of the AKS test is its deterministic nature. Unlike probabilistic primality tests, which can only provide a high degree of confidence that a number is prime, the AKS test offers absolute certainty. This means that when the AKS test determines a number to be prime, there is no probability of error. This deterministic characteristic is particularly valuable in theoretical contexts where certainty is paramount.
+
+The AKS test also guarantees polynomial time complexity. This is a crucial feature because it ensures that the time required to determine the primality of a number grows at a manageable rate as the size of the number increases. Prior to the AKS test, deterministic primality tests were known to operate in exponential time, making them impractical for large numbers. The polynomial time complexity of the AKS test represents a significant advancement, making it theoretically feasible to test the primality of much larger numbers than was previously possible.
+
+Finally, the mathematical elegance of the AKS test is noteworthy. The test is based on a sophisticated application of polynomial congruences, which are both conceptually beautiful and technically intricate. This elegance is not merely aesthetic; it reflects the deep mathematical insights that underpin the test and contribute to its theoretical importance. The AKS test's combination of historical significance, deterministic certainty, polynomial time complexity, and mathematical elegance makes it a subject of enduring interest in the field of number theory and beyond.
+
+## Practical Considerations
+
+While the AKS test is a significant theoretical advancement in primality testing, it faces several practical limitations that affect its usability in real-world applications. One of the primary challenges is the high constant factors associated with its time complexity. Although the AKS test operates in polynomial time, the constants involved in its computations are substantial, leading to longer execution times compared to other algorithms. This makes the AKS test less efficient for practical use, especially when dealing with large numbers where speed is a critical factor.
+
+Another limitation of the AKS test is its complex implementation. The algorithm relies on intricate mathematical concepts, including polynomial congruences and modular arithmetic, which require a deep understanding of number theory to implement correctly. This complexity can be a barrier for developers and researchers who may not have the specialized knowledge needed to work with such advanced mathematical constructs, making the AKS test less accessible to a broader audience.
+
+In practical scenarios, the AKS test is slower than probabilistic tests such as the Miller-Rabin test. Probabilistic tests, while not providing absolute certainty, are significantly faster and more efficient for testing the primality of large numbers. The slower performance of the AKS test is a considerable drawback when speed is essential, such as in cryptographic applications where rapid primality testing is often required.
+
+Finally, the AKS test is memory-intensive, particularly when applied to large numbers. The algorithm's operations, especially those involving polynomial arithmetic, demand substantial memory resources. This high memory usage can be a limiting factor for systems with constrained resources, further reducing the practicality of the AKS test in environments where memory efficiency is crucial. These limitations collectively highlight the challenges of using the AKS test in practical applications, despite its theoretical significance.
+
+## Alternative Implementation
+
+Click to open a simplified version of the AKS primality test that's more practical for educational purposes.
+
+```javascript
+function simplifiedAKS(n) {
+    // Check small numbers and perfect powers
+    if (n <= 1) return false;
+    if (n <= 3) return true;
+    if (Math.pow(Math.floor(Math.sqrt(n)), 2) === n) return false;
+    
+    // Check polynomial congruence for small values
+    const r = Math.floor(Math.log2(n) * Math.log2(n));
+    
+    for (let a = 1; a <= Math.min(r, n - 1); a++) {
+        let left = 1;
+        let right = 1;
+        
+        // Check (1 + a)^n ≡ 1 + a^n (mod n)
+        for (let i = 0; i < n; i++) {
+            left = (left * (1 + a)) % n;
+            right = (1 + modPow(a, n, n)) % n;
+        }
+        
+        if (left !== right) return false;
+    }
+    
+    return true;
+}
+```
+
+## Historical Significance
+
+The AKS primality test marked a significant milestone in computational number theory by demonstrating that primality testing can be performed in polynomial time. This achievement was particularly noteworthy because, prior to the AKS test, all known deterministic algorithms for primality testing operated in exponential time. These earlier methods, while accurate, were not feasible for large numbers due to their prohibitive time complexity, which made them impractical for many real-world applications.
+
+In contrast to deterministic algorithms, there were polynomial-time algorithms available before the AKS test, but these were probabilistic in nature. Such algorithms, like the Miller-Rabin test, could efficiently determine if a number was prime with a high degree of confidence, but they could not guarantee absolute certainty without the possibility of error. The AKS test, by providing a deterministic polynomial-time solution, eliminated this uncertainty and offered a definitive answer to whether a number is prime.
+
+The introduction of the AKS test also addressed a fundamental question in computational complexity theory: whether primality testing could be classified within the complexity class P, which consists of problems that can be solved in polynomial time. By proving that primality testing is indeed in P, the AKS test resolved a long-standing open problem and provided a deeper understanding of the complexity landscape, influencing both theoretical research and practical applications in cryptography and beyond.
+
+## Limitations
+
+The AKS primality test, while a significant theoretical breakthrough, is notably slower than probabilistic tests such as the Miller-Rabin test. This slowness is primarily due to the high constant factors involved in its polynomial time complexity. As a result, the AKS test is not well-suited for practical applications where speed is a critical factor, especially when dealing with large numbers.
+
+In addition to its slow performance, the AKS test also demands high memory resources. The algorithm's complexity and the nature of its computations require substantial memory, making it less feasible for systems with limited resources. This high memory requirement further limits its practicality in real-world applications, particularly when compared to more memory-efficient probabilistic tests.
+
+The implementation of the AKS test is complex, involving intricate mathematical concepts and detailed computations. This complexity poses a challenge for developers and researchers who may not have the specialized knowledge required to implement the test correctly. Consequently, the AKS test is less accessible to those who need a straightforward and easily implementable solution for primality testing.
+
+Due to these factors, the AKS test is not practical for cryptographic applications. Cryptography often requires fast and efficient primality testing to ensure the security and performance of cryptographic systems. The AKS test's slow speed, high memory usage, and complex implementation make it unsuitable for such applications, where probabilistic tests like Miller-Rabin are preferred.
+
+For practical applications, the [Miller-Rabin test](/prime/testing/miller-rabin) is often the preferred choice. It offers a much faster runtime, which is crucial for applications that require quick primality testing. The test's implementation is also simpler, making it more accessible to a broader range of users. Additionally, the Miller-Rabin test has a negligible error probability when multiple rounds are conducted, providing a high degree of confidence in its results. Furthermore, it requires significantly less memory, making it more suitable for systems with limited resources.

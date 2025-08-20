@@ -1,0 +1,51 @@
+# Ford-Fulkerson Algorithm
+
+The Ford-Fulkerson algorithm finds the [maximum flow](/theory/graph/max-flow) in a network by augmenting paths in the residual graph.
+
+## Implementations
+
+```python
+def ford_fulkerson(graph, source, sink):
+    # Initialize the residual graph
+    residual_graph = defaultdict(dict)
+    
+    for u, v, capacity in graph:
+        residual_graph[u][v] = capacity
+    
+    # Initialize the flow
+    flow = 0  
+    
+    while True:
+        # Find an augmenting path
+        path = shortestPath(residual_graph, source, sink)
+        
+        if not path:
+            break 
+        
+        # Update the flow
+        flow += min(residual_graph[u][v] for u, v in path)
+        
+        # Update the residual graph
+        for u, v in path:
+            residual_graph[u][v] -= flow  
+    
+    return flow # The maximum flow
+
+def shortestPath(graph, source, sink):
+    # Initialize the queue
+    queue = deque([source])
+    
+    # Initialize the parent dictionary
+    parent = {} # parent[node] = previous node in the path
+    
+    while queue:
+        u = queue.popleft()
+        
+        for v in graph[u]:
+            if v not in parent:
+                parent[v] = u # Set the parent of v to u
+                queue.append(v) # Add v to the queue
+    
+    return parent # The path from source to sink in the residual graph  
+```
+

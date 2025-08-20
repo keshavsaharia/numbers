@@ -1,0 +1,61 @@
+# IEEE 854
+
+The IEEE 854 standard is a standard for decimal floating-point arithmetic. It is a standard for the design and implementation of decimal floating-point arithmetic systems.
+
+## History
+
+The IEEE 854 standard was published in 1987 and is a successor to the IEEE 754 standard. It is a standard for the design and implementation of decimal floating-point arithmetic systems.
+
+## Decimal floating-point arithmetic
+
+The IEEE 854 standard defines a decimal floating-point arithmetic system that is similar to the IEEE 754 standard for binary floating-point arithmetic. It is a standard for the design and implementation of decimal floating-point arithmetic systems.
+
+## Technical Specifications
+
+IEEE 854-1987, officially titled "IEEE Standard for Radix-Independent Floating-Point Arithmetic," extends the principles of IEEE 754 to accommodate different radices, with a particular focus on decimal (radix-10) arithmetic. The standard was designed to address the limitations of binary floating-point representation when dealing with decimal values that cannot be precisely represented in binary.
+
+## Key Features
+
+Unlike IEEE 754 which primarily focused on binary (radix-2) representation, IEEE 854 was designed to be radix-independent, supporting both binary and decimal arithmetic. The standard supports decimal arithmetic, which is crucial for financial and commercial applications where exact decimal representation is required.
+
+Similar to IEEE 754, it defines various rounding modes including round to nearest (ties to even), round toward positive infinity, round toward negative infinity, and round toward zero (truncation).
+
+The standard defines five types of exceptions: invalid operation, division by zero, overflow, underflow, and inexact result. It also includes support for special values such as signed zeros (+0 and -0), infinities (+∞ and -∞), and Not-a-Number (NaN) values.
+
+## Decimal Representation
+
+In the decimal format, a number is represented as:
+
+$$
+(-1)^s \times d_0.d_1d_2...d_{p-1} \times 10^e
+$$
+
+Where $$s$$ is the sign bit (0 for positive, 1 for negative), $$d_0.d_1d_2...d_{p-1}$$ is the significand with precision $$p$$, and $$e$$ is the exponent.
+
+## Comparison with IEEE 754
+
+While IEEE 754 focuses on binary floating-point arithmetic, IEEE 854 extends these concepts to other radices, particularly decimal. This is significant because many decimal fractions (like 0.1 or 0.01) cannot be exactly represented in binary floating-point, leading to rounding errors in financial calculations.
+
+For example, in IEEE 754 binary representation, 0.1 is represented as an infinite binary fraction:
+
+$$
+0.1_{10} = 0.0001100110011..._{2}
+$$
+
+This leads to small rounding errors. In contrast, IEEE 854's decimal representation can represent 0.1 exactly.
+
+## Evolution and Supersession
+
+IEEE 854-1987 was eventually superseded by the revised IEEE 754-2008 standard, which incorporated decimal floating-point arithmetic directly into the main floating-point standard. The 2008 revision unified the concepts from both the original IEEE 754-1985 and IEEE 854-1987 standards.
+
+The decimal formats defined in IEEE 754-2008 include Decimal32 (7 decimal digits of precision), Decimal64 (16 decimal digits of precision), and Decimal128 (34 decimal digits of precision).
+
+## Applications
+
+Decimal floating-point arithmetic is particularly important in financial applications where exact decimal representation is required for monetary calculations, commercial software where calculations must match manual decimal arithmetic, and scientific computing where decimal input/output is common.
+
+## Implementation Considerations
+
+Implementing IEEE 854 decimal arithmetic typically requires efficient storage format for encoding decimal digits, algorithms for decimal addition, subtraction, multiplication, and division, mechanisms to implement the various rounding modes, and systems to detect and respond to exceptional conditions.
+
+The complexity of decimal arithmetic implementation has historically made it less common in hardware, with many systems relying on software emulation. However, with the incorporation of decimal formats into IEEE 754-2008, hardware support has become more prevalent in modern processors designed for commercial applications.

@@ -1,0 +1,100 @@
+# Hash functions
+
+A hash function is a function that takes an input and returns a fixed-size string of characters. The output is a hash value, which is a representation of the input.
+
+A hash function can be mathematically defined as a function $$ h: X \to Y $$, where $$ X $$ is the set of all possible inputs and $$ Y $$ is the set of all possible hash values. The function $$ h $$ maps each element $$ x \in X $$ to a hash value $$ y \in Y $$, such that for any two distinct inputs $$ x_1 $$ and $$ x_2 $$, the probability that $$ h(x_1) = h(x_2) $$ is minimized. This property is known as collision resistance. The hash function should also be efficient to compute, meaning that the time complexity of computing the hash value for any input should be $$ O(1) $$, and the space complexity should also be minimal, typically $$ O(1) $$, as the output is a fixed-size string.
+
+<SectionListBox sections={[
+  {
+    id: 'md5',
+    title: 'MD5',
+    description: 'MD5 is a hash function that is commonly used in digital signatures and data integrity verification.',
+    link: '/hash/md5',
+    path: 'md5'
+  },
+  {
+    id: 'sha1',
+    title: 'SHA-1',
+    description: 'SHA-1 is a hash function that is commonly used in digital signatures and data integrity verification.',
+    link: '/hash/sha1',
+    path: 'sha1'
+  },
+  {
+    id: 'ripemd160',
+    title: 'RIPEMD-160',
+    description: 'RIPEMD-160 is a hash function that is commonly used in digital signatures and data integrity verification.',
+    link: '/hash/ripemd160',
+    path: 'ripemd160'
+  },
+  {
+    id: 'sha224',
+    title: 'SHA-224',
+    description: 'SHA-224 is a hash function that is commonly used in digital signatures and data integrity verification.',
+    link: '/hash/sha224',
+    path: 'sha224'
+  },
+  {
+    id: 'sha256',
+    title: 'SHA-256',
+    description: 'SHA-256 is commonly found in blockchain applications, password hashing, and digital signatures.',
+    link: '/hash/sha256',
+    path: 'sha256'
+  },
+  {
+    id: 'sha3',
+    title: 'SHA-3',
+    description: 'SHA-3 is a newer hash function that is more secure than SHA-256.',
+    link: '/hash/sha3',
+    path: 'sha3'
+  },
+  {
+    id: 'sha384',
+    title: 'SHA-384',
+    description: 'SHA-384 is a hash function that is commonly used in digital signatures and data integrity verification.',
+    link: '/hash/sha384',
+    path: 'sha384'
+  },
+  {
+    id: 'sha512',
+    title: 'SHA-512',
+    description: 'SHA-512 is a hash function that is commonly used in digital signatures and data integrity verification.',
+    link: '/hash/sha512',
+    path: 'sha512'
+  }
+]}/>
+
+## Collision resistance
+
+Collision resistance is a fundamental property of cryptographic hash functions. It ensures that it is computationally infeasible to find two distinct inputs, $$ x_1 $$ and $$ x_2 $$, such that their hash values are identical, i.e., $$ h(x_1) = h(x_2) $$. This property is crucial for the security of many cryptographic protocols, as it prevents an attacker from substituting one input for another without detection.
+
+Mathematically, a hash function $$ h: X \to Y $$ is said to be collision-resistant if, given a hash value $$ y \in Y $$, it is computationally infeasible to find any two distinct inputs $$ x_1, x_2 \in X $$ such that $$ h(x_1) = h(x_2) = y $$. The difficulty of finding such a pair is what provides the security guarantee.
+
+The strength of collision resistance is often measured in terms of the hash function's output size. For a hash function with an output size of $$ n $$ bits, the best-known attack to find a collision is the birthday attack, which has a time complexity of approximately $$ O(2^{n/2}) $$. This is due to the birthday paradox, which states that the probability of a collision increases significantly as the number of hash values increases, even if the number of possible hash values is large.
+
+In practice, to ensure a high level of security, hash functions are designed with output sizes that make the time complexity of finding a collision infeasible with current computational resources. For example, a hash function with a 256-bit output size would require approximately $$ 2^{128} $$ operations to find a collision, which is considered secure against current and foreseeable future attacks.
+
+
+## Pre-image resistance
+
+
+Pre-image resistance ensures that it is computationally infeasible to reverse-engineer the original input to a hash function that produced a particular hash value. This property is essential for maintaining the integrity and security of data in various cryptographic applications.
+
+Formally, a hash function $$ h: X \to Y $$ is said to be pre-image resistant if, given a hash value $$ y \in Y $$, it is computationally infeasible to find any input $$ x \in X $$ such that $$ h(x) = y $$. In other words, even if an attacker knows the hash value, they should not be able to determine the original input that produced this hash.
+
+The security of pre-image resistance is often evaluated in terms of the hash function's output size. For a hash function with an output size of $$ n $$ bits, the best-known attack to find a pre-image is a brute-force search, which has a time complexity of approximately $$ O(2^n) $$. This means that an attacker would need to try, on average, half of all possible inputs before finding one that hashes to the given value, making the task computationally infeasible for sufficiently large $$ n $$.
+
+In practice, to ensure a high level of security, hash functions are designed with output sizes that make the time complexity of finding a pre-image infeasible with current computational resources. For example, a hash function with a 256-bit output size would require approximately $$ 2^{256} $$ operations to find a pre-image, which is considered secure against current and foreseeable future attacks.
+
+Pre-image resistance is crucial for applications such as password hashing, digital signatures, and data integrity verification, where the ability to reverse-engineer the original input from the hash value would compromise security. By ensuring that hash functions are pre-image resistant, we can protect sensitive information and maintain the trustworthiness of cryptographic systems.
+
+## Second pre-image resistance
+
+Second pre-image resistance is a critical property of cryptographic hash functions, ensuring that it is computationally infeasible to find a second distinct input that hashes to the same output as a given input. This property is essential for maintaining the integrity and security of data in various cryptographic applications, such as digital signatures and data integrity verification.
+
+Mathematically, a hash function $$ h: X \to Y $$ is said to be second pre-image resistant if, given an input $$ x_1 \in X $$, it is computationally infeasible to find another input $$ x_2 \in X $$, where $$ x_1 \neq x_2 $$, such that $$ h(x_1) = h(x_2) $$. In other words, even if an attacker knows an input and its corresponding hash value, they should not be able to find a different input that produces the same hash value.
+
+The security of second pre-image resistance is often evaluated in terms of the hash function's output size. For a hash function with an output size of $$ n $$ bits, the best-known attack to find a second pre-image is a brute-force search, which has a time complexity of approximately $$ O(2^n) $$. This means that an attacker would need to try, on average, half of all possible inputs before finding one that hashes to the same value as the given input, making the task computationally infeasible for sufficiently large $$ n $$.
+
+In practice, to ensure a high level of security, hash functions are designed with output sizes that make the time complexity of finding a second pre-image infeasible with current computational resources. For example, a hash function with a 256-bit output size would require approximately $$ 2^{256} $$ operations to find a second pre-image, which is considered secure against current and foreseeable future attacks.
+
+Second pre-image resistance is crucial for applications where the ability to substitute one input for another without detection would compromise security. By ensuring that hash functions are second pre-image resistant, we can protect sensitive information and maintain the trustworthiness of cryptographic systems.

@@ -1,0 +1,46 @@
+import { BigOComplexityTable } from '@/components/algorithms/big-o'
+import { stringDistance } from '@/data/string-distance'
+import { stringNavigation } from '@/data/string/navigation'
+import { getMetadata } from '@/data/metadata'
+
+<TopNavigation id="distance" group={ stringNavigation } />
+
+export const metadata = getMetadata(stringDistance, 'jaro-winkler')
+
+# Jaro-Winkler Distance
+
+The Jaro-Winkler distance is a sophisticated string similarity metric designed to measure how alike two strings are. It builds upon the Jaro distance metric by incorporating an additional factor that gives a higher score to strings that share a common prefix. This makes it particularly useful in applications where the beginning of the strings is more significant, such as in name matching.
+
+<BigOComplexityTable algorithms={stringDistance.sections} selected="jaro-winkler"/>
+
+## Mathematical Definition
+
+The Jaro-Winkler distance, denoted as $d_w$, between two strings $s_1$ and $s_2$ is mathematically expressed as:
+
+$$d_w = d_j + (l \cdot p \cdot (1 - d_j))$$
+
+In this formula:
+- $d_j$ represents the Jaro distance, which is a foundational component of the Jaro-Winkler distance.
+- $l$ is the length of the common prefix shared by the two strings, with a maximum consideration of 4 characters. This parameter helps in boosting the similarity score for strings that start similarly.
+- $p$ is the scaling factor, typically set to 0.1, which determines the weight of the prefix in the overall similarity score.
+
+The Jaro distance $d_j$ itself is calculated using the formula:
+
+$$
+d_j = \begin{cases}
+0 & \text{if } m = 0 \\
+\frac{1}{3} \left(\frac{m}{|s_1|} + \frac{m}{|s_2|} + \frac{m-t}{m}\right) & \text{otherwise}
+\end{cases}
+$$
+
+Here, $m$ represents the number of matching characters between the two strings. Characters are considered matching if they are the same and not farther apart than half the length of the longer string. The variable $t$ is half the number of transpositions, which are instances where matching characters appear in a different order. The symbols $|s_1|$ and $|s_2|$ denote the lengths of the strings $s_1$ and $s_2$, respectively.
+
+
+
+The Jaro-Winkler distance ranges from 0 to 1, where 0 indicates completely different strings and 1 indicates identical strings. The distance is symmetric, meaning $$d_w(s_1, s_2) = d_w(s_2, s_1)$$. However, it does not satisfy the triangle inequality, which means it is not a true metric. Since it provides a boost to strings that share common prefixes, it is particularly useful for applications where the start of the string is significant.
+
+The Jaro-Winkler distance is widely used in various fields. In record linkage, it helps identify records that refer to the same entity across different datasets. For name matching, it is used to compare names in databases to find duplicates or similar entries. In spell checking, it suggests corrections for misspelled words based on similarity. It is also employed in duplicate detection to identify duplicate entries in datasets and in data cleaning to improve data quality by merging similar entries.
+
+## Space efficiency
+
+The space complexity of the Jaro-Winkler distance is $O(1)$ because it only requires a constant amount of memory to store the variables $m$, $t$, and $l$. The space complexity of the Jaro distance is also $O(1)$ because it only requires a constant amount of memory to store the variables $m$ and $t$.

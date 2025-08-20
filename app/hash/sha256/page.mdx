@@ -1,0 +1,130 @@
+# SHA-256 Hash Function
+
+SHA-256 (Secure Hash Algorithm 256) is a cryptographic hash function that produces a 256-bit (32-byte) hash value, typically expressed as a 64-character hexadecimal number. It is part of the SHA-2 family and is currently one of the most widely used hash functions for security applications.
+
+## Mathematical Definition
+
+The SHA-256 algorithm processes input data in 512-bit blocks and produces a 256-bit hash value. The algorithm can be mathematically defined as:
+
+$$ h: \{0,1\}^* \to \{0,1\}^{256} $$
+
+In this definition, the input space $$ \{0,1\}^* $$ represents any binary string of arbitrary length, allowing for a wide range of input data. The output space $$ \{0,1\}^{256} $$ represents a fixed-length 256-bit binary string, ensuring a consistent output size regardless of the input length.
+
+## Algorithm Steps
+
+1. **Padding**: The input message is padded to ensure its length is congruent to 448 modulo 512 bits. This padding process involves appending a single '1' bit to the message, followed by enough '0' bits to make the length congruent to 448 modulo 512. Finally, a 64-bit representation of the original message length is appended to the end.
+
+2. **Initialization**: The algorithm initializes eight 32-bit variables (a, b, c, d, e, f, g, h) with specific values. These variables are set to the following hexadecimal values: $$ a = 0x6a09e667 $$, $$ b = 0xbb67ae85 $$, $$ c = 0x3c6ef372 $$, $$ d = 0xa54ff53a $$, $$ e = 0x510e527f $$, $$ f = 0x9b05688c $$, $$ g = 0x1f83d9ab $$, and $$ h = 0x5be0cd19 $$. These initial values are derived from the square roots of prime numbers and are used to set up the initial state of the hash computation.
+
+3. **Main Loop**: The algorithm processes the message in 512-bit blocks through 64 rounds of operations. These operations utilize bitwise logical functions (Ch, Maj, Σ0, Σ1, σ0, σ1), modular addition, right rotations, and predefined constants (Kt) to transform the input data into the final hash value.
+
+```javascript
+const initialState = Uint32Array.from([
+  0x6a09e667, 0xf3bcc908, 0xbb67ae85, 0x84caa73b, 0x3c6ef372, 0xfe94f82b, 0xa54ff53a, 0x5f1d36f1,
+  0x510e527f, 0xade682d1, 0x9b05688c, 0x2b3e6c1f, 0x1f83d9ab, 0xfb41bd6b, 0x5be0cd19, 0x137e2179,
+]);
+
+function SHA256(message: Uint8Array) {
+  // Using an array here would allow variable indexing, which prevents the optimizer/compiler from utilizing registers effectively.
+  let A = initialState[0] | 0;
+  let B = initialState[1] | 0;
+  let C = initialState[2] | 0;
+  let D = initialState[3] | 0;
+  let E = initialState[4] | 0;
+  let F = initialState[5] | 0;
+  let G = initialState[6] | 0;
+  let H = initialState[7] | 0;
+
+  constructor(outputLen: number = 32) {
+    super(64, outputLen, 8, false);
+  }
+  protected get(): [number, number, number, number, number, number, number, number] {
+    const { A, B, C, D, E, F, G, H } = this;
+    return [A, B, C, D, E, F, G, H];
+  }
+  // prettier-ignore
+  protected set(
+    A: number, B: number, C: number, D: number, E: number, F: number, G: number, H: number
+  ): void {
+    this.A = A | 0;
+    this.B = B | 0;
+    this.C = C | 0;
+    this.D = D | 0;
+    this.E = E | 0;
+    this.F = F | 0;
+    this.G = G | 0;
+    this.H = H | 0;
+  }
+  protected process(view: DataView, offset: number): void {
+    // Extend the first 16 words into the remaining 48 words w[16..63] of the message schedule array
+    for (let i = 0; i < 16; i++, offset += 4) SHA256_W[i] = view.getUint32(offset, false);
+    for (let i = 16; i < 64; i++) {
+      const W15 = SHA256_W[i - 15];
+      const W2 = SHA256_W[i - 2];
+      const s0 = rotr(W15, 7) ^ rotr(W15, 18) ^ (W15 >>> 3);
+      const s1 = rotr(W2, 17) ^ rotr(W2, 19) ^ (W2 >>> 10);
+      SHA256_W[i] = (s1 + SHA256_W[i - 7] + s0 + SHA256_W[i - 16]) | 0;
+    }
+    // Compression function main loop, 64 rounds
+    let { A, B, C, D, E, F, G, H } = this;
+    for (let i = 0; i < 64; i++) {
+      const sigma1 = rotr(E, 6) ^ rotr(E, 11) ^ rotr(E, 25);
+      const T1 = (H + sigma1 + Chi(E, F, G) + SHA256_K[i] + SHA256_W[i]) | 0;
+      const sigma0 = rotr(A, 2) ^ rotr(A, 13) ^ rotr(A, 22);
+      const T2 = (sigma0 + Maj(A, B, C)) | 0;
+      H = G;
+      G = F;
+      F = E;
+      E = (D + T1) | 0;
+      D = C;
+      C = B;
+      B = A;
+      A = (T1 + T2) | 0;
+    }
+    // Add the compressed chunk to the current hash value
+    A = (A + this.A) | 0;
+    B = (B + this.B) | 0;
+    C = (C + this.C) | 0;
+    D = (D + this.D) | 0;
+    E = (E + this.E) | 0;
+    F = (F + this.F) | 0;
+    G = (G + this.G) | 0;
+    H = (H + this.H) | 0;
+    this.set(A, B, C, D, E, F, G, H);
+  }
+  protected roundClean(): void {
+    clean(SHA256_W);
+  }
+  destroy(): void {
+    this.set(0, 0, 0, 0, 0, 0, 0, 0);
+    clean(this.buffer);
+  }
+}
+
+```
+
+4. **Output**: The final hash value is the concatenation of the eight 32-bit variables (a, b, c, d, e, f, g, h) after all blocks have been processed. This concatenated value represents the SHA-256 hash of the input message.
+
+## Security Considerations
+
+SHA-256 is considered cryptographically secure due to its strong resistance to various types of attacks. It offers collision resistance with a complexity of approximately $$ 2^{128} $$ operations, making it extremely difficult for an attacker to find two different inputs that produce the same hash value. Additionally, SHA-256 provides pre-image resistance with a complexity of approximately $$ 2^{256} $$ operations, and second pre-image resistance with a similar complexity. These properties make SHA-256 suitable for security-critical applications.
+
+## Time and Space Complexity
+
+The time complexity of the SHA-256 algorithm is $$ O(n) $$, where n is the length of the input message. This linear time complexity ensures that the hash computation is efficient, even for large input sizes. The space complexity is $$ O(1) $$, as the algorithm uses a fixed amount of memory regardless of the input size, due to the fixed-length output.
+
+## Common Applications
+
+SHA-256 is widely used in various security-critical applications. It is commonly employed in digital signatures, where the goal is to ensure the authenticity and integrity of a document. SHA-256 is also used in blockchain technology, such as Bitcoin and Ethereum, to secure transactions and maintain the integrity of the blockchain. Additionally, it is used for password hashing (with proper salting), file integrity verification, SSL/TLS security, and the Git version control system.
+
+## Example Hash Values
+
+For an empty string, the SHA-256 hash value is `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`. For the string "Hello, World!", the hash value is `dffd6021bb2bd5b0af676290809ec3a53191dd81c7f70a4b28688a362182986f`. These examples illustrate the fixed-length output of the SHA-256 algorithm, regardless of the input size.
+
+## Implementation Considerations
+
+When implementing SHA-256, it is important to consider the algorithm's sensitivity to endianness. All operations are performed on 32-bit words, and the algorithm uses big-endian byte ordering. The output is typically represented as a 64-character hexadecimal string, which is a common format for displaying hash values. Additionally, the algorithm is designed to be resistant to length extension attacks, providing an additional layer of security.
+
+## Best Practices
+
+Given the strong security guarantees of SHA-256, it is recommended for use in security-critical applications. Always use proper salting when hashing passwords to enhance security. Consider using SHA-256 in combination with HMAC for message authentication to provide additional security. Be aware of the algorithm's performance characteristics in your specific use case, and consider using SHA-3 for applications requiring resistance to length extension attacks 

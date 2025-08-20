@@ -1,0 +1,52 @@
+# Prime Factorization
+
+Prime factorization is the process of expressing a number as a product of prime numbers. For example, the prime factorization of $$12$$ is $$2 \cdot 2 \cdot 3$$.
+
+Prime factorization is a crucial concept in number theory and cryptography, which often involves the decomposition of a composite number into a product of prime numbers. There are several algorithms designed to perform prime factorization, each with its own strengths and weaknesses.
+
+## Algorithms
+
+<SectionListBox sections={[
+  {
+    title: "Trial Division",
+    description: "Divide the number by all integers up to its square root. Simple but inefficient for large numbers.",
+    path: 'trial-division',
+    link: "/prime/factorization/trial-division"
+  },
+  {
+    title: "Sieve of Eratosthenes",
+    description: "Adapted for factorization by precomputing primes up to a limit to divide the number.",
+    path: 'sieve-of-eratosthenes',
+    link: "/prime/factorization/sieve-of-eratosthenes"
+  },
+  {
+    title: "Pollard's Rho Algorithm",
+    description: "Probabilistic and effective for small factors.",
+    path: 'pollard-rho',
+    link: "/prime/factorization/pollard-rho"
+  },
+  {
+    title: "Fermat's Factorization Method",
+    description: "Uses the difference of two squares. Effective for factors near the square root.",
+    path: 'fermat',
+    link: "/prime/factorization/fermat" 
+  },
+  {
+    title: "Quadratic Sieve",
+    description: "Fast for numbers up to 100 digits using sieving and linear algebra.",
+    path: 'quadratic-sieve',
+    link: "/prime/factorization/quadratic-sieve"
+  },
+  {
+    title: "General Number Field Sieve (GNFS)",
+    description: "Most efficient for very large numbers over 100 digits.",
+    path: 'gnfs',
+    link: "/prime/factorization/gnfs"
+  },
+  {
+    title: "Elliptic Curve Factorization",
+    description: "Uses elliptic curves for small to medium factors. Similar time complexity to Pollard's Rho, and often more efficient.",
+    path: 'elliptic-curve',
+    link: "/prime/factorization/elliptic-curve"
+  }
+]}/>

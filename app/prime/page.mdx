@@ -1,0 +1,74 @@
+# Prime Numbers
+
+Prime numbers are a fundamental concept in number theory, and they have been studied extensively for centuries. A prime number is a **natural number** greater than 1 that has no positive divisors other than 1 and itself. In other words, a prime number is a positive integer that is only divisible by 1 and itself.
+
+## Is one prime?
+
+The number one is not considered a prime number. 
+
+By definition, a prime number is a natural number greater than 1 that has no positive divisors other than 1 and itself. Since one only has one positive divisor, which is itself, it does not meet the criteria of having exactly two distinct positive divisors. 
+
+This distinction is important in number theory, as it helps maintain the [Fundamental Theorem of Arithmetic](https://en.wikipedia.org/wiki/Fundamental_theorem_of_arithmetic), which states that every integer greater than $$1$$ is either a prime number or can be uniquely factored into prime numbers. Including $$1$$ as a prime would disrupt this unique factorization property.
+
+## Sieve of Eratosthenes
+
+The Sieve of Eratosthenes is an efficient algorithm for finding all prime numbers up to a given limit. It works by iteratively marking the multiples of each prime number starting from 2.
+
+```javascript
+function sieveOfEratosthenes(n) {
+  // All numbers except 0 and 1 are prime
+  const sieve = Array(n + 1).fill(true)
+  sieve[0] = sieve[1] = false
+
+  // Check all numbers up to n
+  for (let i = 2 ; i * i <= n ; i++) {
+    // If i is prime, mark all its multiples as non-prime
+    if (sieve[i]) {
+      for (let j = i * i ; j <= n ; j += i) {
+        sieve[j] = false
+      }
+    }
+  }
+
+  // Return the index of all numbers that are prime
+  return sieve.map((isPrime, index) => isPrime ? index : null).filter(Boolean)
+}
+```
+
+In practice, this is the most efficient method for finding many prime numbers up to around $$n = 10^7$$.
+
+## Prime Factorization
+
+Prime factorization is the process of expressing a number as a product of prime numbers. For example, the prime factorization of 12 is 2 * 2 * 3.
+
+
+```javascript
+function primeFactorization(n) {
+  const factors = []
+  for (let i = 2; i * i <= n; i++) {
+    while (n % i === 0) {
+      factors.push(i)
+      n /= i
+    }
+  }
+  if (n > 1) factors.push(n)
+  return factors
+}
+```
+
+1. **Trial Division**: This is the simplest method, where you divide the number by all integers up to its square root. It is straightforward but inefficient for large numbers. The time complexity is $$O(\sqrt{n})$$.
+
+2. **Sieve of Eratosthenes**: While primarily used for finding prime numbers, it can be adapted for factorization by precomputing primes up to a certain limit and using them to divide the number.
+
+3. **Pollard's Rho Algorithm**: This is a probabilistic algorithm that is particularly effective for numbers with small factors. It has an expected time complexity of $$O(n^{1/4})$$.
+
+4. **Fermat's Factorization Method**: This method is based on the representation of an odd integer as a difference of two squares. It works well when the number has factors close to its square root. The time complexity is approximately $$O(n^{1/4})$$.
+
+5. **Quadratic Sieve**: This is one of the fastest factorization algorithms for numbers with up to 100 digits. It uses a combination of sieving and linear algebra. The time complexity is sub-exponential, approximately $$O(e^{\sqrt{\log n \log \log n}})$$.
+
+6. **Elliptic Curve Factorization**: This algorithm uses properties of elliptic curves to find factors and is effective for numbers with small to medium-sized factors. The time complexity is similar to Pollard's Rho, $$O(n^{1/4})$$, but can be more efficient in practice.
+
+7. **General Number Field Sieve (GNFS)**: This is the most efficient classical algorithm for factoring very large numbers, typically those with more than 100 digits. It is a complex algorithm with a time complexity of $$O(e^{(64/9)^{1/3} (\log n)^{1/3} (\log \log n)^{2/3}})$$.
+
+Each of these algorithms has its own strengths and is chosen based on the size and nature of the number to be factored. For practical applications, a combination of these methods is often used to achieve optimal performance.
+

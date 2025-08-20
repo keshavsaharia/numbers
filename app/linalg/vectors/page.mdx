@@ -1,0 +1,340 @@
+import { getMetadata } from '@/data/metadata'
+import linearAlgebra from '@/data/linear-algebra'
+export const metadata = getMetadata(linearAlgebra, 'vectors')
+
+<TopNavigation id="vectors" group={linearAlgebra} />
+
+# Vectors
+
+A vector is a mathematical object that has both magnitude and direction. Here is an example of a mathematical object that *only* has magnitude:
+
+- Number line visualization with draggable slider
+
+Here is an example of a mathematical object that *only* has direction:
+
+- Arrow pointing in a direction that can be moved
+
+By combining these two, we can intuitively understand a vector as a "movement in space".
+
+- Arrow pointing in a direction with a specific length along that direction
+
+
+In linear algebra, vectors are typically represented as ordered lists of numbers, called components. These components describe the vector's position in a coordinate system.
+
+### Vector Representation
+
+In an n-dimensional space, a vector $$\vec{v}$$ can be written as:
+
+$$
+\vec{v} = \begin{pmatrix} v_1 \\ v_2 \\ \vdots \\ v_n \end{pmatrix}
+$$
+
+### Vector Operations
+
+1. **Addition**: Adding vectors component-wise
+   $$
+   \vec{a} + \vec{b} = \begin{pmatrix} a_1 + b_1 \\ a_2 + b_2 \\ \vdots \\ a_n + b_n \end{pmatrix}
+   $$
+
+2. **Scalar Multiplication**: Multiplying a vector by a scalar
+   $$
+   c\vec{v} = \begin{pmatrix} cv_1 \\ cv_2 \\ \vdots \\ cv_n \end{pmatrix}
+   $$
+
+3. **Dot Product**: The sum of component-wise products
+   $$
+   \vec{a} \cdot \vec{b} = \sum_{i=1}^n a_ib_i = a_1b_1 + a_2b_2 + \cdots + a_nb_n
+   $$
+
+### Properties
+
+- **Magnitude**: Length of a vector, denoted as $$\|\vec{v}\| = \sqrt{\sum_{i=1}^n v_i^2}$$
+- **Direction**: The orientation of the vector in space
+- **Unit Vector**: A vector with magnitude 1
+- **Zero Vector**: A vector with all components equal to 0
+
+## Applications
+
+Vectors are fundamental in many areas:
+- Physics (force, velocity, acceleration)
+- Computer Graphics (position, direction)
+- Machine Learning (feature vectors)
+- Data Science (data points in high-dimensional space)
+
+## Vector Spaces
+
+A vector space is a collection of vectors that satisfy certain axioms under addition and scalar multiplication. The most common vector space is $$\mathbb{R}^n$$, which consists of all n-tuples of real numbers.
+
+The most common way to think about vectors in software development is as an array of numbers, such as $$[1, 2, 3]$$. Mathematically, a vector is represented as an ordered list of numbers, which are called the **components** of the vector. For example, a vector in three-dimensional space may be written as $$\mathbf{v} = (v_1, v_2, v_3)$$.
+
+Vectors serve as the building blocks for more complex structures in linear algebra, like [matrices](/linalg/matrices) and [tensors](/linalg/tensors). A vector is an element of a **vector space**, which is a collection of objects that can be added together and multiplied by scalars. In a geometric sense, vectors can be visualized as arrows in space, where the length of the arrow represents the vector's magnitude, and the direction of the arrow indicates the vector's direction.
+
+
+The magnitude (or length) of a vector $$\mathbf{v}$$ is given by the Euclidean norm, which is calculated as:
+
+$$
+\|\mathbf{v}\| = \sqrt{v_1^2 + v_2^2 + \cdots + v_n^2}
+$$
+
+Here is a simple implementation of `magnitude` in JavaScript.
+
+```javascript
+const v = [3, 4];
+const mag = magnitude(v);
+console.log(mag);
+
+// Euclidean distance
+function magnitude(v) {
+  return Math.sqrt(v.reduce((sum, value) => sum + value ** 2, 0));
+}
+```
+
+Vectors are a cornerstone of linear algebra, providing a way to represent quantities that have both magnitude and direction. In mathematical terms, a vector is an element of a vector space, which is a set equipped with two operations: vector addition and scalar multiplication. These operations must satisfy certain axioms, such as associativity, commutativity, and distributivity.
+
+Consider a vector in a two-dimensional space, represented as $$\mathbf{v} = (v_1, v_2)$$. The components $$v_1$$ and $$v_2$$ are real numbers that define the vector's position in the plane. The magnitude of this vector, also known as its Euclidean norm, is calculated using the formula:
+
+$$
+\|\mathbf{v}\| = \sqrt{v_1^2 + v_2^2}
+$$
+
+This formula generalizes to an $$n$$-dimensional vector $$\mathbf{v} = (v_1, v_2, \ldots, v_n)$$ as:
+
+$$
+\|\mathbf{v}\| = \sqrt{v_1^2 + v_2^2 + \cdots + v_n^2}
+$$
+
+In JavaScript, vectors can be represented using arrays. Here is an example of how to define a vector and compute its magnitude:
+
+## Vector Addition
+
+Vector addition is a fundamental operation in linear algebra, where two vectors of the same dimension are combined to produce a new vector. Mathematically, if we have two vectors $$\mathbf{u} = (u_1, u_2, \ldots, u_n)$$ and $$\mathbf{v} = (v_1, v_2, \ldots, v_n)$$, their sum $$\mathbf{w} = \mathbf{u} + \mathbf{v}$$ is given by:
+
+$$
+\mathbf{w} = (u_1 + v_1, u_2 + v_2, \ldots, u_n + v_n)
+$$
+
+In JavaScript, vector addition can be implemented using arrays. Here is a simple function to add two vectors:
+
+```javascript
+function addVectors(u, v) {
+  return u.map((value, index) => value + v[index]);
+}
+```
+
+This function takes two vectors (arrays) and returns a new vector (array) that is the sum of the two input vectors. For example:
+
+```javascript
+const u = [1, 2, 3];
+const v = [4, 5, 6];
+
+const w = addVectors(u, v);
+console.log(w); // Output: [5, 7, 9]
+```
+
+## Scalar Multiplication
+
+Scalar multiplication is another fundamental operation in linear algebra, where a vector is multiplied by a scalar (a real number). If $$c$$ is a scalar and $$\mathbf{v} = (v_1, v_2, \ldots, v_n)$$ is a vector, then the scalar multiplication $$c\mathbf{v}$$ is given by:
+
+$$
+c\mathbf{v} = (cv_1, cv_2, \ldots, cv_n)
+$$
+
+In JavaScript, scalar multiplication can be implemented using arrays. Here is a simple function to multiply a vector by a scalar:
+
+```javascript
+function scalarMultiply(c, v) {
+  return v.map(value => c * value);
+}
+```
+
+This function takes a scalar (a number) and a vector (an array) and returns a new vector (array) that is the result of multiplying each component of the input vector by the scalar. For example:
+
+```javascript
+const v = [1, 2, 3];
+const c = 2;
+
+const w = scalarMultiply(c, v);
+console.log(w); // Output: [2, 4, 6]
+```
+
+## Vector Subtraction
+
+Vector subtraction is the inverse operation of vector addition. It involves subtracting corresponding components of two vectors to produce a new vector. For example, given two vectors $$\mathbf{u} = (u_1, u_2, \ldots, u_n)$$ and $$\mathbf{v} = (v_1, v_2, \ldots, v_n)$$, their difference $$\mathbf{w} = \mathbf{u} - \mathbf{v}$$ is given by:
+
+$$
+\mathbf{w} = (u_1 - v_1, u_2 - v_2, \ldots, u_n - v_n)
+$$
+
+In JavaScript, vector subtraction can be implemented using arrays. Here is a simple function to subtract one vector from another:
+
+```javascript
+function subtractVectors(u, v) {
+  return u.map((value, index) => value - v[index]);
+}
+```
+
+This function takes two vectors (arrays) and returns a new vector (array) that is the difference between the two input vectors. For example:
+
+```javascript
+const u = [1, 2, 3];
+const v = [4, 5, 6];
+
+const w = subtractVectors(u, v);
+console.log(w); // Output: [-3, -3, -3]
+```
+
+## Vector Magnitude
+
+The magnitude of a vector is a measure of its length or size. In linear algebra, the magnitude of a vector $$\mathbf{v} = (v_1, v_2, \ldots, v_n)$$ is given by the Euclidean norm, which is calculated as:
+
+$$
+\|\mathbf{v}\| = \sqrt{v_1^2 + v_2^2 + \cdots + v_n^2}
+$$
+
+In JavaScript, the magnitude of a vector can be computed using the `magnitude` function:
+
+```javascript
+function magnitude(v) {
+  return Math.sqrt(v.reduce((sum, value) => sum + value * value, 0));
+}
+```
+
+This function takes a vector (an array) and returns its magnitude as a number. For example:
+
+```javascript
+const v = [3, 4];
+const mag = magnitude(v);
+console.log(mag); // Output: 5
+```
+
+## Vector Cross Product
+
+The cross product of two vectors in three-dimensional space is a vector that is perpendicular to both input vectors. If $$\mathbf{u} = (u_1, u_2, u_3)$$ and $$\mathbf{v} = (v_1, v_2, v_3)$$ are two vectors, their cross product $$\mathbf{u} \times \mathbf{v}$$ is given by:
+
+$$
+\mathbf{u} \times \mathbf{v} = \begin{vmatrix}
+  \mathbf{i} & \mathbf{j} & \mathbf{k} \\
+  u_1 & u_2 & u_3 \\
+  v_1 & v_2 & v_3
+\end{vmatrix}
+$$
+
+In JavaScript, the cross product can be computed using the `crossProduct` function:
+
+```javascript
+function crossProduct(u, v) {
+  return [
+    u[1] * v[2] - u[2] * v[1],
+    u[2] * v[0] - u[0] * v[2],
+    u[0] * v[1] - u[1] * v[0]
+  ];
+}
+```
+
+This function takes two vectors (arrays) and returns their cross product as a new vector (array). For example:
+
+```javascript
+const u = [1, 2, 3];
+const v = [4, 5, 6];
+
+const crossProd = crossProduct(u, v);
+console.log(crossProd); // Output: [-3, 6, -3]
+```
+
+## Vector Projection
+
+The projection of a vector $$\mathbf{u}$$ onto another vector $$\mathbf{v}$$ is a vector that represents the component of $$\mathbf{u}$$ that is parallel to $$\mathbf{v}$$. If $$\mathbf{u}$$ and $$\mathbf{v}$$ are two vectors, their projection $$\text{proj}_{\mathbf{v}} \mathbf{u}$$ is given by:
+
+$$
+\text{proj}_{\mathbf{v}} \mathbf{u} = \frac{\mathbf{u} \cdot \mathbf{v}}{\|\mathbf{v}\|^2} \mathbf{v}
+$$
+
+In JavaScript, the projection can be computed using the `projection` function:
+
+```javascript
+function projection(u, v) {
+  const dotProd = dotProduct(u, v);
+  const magV = magnitude(v);
+  const magV2 = magV * magV;
+  return scalarMultiply(dotProd / magV2, v);
+}
+```
+
+This function takes two vectors (arrays) and returns their projection as a new vector (array). For example:
+
+```javascript
+const u = [1, 2, 3];
+const v = [4, 5, 6];
+
+const proj = projection(u, v);
+console.log(proj); // Output: [0.96, 1.2, 1.44]
+```
+
+## Vector Normalization
+
+Normalizing a vector involves scaling it to have a magnitude of 1 while preserving its direction. If $$\mathbf{v} = (v_1, v_2, \ldots, v_n)$$ is a vector, its normalized form $$\mathbf{\hat{v}}$$ is given by:
+
+$$
+\mathbf{\hat{v}} = \frac{\mathbf{v}}{\|\mathbf{v}\|}
+$$
+
+In JavaScript, the normalization can be computed using the `normalize` function:
+
+```javascript
+function normalize(v) {
+  const mag = magnitude(v);
+  return scalarMultiply(1 / mag, v);
+}
+```
+
+This function takes a vector (an array) and returns its normalized form as a new vector (array). For example:
+
+```javascript
+const v = [3, 4];
+const norm = normalize(v);
+console.log(norm); // Output: [0.6, 0.8]
+```
+
+## Vector Angle
+
+The angle between two vectors can be computed using the dot product. If $$\mathbf{u}$$ and $$\mathbf{v}$$ are two vectors, their angle $$\theta$$ is given by:
+
+$$
+\theta = \cos^{-1}\left(\frac{\mathbf{u} \cdot \mathbf{v}}{\|\mathbf{u}\| \|\mathbf{v}\|}\right)
+$$
+
+In JavaScript, we can implement a simple `angle` function to compute the angle between two vectors.
+
+```javascript
+function angle(u, v) {
+  const dotProd = dotProduct(u, v);
+  const magU = magnitude(u);
+  const magV = magnitude(v);
+  if (magU === 0 || magV === 0) {
+    throw new Error("Cannot compute angle with zero magnitude vector.");
+  }
+  
+  const cosTheta = dotProd / (magU * magV);
+  
+  // Ensure the value is within the valid range for acos
+  if (cosTheta < -1 || cosTheta > 1) {
+    throw new Error("Numerical error: cosine value out of range.");
+  }
+  
+  return Math.acos(cosTheta);
+}
+
+function magnitude(v) {
+  return Math.sqrt(v.reduce((sum, e) => sum + e ** 2, 0));
+}
+
+function dotProduct(u, v) {
+  return u.reduce((sum, value, index) => sum + value * v[index], 0);
+}
+
+const u = [1, 2, 3];
+const v = [4, 5, 6];
+
+const theta = angle(u, v);
+console.log(theta);
+```

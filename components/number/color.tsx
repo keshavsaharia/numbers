@@ -45,6 +45,10 @@ export function ColorPickerNumber({ initialValue }: { initialValue?: string }) {
         digits[index] = ((parseInt(digits[index], 16) + 1) % 16).toString(16)
         setDigits([ ...digits ])
         setHex('#' + digits.join(''))
+
+        const rgbIndex = Math.floor(index / 2)
+        rgb[rgbIndex] = parseInt(digits[index - index % 2], 16) * 16 + parseInt(digits[index + (index + 1) % 2], 16)
+        setRGB([ ... rgb ])
         setHighlight(index)
     }
 
@@ -68,7 +72,10 @@ export function ColorPickerNumber({ initialValue }: { initialValue?: string }) {
                                 digits={ digits.slice(d1, d1 + 2) } 
                                 radix={ 16 } highlight={ highlight - index * 2 }/>
                             <span className="text-zinc-500 px-2 pt-1">=</span>
-                            <span className="font-bold pt-1">{ channel }</span>
+                            <span className={clsx(
+                                "font-bold pt-1",
+                                highlight >= d1 && highlight <= d2 ? "text-green-500" : ""
+                            )}>{ channel }</span>
                         </div>
                     </div>)
                 }) }

@@ -1,0 +1,39 @@
+# TensorRT
+
+NVidia's [TensorRT](https://developer.nvidia.com/tensorrt) is a high-performance inference engine for deep learning models.
+
+## Installation
+
+First ensure `pip` is up to date, and you also have installed `wheel`.
+
+```bash
+python3 -m pip install --upgrade pip
+python3 -m pip install wheel
+```
+
+Then install `tensorrt` with `pip`.
+
+```bash
+python3 -m pip install --upgrade tensorrt
+```
+
+Also
+
+```bash
+python3 -m pip install tensorrt-cu12 tensorrt-lean-cu12 tensorrt-dispatch-cu12
+```
+
+To run pre-built version compatible engines.
+
+```bash
+python3 -m pip install --upgrade tensorrt-lean
+python3 -m pip install --upgrade tensorrt-dispatch
+```
+
+### Checking your installation
+
+```python
+import tensorrt
+print(tensorrt.__version__)
+assert tensorrt.Builder(tensorrt.Logger())
+```

@@ -1,0 +1,55 @@
+import { stringDistance } from '@/data/string-distance'
+import { stringNavigation } from '@/data/string/navigation'
+import { getGroupMetadata } from '@/data/metadata'
+import { LevenshteinDistance } from '@/components/string/distance/levenshtein'
+
+export const metadata = getGroupMetadata(stringDistance)
+
+<TopNavigation id="distance" group={ stringNavigation } />
+
+# String distance
+
+A **string distance** is a measure of the similarity between two strings. Formally, it is a function that takes two strings and returns a number representing the difference between them.
+
+<Center>
+$$ f : \Sigma^* \times \Sigma^* \to \mathbb{R} $$
+</Center>
+
+<LevenshteinDistance />
+
+String distance is commonly computed by a spellchecker. The following list is a collection of string distance functions with code implementations as well as their mathematical definitions.
+
+<SectionListBox sections={stringDistance.sections}/>
+
+## Time and space complexity
+
+<BigOComplexityTable algorithms={stringDistance.sections}/>
+
+## History of record linkage
+
+The original idea of record linkage was put forth in a 1946 paper by [Halbert Dunn](/paper/1946/dunn.pdf), Chief of the National Office of Vital Statistics at the US Public Health Service.
+
+> Each person in the world creates a Book of Life. This Book starts with birth and ends with death. Its pages are made up of the records of the principal events in life. Record linkage is the name given to the process of assembling the pages of this Book, into a volume.
+>
+> The Book has many pages for some and is but a few pages in length for others. In the case of a stillbirth, the entire volume is but a single page.
+>
+> The person retains the same identity throughout the Book. Except for advancing age, he is the same person. Thinking backward he can remember the important pages of his Book even though he may have forgotten some of the words. To other persons, however, his identity must be proven. "Is the John Doe who enlists today in fact the same John Doe who was born eighteen years ago?"
+>
+> Events of importance worth recording in the Book of Life are frequently put on record in different places since the person moves about the world through-out his lifetime. This makes it difficult to assemble this Book into a single compact volume. Yet, sometimes it is necessary to examine all of an individual's important records simultaneously. No one would read a novel, the pages of which were not assembled. Just so, it is necessary at times to link the various important records of a person's life.
+
+<div className="grid grid-cols-2 gap-4">
+  <div>
+Ivan P. Felligi and Alan B. Sunter, from the Dominion Bureau of Statistics in Canada, published a [paper](/paper/1969/felligi_sunter.pdf) in 1969 describing a formal mathematical model for linking records in different datasets. The **Fellegi-Sunter model** is a probabilistic framework for record linkage that classifies pairs of records as matches, non-matches, or possible matches based on likelihood ratios derived from agreement and disagreement patterns across record fields. 
+
+Felligi and Sunter proved that the probabilistic decision rule they described was optimal when the comparison attributes were conditionally independent. 
+
+Further innovation in record-linking methodologies and software happened in the 1990s and early 2000s at the US Census Bureau, to support census coverage evaluation efforts. A 1989 paper by [Matthew Jaro](/paper/1989/jaro.pdf) and a 1990 paper by [William Winkler](/paper/jarowinkler_1990.pdf) provided the names by which the algorithm is most commonly known.
+  </div>
+  <div>
+    <img src="/paper/1969/felligi_sunter.png" style={{ width: '100%' }} alt="Felligi and Sunter" />
+  </div>
+</div>
+
+Matthew Jaro would publish a [paper](/paper/jaro_1995.pdf) in 1995 describing a simpler version of the Jaro-Winkler distance for linking patient records in healthcare databases.
+
+Efforts continue in producing faster and more space efficient implementations of the Jaro and Jaro-Winkler distances. Ondřej Rozinek and Jan Mareš published a [paper](/paper/roz_marez_2024.pdf) in 2024 presenting Convolution Jaro (ConvJ) and Convolution Jaro-Winkler (ConvJW), which are faster implementations of the Jaro and Jaro-Winkler distances that use a convolutional approach with Gaussian weighting to effectively capture the proximity of matching characters to provide a more meaningful similarity score.

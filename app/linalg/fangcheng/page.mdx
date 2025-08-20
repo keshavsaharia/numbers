@@ -1,0 +1,34 @@
+import { GaussianElimination } from '@/components/linalg/gaussian'
+
+# Fangcheng
+
+In China, from about the first century C.E. through the seventeenth century, anonymous adepts practiced an art known as *fāngchéng* (方程), often translated into English as "rectangular arrays". This art provided procedures for manipulating counting rods on a counting board, enabling practitioners to produce answers to seemingly insoluble riddles. 
+
+> The ancient calculations were made with implements called counting rods (the abacus being a comparatively recent invention). The rods were short sticks that could be arranged to represent digits in a decimal notation for positive and negative integers. Elaborate calculations were made by placing the rods inside squares on a counting “board” or “table.” No ancient tables survive, but by one surmise, they were any flat surface, perhaps covered by a sheet of cloth ruled into squares. The counting table was literally an ancient “spreadsheet” for manual computing in which numbers could be entered and changed as a calculation progressed.
+> 
+> <small>Joseph F. Grcar, [The Chinese Roots of Linear Algebra](https://arxiv.org/pdf/1104.2282)</small>
+> &nbsp;
+
+## Example fāngchéng problem
+
+- 3 bundles of high-quality rice straws, 2 bundles of mid-quality rice straws and 1 bundle of low-quality rice straw produce 39 units of rice
+- 2 bundles of high-quality rice straws, 3 bundles of mid-quality rice straws and 1 bundle of low-quality rice straw produce 34 units of rice
+- 1 bundles of high-quality rice straw, 2 bundles of mid-quality rice straws and 3 bundle of low-quality rice straws produce 26 units of rice
+
+**How many units of rice can high, mid and low quality rice straw produce respectively?**
+
+<GaussianElimination equations={[
+  { coefficient: [3, 2, 1], constant: 39 },
+  { coefficient: [2, 3, 1], constant: 34 },
+  { coefficient: [1, 2, 3], constant: 26 }
+]}/>
+
+Over a period of around sixteen centuries, bibliographies of imperial libraries record the titles of hundreds of treatises on the mathematical arts (*suàn fǎ*, 算法). Many of these are still extant, and many include fāngchéng problems.
+
+## Remarkable features
+
+Fāngchéng is remarkable for several reasons: 
+
+- it is essentially equivalent to the solution of systems of $$N$$ equations in $$N$$ unknowns in modern linear algebra; 
+- the earliest recorded fāngchéng procedure is in many ways quite similar to what we now call Gaussian elimination; 
+- there is a reasonable possibility that these procedures were transmitted to Europe and Japan, serving perhaps as precursors of modern matrices, Gaussian elimination, and determinants.

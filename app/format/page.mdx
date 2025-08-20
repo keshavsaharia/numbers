@@ -1,6 +1,36 @@
 import formats from '@/data/formats'
 export const metadata = formats
 
-# Binary formats
+# Floating point formats
+
+Floating point formats are a type of binary format that represent real numbers in a computer system. They are used to store and manipulate decimal numbers with a fixed number of digits after the decimal point.
+
+## IEEE 754 Standard
+
+The [IEEE 754 standard](/spec/ieee-754) is a widely adopted standard for representing floating point numbers in binary systems. It defines two main formats for [single precision](/format/fp32) (32-bit) and [double precision](/format/fp64) (64-bit).
+
 
 <SectionListBox { ...{...formats, title: ''} }/>
+
+## Components of IEEE 754
+
+A floating-point number in IEEE 754 format is composed of three main components: the sign bit, the exponent, and the significand (or mantissa). The sign bit determines the positivity or negativity of the number. The exponent, which is stored in a biased form, allows the representation of both very large and very small numbers. The significand, which includes an implicit leading bit, provides the precision of the number.
+
+### Precision and Rounding
+
+IEEE 754 defines several levels of precision, with single precision (32-bit) and double precision (64-bit) being the most common. The standard also specifies different rounding modes to handle the precision limitations inherent in floating-point arithmetic. These rounding modes include round to nearest, round toward zero, round toward positive infinity, and round toward negative infinity. The choice of rounding mode can significantly affect the outcome of numerical computations.
+
+### Special Values
+
+The standard introduces special values to handle exceptional cases in arithmetic operations. These include positive and negative infinity, which result from operations like division by zero, and NaN (Not a Number), which represents undefined or unrepresentable values, such as the result of 0/0.
+
+### Arithmetic Operations
+
+IEEE 754 specifies how arithmetic operations should be performed to ensure consistent results. This includes rules for addition, subtraction, multiplication, division, and square root operations. The standard also addresses issues like overflow, underflow, and the handling of denormalized numbers, which are used to represent values closer to zero than the smallest normalized number.
+
+### Time and Space Complexity
+
+The operations defined by the IEEE 754 standard are designed to be efficient. The time complexity for basic arithmetic operations (addition, subtraction, multiplication, division) is generally $$O(1)$$, as they are performed in constant time by the hardware. The space complexity is also minimal, as each floating-point number is stored in a fixed amount of space (32 bits for single precision and 64 bits for double precision).
+
+By adhering to the IEEE 754 standard, developers and engineers can ensure that their applications perform numerical computations reliably and consistently, regardless of the underlying hardware or software environment.
+

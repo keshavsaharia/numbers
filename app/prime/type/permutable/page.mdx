@@ -1,0 +1,61 @@
+# Permutable Primes
+
+Permutable primes are a fascinating subset of prime numbers characterized by their unique property: any permutation of their digits results in another prime number. This intriguing feature makes them a subject of interest in number theory, as they exhibit a form of symmetry and resilience against the typical randomness of prime distribution.
+
+The concept of permutable primes is closely tied to the idea of digit rearrangement. For a number to be considered a permutable prime, every possible rearrangement of its digits must also yield a prime number. This requirement imposes a stringent condition, making permutable primes exceedingly rare, especially as the number of digits increases.
+
+One of the simplest examples of a permutable prime is the number 13. Its only permutation, 31, is also a prime number. As the number of digits increases, finding permutable primes becomes significantly more challenging due to the combinatorial explosion of possible permutations and the decreasing likelihood that all permutations remain prime.
+
+```javascript
+function isPermutablePrime(n) {
+  const digits = n.toString().split('');
+  const permutations = getPermutations(digits);
+  return permutations.every((perm) => isPrime(parseInt(perm.join(''))));
+}
+
+function getPermutations(digits) {
+  return digits.length === 1 ? [digits] : digits.flatMap((digit, index) => getPermutations(digits.slice(0, index).concat(digits.slice(index + 1))).map(perm => [digit].concat(perm)));
+}
+
+function isPrime(n) {
+  if (n <= 1) return false;
+  if (n <= 3) return true;
+  if (n % 2 === 0 || n % 3 === 0) return false;
+  for (let i = 5; i * i <= n; i += 6) {
+    if (n % i === 0 || n % (i + 2) === 0) return false;
+  }
+  return true;
+}
+```
+
+## Theorem
+
+Let $$P(b, n, x, y)$$ be a **permutable prime** in base $$b$$, formed using digits $x$ and $y$, where the number has length $$n$$. Let $$p$$ be a prime such that $$n \geq p$$. Assume $$b$$ is a **primitive root modulo $$p$$**, $$p \nmid x$$, and $$p \nmid |x - y|$$. Under these conditions, $$n$$ must be divisible by $$p - 1$$.
+
+### Proof
+
+Because $$b$$ is a primitive root modulo $$p$$, the powers of $$b \mod p$$ cycle through all nonzero residues mod $$p$$. That is, $$ b^0, b^1, \dots, b^{p-2} \mod p \space$$ are all distinct $$\mod p$$.
+
+Now consider the $p$ numbers of length $n$, where only one digit is $y$ and all others are $x$, in each of the $p$ digit positions: $$ x \dots x y, \quad x \dots x y x, \quad \dots, \quad y x \dots x. $$ Since $$b$$ is a primitive root mod $$p$$, the positions of $$y$$ in these numbers make their values mod $$p$$ all distinct.
+
+Thus, these $$p$$ numbers are distinct mod $$p$$. They form a complete residue system modulo $$p$$, meaning one of them is congruent to 0, and the others to $$1, 2, \dots, p-1$$. That is, at least one of these numbers is divisible by $$p$$.
+
+But since all $$p$$ permutations of the digits must be **prime**, none can be divisible by $$p$$. The only exception is the **repdigit** with all digits equal to $$x$$, i.e., $$\underbrace{xx\dots x}_{n \text{ times}}$$. Therefore the repdigit must be divisible by $$p$$, but since $$p \nmid x$$, this is only possible if the **repunit** $\underbrace{11\dots1}_{n \text{ times}}$ is divisible by $$p$$.
+
+Since $$b$$ is a primitive root mod $$p$$, the **multiplicative order** of $$b \mod p$$ is $$p - 1$$, which implies:
+
+<Center>
+$$
+b^n \equiv 1 \pmod{p} \quad \Rightarrow \quad (p - 1) \mid n.
+$$
+</Center>
+
+Therefore if a base $$b$$ is a **primitive root** modulo a prime $$p$$, and $$p \nmid x$$ and $$p \nmid |x - y|$$, then any permutable prime formed from digits $$x, y$$ of length $$n \geq p$$ must satisfy:
+
+<Center>
+$$
+n \equiv 0 \pmod{p - 1}.
+$$
+</Center>
+
+This constraint rapidly limits the values $$n$$ can take as $$p$$ increases. Consequently, **non-repunit permutable primes** of large length are very rare or impossible under these conditions.

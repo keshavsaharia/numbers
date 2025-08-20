@@ -17,14 +17,16 @@ export function decodeFP8(value: number, { mantissa, finite, maxExponent }: FP8)
     return { sign, exp, sig, nan, inf }
 }
 
-export function enumerateFP8(fp: FP8) {
+export function enumerateFP8(fp: FP8, { nan = false, inf = false }: { nan?: boolean, inf?: boolean } = {}) {
     const decoded: Array<{ decoded: DecodedFP8, value: number }> = []
     for (let i = 0 ; i < 256 ; i++) {
         const d = decodeFP8(i, fp)
-        decoded.push({ 
-            decoded: d, 
-            value: isSubnormalFP8(d) ? subnormalValueFP8(d, fp) : valueFP8(d, fp)
-        })
+        if ((!d.nan || nan === true) && 
+            (!d.inf || inf === true))
+            decoded.push({ 
+                decoded: d, 
+                value: isSubnormalFP8(d) ? subnormalValueFP8(d, fp) : valueFP8(d, fp)
+            })
     }
     return decoded
 }

@@ -1,0 +1,45 @@
+# Installing SGLang
+
+This is a guide based on the [official installation instructions](https://docs.sglang.ai/start/install.html). It is recommended to use [`uv`](https://github.com/astral-sh/uv) as the Python package manager for faster installation.
+
+```bash
+pip install --upgrade pip
+pip install uv
+uv pip install "sglang[all]>=0.4.10.post2"
+```
+
+## Installing with Docker
+
+This is the recommended way to install SGLang, as it provides a consistent environment and allows you to use the latest features.
+
+```bash
+# Clone the SGLang repository
+git clone https://github.com/sgl-project/sglang.git
+cd sglang/docker
+
+# Build the docker image
+docker build -t sglang-cpu:main -f Dockerfile.xeon .
+
+# Initiate a docker container
+docker run \
+    -it \
+    --privileged \
+    --ipc=host \
+    --network=host \
+    -v /dev/shm:/dev/shm \
+    -v ~/.cache/huggingface:/root/.cache/huggingface \
+    -p 30000:30000 \
+    -e "HF_TOKEN=<secret>" \
+    sglang-cpu:main /bin/bash
+```
+
+## Installing from source
+
+```bash
+# Use the last release branch
+git clone -b v0.4.10.post2 https://github.com/sgl-project/sglang.git
+cd sglang
+
+pip install --upgrade pip
+pip install -e "python[all]"
+```

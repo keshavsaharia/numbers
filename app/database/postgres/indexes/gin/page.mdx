@@ -1,0 +1,94 @@
+# Generalized Inverted Indexes (GIN)
+
+A **Generalized Inverted Index (GIN)** is a specialized index type in PostgreSQL designed to efficiently support queries on complex data types such as arrays, full-text search documents, and JSONB. Unlike traditional B-tree indexes, which map single values to a tuple (row), GIN indexes are designed to map **multiple values** (or key-value pairs) within a single document or data structure to their corresponding tuples.
+
+GIN indexes are particularly useful for **containment queries**, where a column contains a set of values and you need to check whether that set contains certain elements. For example, GIN indexes are ideal for `@>` (contains) queries on JSONB and array types or for full-text search operations.
+
+## Creating a GIN index
+
+GIN indexes are typically created using the `CREATE INDEX` statement with the `USING GIN` clause.
+
+```sql
+CREATE INDEX idx_gin_array ON my_table USING GIN (my_array_column);
+```
+
+This would create a GIN index on the `my_array_column` which will automatically be used to optimize queries.
+
+```sql
+SELECT * FROM my_table WHERE my_array_column @> ARRAY[1, 2];
+```
+
+In this case, the `@>` operator checks whether the array in `my_array_column` contains the values `1` and `2`. The GIN index accelerates this containment check by mapping each array element to the corresponding rows.
+
+Similarly, GIN indexes can be used with full-text search by indexing `tsvector` columns.
+
+```sql
+CREATE INDEX idx_gin_tsvector ON my_table USING GIN (to_tsvector('english', my_text_column));
+```
+
+Once the index is created, vector queries can also be optimized.
+
+```sql
+SELECT * FROM my_table WHERE to_tsvector('english', my_text_column) @@ to_tsquery('english', 'search');
+```
+
+This enables fast full-text search queries.
+
+## GIN internals
+
+GIN indexes work by creating an **inverted index**, which stores a mapping of each distinct key (or value) in the indexed data structure to the rows (TIDs) where that key appears. This is similar to how an inverted index works in search engines.
+
+When creating a GIN index, PostgreSQL processes each element within the target data structure (such as an array or a JSONB object) and records which rows contain that element. For example, in a full-text search scenario, the index stores which documents contain each word.
+
+Internally, the GIN index is structured as a **posting list**, where each distinct key in the indexed data (e.g., each word in a document or each value in an array), is stored as a list of tuples (`TID`s) that point to rows containing that key. They also contain a [B-tree index](/database/postgres/indexes) for efficient management and lookup of the keys, even when the column contains large or complex data.
+
+## Use cases
+
+GIN indexes are especially useful for full text search and array containment, like checking if a string contains a particular substring or an array contains a particular element. They are also used to optimizing queries on complex data types like JSONB and hstore, where containment queries (`@>`) are common.
+
+However, GIN indexes are not suitable for range queries, since GIN indexes are designed for containment and equality operations, not for range operations like those supported by B-tree indexes. They also offer negligible performance improvement for small tables with infrequent updates, since the overhead of creating and maintaining a GIN index outweighs the minimal performance improvements.
+
+## Types of GIN Indexes
+
+PostgreSQL supports multiple types of GIN indexes, depending on the type of data being indexed:
+
+- **Default GIN for arrays**: This type of GIN index is used for array columns. It creates an index entry for each element in the array.
+- **GIN for full-text search**: Used with `tsvector` columns for full-text search indexing.
+- **GIN for JSONB**: Supports efficient containment queries for JSONB data using the `@>` operator.
+- **GIN for hstore**: Similar to JSONB, GIN indexes can be used with `hstore` columns to accelerate queries that check key-value pairs.
+
+For example, to create a GIN index for a `JSONB` column:
+
+```sql
+CREATE INDEX idx_gin_jsonb ON my_table USING GIN (my_jsonb_column);
+```
+
+This index will speed up queries like:
+
+```sql
+SELECT * FROM my_table WHERE my_jsonb_column @> '{"key": "value"}';
+```
+
+## Performance
+
+GIN indexes provide significant performance improvements for certain types of queries, especially containment queries, which are typically slow without indexes. However, GIN indexes have some trade-offs:
+
+- **Insert/Update Performance**: GIN indexes can be slower to update than B-tree indexes because adding new values (or updating existing ones) requires modifying multiple entries in the index. This is especially true for large documents or arrays, where each individual element needs to be indexed separately.
+  
+- **Index Size**: GIN indexes can be large, especially for large columns with many distinct elements (e.g., large arrays or documents). The size of the index can affect disk space usage and I/O performance.
+  
+- **Write Amplification**: When data is inserted or updated in a table indexed by a GIN index, PostgreSQL may need to rewrite parts of the GIN index, which can increase write overhead.
+
+To mitigate these issues, it's important to periodically **reindex** GIN indexes or use tools like `pg_repack` to reduce bloat. Additionally, careful design of your data and queries can help reduce the need for frequent updates to indexed columns.
+
+## GIN index maintenance
+
+Due to their structure, GIN indexes can suffer from **bloat** over time, especially if the indexed data frequently changes. This bloat can result in degraded performance for both query execution and index maintenance.
+
+PostgreSQL provides several ways to manage GIN index bloat:
+
+- **Vacuuming**: The `VACUUM` process helps reclaim space and ensures that GIN indexes stay in sync with the underlying table. However, GIN indexes require **parallel vacuuming**, which can make this process slower than for B-tree indexes.
+  
+- **REINDEX**: Running `REINDEX` on a GIN index can help reduce bloat by rebuilding the index from scratch.
+  
+- **pg_repack**: An extension like `pg_repack` can be used to reorganize tables and indexes, including GIN indexes, to reclaim space without locking the table.

@@ -1,0 +1,45 @@
+# MD5 Hash Function
+
+MD5 (Message Digest Algorithm 5) is a widely used cryptographic hash function that produces a 128-bit (16-byte) hash value, typically expressed as a 32-character hexadecimal number. While it was once widely used, it is now considered cryptographically broken and unsuitable for security applications.
+
+## Mathematical Definition
+
+The MD5 algorithm processes input data in 512-bit blocks and produces a 128-bit hash value. The algorithm can be mathematically defined as:
+
+$$ h: \{0,1\}^* \to \{0,1\}^{128} $$
+
+In this definition, the input space $$ \{0,1\}^* $$ represents any binary string of arbitrary length, allowing for a wide range of input data. The output space $$ \{0,1\}^{128} $$ represents a fixed-length 128-bit binary string, ensuring a consistent output size regardless of the input length.
+
+## Algorithm Steps
+
+1. **Padding**: The input message is padded to ensure its length is congruent to 448 modulo 512 bits. This padding process involves appending a single '1' bit to the message, followed by enough '0' bits to make the length congruent to 448 modulo 512. Finally, a 64-bit representation of the original message length is appended to the end.
+
+2. **Initialization**: The algorithm initializes four 32-bit variables (A, B, C, D) with specific values. These variables are set to the following hexadecimal values: $$ A = 0x67452301 $$, $$ B = 0xEFCDAB89 $$, $$ C = 0x98BADCFE $$, and $$ D = 0x10325476 $$. These initial values are derived from the sine function and are used to set up the initial state of the hash computation.
+
+3. **Main Loop**: The algorithm processes the message in 512-bit blocks through four rounds of operations. Each round consists of 16 operations, making a total of 64 operations. These operations utilize bitwise logical functions (F, G, H, I), modular addition, left rotations, and predefined constants to transform the input data into the final hash value.
+
+4. **Output**: The final hash value is the concatenation of the four 32-bit variables (A, B, C, D) after all blocks have been processed. This concatenated value represents the MD5 hash of the input message.
+
+## Security Considerations
+
+MD5 is considered cryptographically broken due to its vulnerability to collision attacks, which have a complexity of approximately $$ 2^{21} $$ operations. This means that it is relatively easy for an attacker to find two different inputs that produce the same hash value. Additionally, MD5 is susceptible to pre-image attacks, with a complexity of approximately $$ 2^{123.4} $$ operations, and second pre-image attacks, with a similar complexity. These vulnerabilities make MD5 unsuitable for security-critical applications.
+
+## Time and Space Complexity
+
+The time complexity of the MD5 algorithm is $$ O(n) $$, where n is the length of the input message. This linear time complexity ensures that the hash computation is efficient, even for large input sizes. The space complexity is $$ O(1) $$, as the algorithm uses a fixed amount of memory regardless of the input size, due to the fixed-length output.
+
+## Common Applications
+
+While MD5 is no longer recommended for security-critical applications, it is still used in various non-security-critical contexts. For example, MD5 is often used for file integrity verification, where the goal is to ensure that a file has not been altered. It is also used in digital signatures, checksums for file downloads, and legacy systems that require compatibility with older software.
+
+## Example Hash Values
+
+For an empty string, the MD5 hash value is `d41d8cd98f00b204e9800998ecf8427e`. For the string "Hello, World!", the hash value is `65a8e27d8879283831b664bd8b7f0ad4`. These examples illustrate the fixed-length output of the MD5 algorithm, regardless of the input size.
+
+## Implementation Considerations
+
+When implementing MD5, it is important to consider the algorithm's sensitivity to endianness. All operations are performed on 32-bit words, and the algorithm uses little-endian byte ordering. The output is typically represented as a 32-character hexadecimal string, which is a common format for displaying hash values.
+
+## Best Practices
+
+Given the vulnerabilities of MD5, it is best to avoid using it for security-critical applications. Instead, consider using more secure hash functions like SHA-256 or SHA-3 for new applications. If MD5 must be used, it is advisable to use it in combination with a salt to enhance security. Additionally, be aware of the algorithm's vulnerabilities to collision attacks and plan accordingly. 

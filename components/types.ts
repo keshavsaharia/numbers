@@ -11,11 +11,11 @@ export interface SectionProps {
 /**
  * A group of sections
  */
-export interface SectionGroup {
+export interface SectionGroup<T extends { [key: string]: any } = { [key: string]: any }> {
     title: string           // group title
     description?: string    // group subtitle
     base: string            // base URL
-    sections: SectionLink[] // list of section links
+    sections: Array<SectionLink & T> // list of section links
 }
 
 /**
@@ -27,7 +27,7 @@ export interface SectionLink {
     identifier?: string    // unique identifier
     alias?: string[]       // aliases for content matching
     path?: string          // relative path from group base
-    link?: string           // absolute link
+    link?: string          // absolute link
     video?: string
     tags?: string[]
 }

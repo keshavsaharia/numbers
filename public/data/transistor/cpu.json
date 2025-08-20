@@ -1,0 +1,41 @@
+{
+  "columns": [
+    {
+      "name": "processor",
+      "key": "Processor",
+      "filter": "text",
+      "type": "string",
+      "description": "The name of the processor"
+    },
+    {
+      "name": "transistor count",
+      "key": "Transistor count",
+      "type": "number",
+      "description": "Number of transistors",
+      "filter": "range"
+    },
+    {
+      "name": "year",
+      "type": "year",
+      "key": "Year",
+      "description": "The number of threads in the CPU"
+    },
+    {
+      "name": "designer",
+      "type": "string",
+      "key": "Designer",
+      "filter": "text",
+      "description": "The designer of the processor"
+    },
+    {
+      "name": "process",
+      "key": "Process (nm)",
+      "description": "The process of the processor"
+    },
+    {
+      "name": "area",
+      "key": "Area (mm2)",
+      "description": "The area of the processor"
+    }
+  ]
+}

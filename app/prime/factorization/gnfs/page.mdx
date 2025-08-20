@@ -1,0 +1,159 @@
+# General Number Field Sieve (GNFS)
+
+The General Number Field Sieve (GNFS) is currently the most efficient algorithm for factoring integers larger than 100 digits. It is a generalization of the Special Number Field Sieve and represents the state of the art in integer factorization. The algorithm combines techniques from algebraic number theory, linear algebra, and sieving methods.
+
+## Algorithm Overview
+
+The GNFS works by finding pairs of integers that are smooth over two different number fields. These relations are then used to construct a system of linear equations, whose solution leads to a non-trivial factorization of the target number.
+
+## Mathematical Foundation
+
+The algorithm is based on the following principle: if we can find integers x and y such that:
+
+$$
+x^2 \equiv y^2 \pmod{n}
+$$
+
+and $x \not\equiv \pm y \pmod{n}$, then $\gcd(x - y, n)$ and $\gcd(x + y, n)$ are non-trivial factors of n. The GNFS achieves this by working in number fields to find these relations.
+
+## Time and Space Complexity
+
+The time complexity of the GNFS is:
+
+$$
+O(e^{(\frac{64}{9})^{1/3} (\ln n)^{1/3} (\ln \ln n)^{2/3}})
+$$
+
+The space complexity is $O(\sqrt{n})$ for storing the factor base and relations.
+
+## JavaScript Implementation
+
+```javascript
+function generalNumberFieldSieve(n) {
+    // Polynomial selection
+    const polynomial = selectPolynomial(n);
+    
+    // Factor base generation
+    const rationalFactorBase = generateRationalFactorBase(n);
+    const algebraicFactorBase = generateAlgebraicFactorBase(polynomial);
+    
+    // Sieving phase
+    const relations = [];
+    const sieveArray = new Array(sieveSize).fill(0);
+    
+    // Rational sieving
+    for (const p of rationalFactorBase) {
+        const roots = findRoots(n, p);
+        for (const root of roots) {
+            for (let j = root; j < sieveSize; j += p) {
+                sieveArray[j] += Math.log(p);
+            }
+        }
+    }
+    
+    // Algebraic sieving
+    for (const p of algebraicFactorBase) {
+        const roots = findAlgebraicRoots(polynomial, p);
+        for (const root of roots) {
+            for (let j = root; j < sieveSize; j += p) {
+                sieveArray[j] += Math.log(p);
+            }
+        }
+    }
+    
+    // Finding smooth numbers
+    for (let i = 0; i < sieveSize; i++) {
+        if (isSmooth(sieveArray[i], threshold)) {
+            const relation = createRelation(i, polynomial);
+            if (relation) {
+                relations.push(relation);
+            }
+        }
+    }
+    
+    // Linear algebra phase
+    const matrix = buildMatrix(relations);
+    const solution = solveLinearSystem(matrix);
+    
+    // Factorization phase
+    return findFactors(n, relations, solution);
+}
+
+// Helper functions
+function selectPolynomial(n) {
+    // Select an appropriate polynomial for the number field
+}
+
+function generateRationalFactorBase(n) {
+    // Generate the rational factor base
+}
+
+function generateAlgebraicFactorBase(polynomial) {
+    // Generate the algebraic factor base
+}
+
+function findRoots(n, p) {
+    // Find roots modulo p
+}
+
+function findAlgebraicRoots(polynomial, p) {
+    // Find roots of the polynomial modulo p
+}
+
+function isSmooth(value, threshold) {
+    // Check if a number is smooth
+}
+
+function createRelation(x, polynomial) {
+    // Create a relation from a smooth number
+}
+
+function buildMatrix(relations) {
+    // Build the matrix for linear algebra phase
+}
+
+function solveLinearSystem(matrix) {
+    // Solve the system of linear equations
+}
+
+function findFactors(n, relations, solution) {
+    // Use the solution to find factors
+}
+```
+
+## Example Usage
+
+The GNFS is typically used for very large numbers:
+
+```javascript
+const n = 1234567890123456789012345678901234567890123456789012345678901234567890n;
+const factors = generalNumberFieldSieve(n);
+console.log(factors);
+```
+
+## Optimization Techniques
+
+Several optimizations can improve the performance of the GNFS:
+
+1. Using multiple polynomials to increase the yield of smooth numbers
+2. Implementing block sieving to improve cache efficiency
+3. Using parallel processing for the sieving phase
+4. Optimizing the linear algebra phase with sparse matrix techniques
+5. Using lattice sieving for better memory efficiency
+
+## Limitations
+
+The main limitations of the GNFS are:
+- Extremely high memory requirements
+- Complex implementation and parameter tuning
+- Not suitable for numbers with special forms
+- Requires significant computational resources
+
+## Applications
+
+The GNFS is particularly useful in:
+- Breaking RSA keys
+- Cryptanalysis of cryptographic systems
+- Research in number theory
+- Integer factorization competitions
+- Security analysis of cryptographic protocols 

@@ -1,0 +1,466 @@
+# Types of primes
+
+<SectionListBox sections={[
+  {
+    title: "Balanced primes",
+    link: "/prime/type/balanced",
+    path: 'balanced',
+    description: "A prime number that is the arithmetic mean of the nearest prime above and below it"
+  },
+  {
+    title: "Bell primes",
+    link: "/prime/type/bell",
+    path: 'bell',
+    description: "Prime numbers that are also Bell numbers, which count the number of ways to partition a set"
+  },
+  {
+    title: "Catalan primes",
+    link: "/prime/type/catalan",
+    path: 'catalan',
+    description: "Prime numbers that are also Catalan numbers, which appear in various counting problems"
+  },
+  {
+    title: "Chen primes",
+    link: "/prime/type/chen",
+    path: 'chen',
+    description: "Prime numbers p where p + 2 is either prime or a product of two primes"
+  },
+  {
+    title: 'Circular primes',
+    link: "/prime/type/circular",
+    path: 'circular',
+    description: "Prime numbers that remain prime after any cyclic rotation of their digits"
+  },
+  {
+    title: 'Cluster primes',
+    link: "/prime/type/cluster",
+    path: 'cluster',
+    description: "Groups of consecutive prime numbers that are unusually close together"
+  },
+  {
+    title: 'Cousin primes',
+    link: "/prime/type/cousin",
+    path: 'cousin',
+    description: "Pairs of prime numbers that differ by 4"
+  },
+  {
+    title: 'Cuban primes',
+    link: "/prime/type/cuban",
+    path: 'cuban',
+    description: "Prime numbers that can be expressed as the difference of two consecutive cube numbers"
+  },
+  {
+    title: 'Cullen primes',
+    link: "/prime/type/cullen",
+    path: 'cullen',
+    description: "Prime numbers of the form n × 2^n + 1, where n is a positive integer"
+  },
+  {
+    title: 'Delicate primes',
+    link: "/prime/type/delicate",
+    path: 'delicate',
+    description: "Prime numbers that become composite when any single digit is altered"
+  },
+  {
+    title: 'Dihedral primes',
+    link: "/prime/type/dihedral",
+    path: 'dihedral',
+    description: "Prime numbers that remain prime when read forwards, backwards, upside down, or in a mirror"
+  },
+  {
+    title: 'Eisenstein primes',
+    link: "/prime/type/eisenstein",
+    path: 'eisenstein',
+    description: "Prime numbers in the Eisenstein integers, a complex number system"
+  },
+  {
+    title: 'Emirp primes',
+    link: "/prime/type/emirp",
+    path: 'emirp',
+    description: "Prime numbers that yield a different prime number when their digits are reversed"
+  },
+  {
+    title: 'Euclid primes',
+    link: "/prime/type/euclid",
+    path: 'euclid',
+    description: "Prime numbers formed by multiplying the first n primes and adding 1"
+  },
+  {
+    title: 'Euler irregular primes',
+    link: "/prime/type/euler-irregular",
+    path: 'euler-irregular',
+    description: "Prime numbers that divide the numerators of certain Bernoulli numbers"
+  },
+  {
+    title: 'Factorial primes',
+    link: "/prime/type/factorial",
+    path: 'factorial',
+    description: "Prime numbers that are one more or one less than a factorial"
+  },
+  {
+    title: 'Fermat primes',
+    link: "/prime/type/fermat",
+    path: 'fermat',
+    description: "Prime numbers of the form 2^(2^n) + 1, where n is a non-negative integer"
+  },
+  {
+    title: 'Fibonacci primes',
+    link: "/prime/type/fibonacci",
+    path: 'fibonacci',
+    description: "Prime numbers that are also Fibonacci numbers"
+  },
+  {
+    title: 'Fermat primes',
+    link: "/prime/type/fermat",
+    path: 'fermat',
+    description: "Prime numbers of the form 2^(2^n) + 1, where n is a non-negative integer"
+  },
+  {
+    title: 'Fortunate primes',
+    link: "/prime/type/fortunate",
+    path: 'fortunate',
+    description: "The smallest prime number that needs to be added to avoid gaps in the primorial sequence"
+  },
+  {
+    title: 'Gaussian primes',
+    link: "/prime/type/gaussian",
+    path: 'gaussian',
+    description: "Prime numbers in the Gaussian integers, which are complex numbers with integer coordinates"
+  },
+  {
+    title: 'Good primes',
+    link: "/prime/type/good",
+    path: 'good',
+    description: "Prime numbers p where the number of solutions to certain congruences follows a specific pattern"
+  },
+  {
+    title: 'Happy primes',
+    link: "/prime/type/happy",
+    path: 'happy',
+    description: "Prime numbers that eventually reach 1 when repeatedly replacing the number by the sum of squares of its digits"
+  },
+  {
+    title: 'Harmonic primes',
+    link: "/prime/type/harmonic",
+    path: 'harmonic',
+    description: "Prime numbers p where the harmonic numbers H(p-1) have certain divisibility properties"
+  },
+  {
+    title: 'Higgs primes',
+    link: "/prime/type/higgs",
+    path: 'higgs',
+    description: "Prime numbers related to certain particle physics calculations"
+  },
+  {
+    title: 'Highly cototient primes',
+    link: "/prime/type/highly-cototient",
+    path: 'highly-cototient',
+    description: "Prime numbers that appear frequently as values of the cototient function"
+  },
+  {
+    title: 'Home primes',
+    link: "/prime/type/home",
+    path: 'home',
+    description: "Numbers that eventually reach a prime through iterative digit multiplication"
+  },
+  {
+    title: 'Irregular primes',
+    link: "/prime/type/irregular",
+    path: 'irregular',
+    description: "Prime numbers that divide the class number of certain cyclotomic fields"
+  },
+  {
+    title: 'Isolated primes',
+    link: "/prime/type/isolated",
+    path: 'isolated',
+    description: "Prime numbers with no other primes nearby within a certain distance"
+  },
+  {
+    title: 'Leyland primes',
+    link: "/prime/type/leyland",
+    path: 'leyland',
+    description: "Prime numbers of the form x^y + y^x where x and y are integers greater than 1"
+  },
+  {
+    title: 'Long primes',
+    link: "/prime/type/long",
+    path: 'long',
+    description: "Prime numbers where the decimal expansion of their reciprocal has a particularly long period"
+  },
+  {
+    title: 'Lucas primes',
+    link: "/prime/type/lucas",
+    path: 'lucas',
+    description: "Prime numbers that appear in the Lucas sequences"
+  },
+  {
+    title: 'Lucky primes',
+    link: "/prime/type/lucky",
+    path: 'lucky',
+    description: "Prime numbers that are also lucky numbers in the sieve of Josephus"
+  },
+  {
+    title: 'Mersenne primes',
+    link: "/prime/type/mersenne",
+    path: 'mersenne',
+    description: "Prime numbers of the form 2^n - 1, where n is a positive integer"
+  },
+  {
+    title: 'Mills primes',
+    link: "/prime/type/mills",
+    path: 'mills',
+    description: "Prime numbers generated by Mills' constant through floor function iteration"
+  },
+  {
+    title: 'Minimal primes',
+    link: "/prime/type/minimal",
+    path: 'minimal',
+    description: "Prime numbers that cannot be made smaller by changing any single digit"
+  },
+  {
+    title: 'Newman-Shanks-Williams primes',
+    link: "/prime/type/newman-shanks-williams",
+    path: 'newman-shanks-williams',
+    description: "Prime numbers that appear in the Newman-Shanks-Williams number sequence"
+  },
+  {
+    title: 'Non-generous primes',
+    link: "/prime/type/non-generous",
+    path: 'non-generous',
+    description: "Prime numbers that do not give away too many residues in their multiplicative group"
+  },
+  {
+    title: 'Palindromic primes',
+    link: "/prime/type/palindromic",
+    path: 'palindromic',
+    description: "Prime numbers that read the same forwards and backwards"
+  },
+  {
+    title: 'Partition primes',
+    link: "/prime/type/partition",
+    path: 'partition',
+    description: "Prime numbers related to the partition function in number theory"
+  },
+  {
+    title: 'Pell primes',
+    link: "/prime/type/pell",
+    path: 'pell',
+    description: "Prime numbers that appear in the Pell number sequence"
+  },
+  {
+    title: 'Permutable primes',
+    link: "/prime/type/permutable",
+    path: 'permutable',
+    description: "Prime numbers that remain prime under any permutation of their digits"
+  },
+  {
+    title: 'Perrin primes',
+    link: "/prime/type/perrin",
+    path: 'perrin',
+    description: "Prime numbers that appear in the Perrin sequence"
+  },
+  {
+    title: 'Pierpont primes',
+    link: "/prime/type/pierpont",
+    path: 'pierpont',
+    description: "Prime numbers of the form 2^u × 3^v + 1, where u and v are non-negative integers"
+  },
+  {
+    title: 'Pillai primes',
+    link: "/prime/type/pillai",
+    path: 'pillai',
+    description: "Prime numbers p where p - 1 divides the factorial of p-1"
+  },
+  {
+    title: 'Primes of quadratic square plus one',
+    link: "/prime/type/quadratic-square-plus-one",
+    path: 'quadratic-square-plus-one',
+    description: "Prime numbers that can be expressed as n^2 + 1 for some integer n"
+  },
+  {
+    title: 'Primeval primes',
+    link: "/prime/type/primeval",
+    path: 'primeval',
+    description: "Prime numbers that appear early in certain sequences related to prime counting"
+  },
+  {
+    title: 'Primorial primes',
+    link: "/prime/type/primorial",
+    path: 'primorial',
+    description: "Prime numbers that are one more or one less than the product of the first n primes"
+  },
+  {
+    title: 'Proth primes',
+    link: "/prime/type/proth",
+    path: 'proth',
+    description: "Prime numbers of the form k × 2^n + 1, where k is odd and less than 2^n"
+  },
+  {
+    title: 'Pythagorean primes',
+    link: "/prime/type/pythagorean",
+    path: 'pythagorean',
+    description: "Prime numbers that can be expressed as the sum of two square numbers"
+  },
+  {
+    title: 'Quadratic primes',
+    link: "/prime/type/quadratic",
+    path: 'quadratic',
+    description: "Prime numbers generated by quadratic polynomials"
+  },
+  {
+    title: 'Quartan primes',
+    link: "/prime/type/quartan",
+    path: 'quartan',
+    description: "Prime numbers related to certain quartic number fields"
+  },
+  {
+    title: 'Ramanujan primes',
+    link: "/prime/type/ramanujan",
+    path: 'ramanujan',
+    description: "The nth Ramanujan prime is the smallest number such that there are at least n primes in any interval of given length"
+  },
+  {
+    title: 'Regular primes',
+    link: "/prime/type/regular",
+    path: 'regular',
+    description: "Prime numbers that do not divide the class number of certain cyclotomic fields"
+  },
+  {
+    title: 'Repunit primes',
+    link: "/prime/type/repunit",
+    path: 'repunit',
+    description: "Prime numbers consisting only of ones in their decimal representation"
+  },
+  {
+    title: 'Residue classes of primes',
+    link: "/prime/type/residue-classes",
+    path: 'residue-classes',
+    description: "Prime numbers that belong to specific arithmetic progressions"
+  },
+  {
+    title: 'Safe primes',
+    link: "/prime/type/safe",
+    path: 'safe',
+    description: "Prime numbers p where (p-1)/2 is also prime"
+  },
+  {
+    title: 'Self primes',
+    link: "/prime/type/self",
+    path: 'self',
+    description: "Prime numbers with special properties related to their digit sum"
+  },
+  {
+    title: 'Sexy primes',
+    link: "/prime/type/sexy",
+    path: 'sexy',
+    description: "Pairs of prime numbers that differ by 6"
+  },
+  {
+    title: 'Smarandache-Wellin primes',
+    link: "/prime/type/smarandache-wellin",
+    path: 'smarandache-wellin',
+    description: "Prime numbers formed by concatenating the first n prime numbers"
+  },
+  {
+    title: 'Solinas primes',
+    link: "/prime/type/solinas",
+    path: 'solinas',
+    description: "Prime numbers of special form used in cryptography"
+  },
+  {
+    title: 'Sophie Germain primes',
+    link: "/prime/type/sophie-germain",
+    path: 'sophie-germain',
+    description: "Prime numbers p where 2p + 1 is also prime"
+  },
+  {
+    title: 'Stern primes',
+    link: "/prime/type/stern",
+    path: 'stern',
+    description: "Prime numbers that appear in the Stern sequence"
+  },
+  {
+    title: 'Super primes',
+    link: "/prime/type/super",
+    path: 'super',
+    description: "The nth super prime is the nth prime number in the sequence of prime numbers"
+  },
+  {
+    title: 'Supersingular primes',
+    link: "/prime/type/supersingular",
+    path: 'supersingular',
+    description: "Prime numbers related to certain elliptic curves"
+  },
+  {
+    title: 'Thabit primes',
+    link: "/prime/type/thabit",
+    path: 'thabit',
+    description: "Prime numbers of the form 3 × 2^n - 1, where n is a positive integer"
+  },
+  {
+    title: 'Prime triplets',
+    link: "/prime/type/prime-triplets",
+    path: 'prime-triplets',
+    description: "Three consecutive prime numbers that are as close as possible to each other"
+  },
+  {
+    title: 'Truncatable primes',
+    link: "/prime/type/truncatable",
+    path: 'truncatable',
+    description: "Prime numbers that remain prime when digits are successively removed from left to right or right to left"
+  },
+  {
+    title: 'Twin primes',
+    link: "/prime/type/twin",
+    path: 'twin',
+    description: "Pairs of prime numbers that differ by 2"
+  },
+  {
+    title: 'Unique primes',
+    link: "/prime/type/unique",
+    path: 'unique',
+    description: "Prime numbers with unique properties not shared by other categories"
+  },
+  {
+    title: 'Wagstaff primes',
+    link: "/prime/type/wagstaff",
+    path: 'wagstaff',
+    description: "Prime numbers of the form (2^p + 1)/3, where p is an odd prime"
+  },
+  {
+    title: 'Wall-Sun-Sun primes',
+    link: "/prime/type/wall-sun-sun",
+    path: 'wall-sun-sun',
+    description: "Prime numbers that satisfy certain congruences related to Fibonacci numbers"
+  },
+  {
+    title: 'Wieferich primes',
+    link: "/prime/type/wieferich",
+    path: 'wieferich',
+    description: "Prime numbers p where 2^(p-1) - 1 is divisible by p^2"
+  },
+  {
+    title: 'Wilson primes',
+    link: "/prime/type/wilson",
+    path: 'wilson',
+    description: "Prime numbers p where the Wilson quotient (p-1)! + 1 is divisible by p^2"
+  },
+  {
+    title: 'Wolstenholme primes',
+    link: "/prime/type/wolstenholme",
+    path: 'wolstenholme',
+    description: "Prime numbers p where certain binomial coefficients satisfy special congruences modulo p^3"
+  },
+  {
+    title: 'Woodall primes',
+    link: "/prime/type/woodall",
+    path: 'woodall',
+    description: "Prime numbers of the form n × 2^n - 1, where n is a positive integer"
+  },
+  {
+    title: 'Wright primes',
+    link: "/prime/type/wright",
+    path: 'wright',
+    description: "Prime numbers with special properties related to certain arithmetic functions"
+  }
+]}/>

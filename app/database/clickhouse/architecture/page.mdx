@@ -1,0 +1,50 @@
+# ClickHouse architecture
+
+The architecture of ClickHouse consists of key components that interact seamlessly to provide its high level of performance. At the heart of data storage is the [MergeTree engine](/engine/mergetree), which efficiently organizes data in sorted order to expedite query operations. The architecture allows for other engines as well, depending on specific needs. The query processing layer integrates several optimizations such as vectorized query execution and function inlining, which are crucial for processing large-scale data analytics efficiently.
+
+# The Architecture of ClickHouse
+
+ClickHouse, an open-source columnar database management system, is designed for high performance, flexibility, and ease of use in processing analytical queries. Understanding its architecture is crucial for those interested in contributing to the project or optimizing their own usage of ClickHouse.
+
+## Core Principles and Design Goals
+
+ClickHouse is fundamentally structured around several core principles and design goals that guide its development and functionality. Primarily, it is aimed at providing high-speed data processing capabilities with OLAP (Online Analytical Processing) workloads. This objective is achieved through several approaches: 
+
+1. **Columnar Storage**: Data is stored by columns, which allows efficient data compression and vectorized query execution. This method minimizes I/O operations and optimizes cache usage, which is critical for handling large volumes of data quickly.
+
+2. **Scalability**: ClickHouse is designed to scale horizontally. It can run on a single node or be distributed across a cluster of machines, which allows it to handle petabytes of data. The architecture supports sharding and replication, ensuring both data distribution and fault tolerance.
+
+3. **Real-Time Analytics**: The system is designed to allow for real-time analytics, enabling users to execute complex queries on fresh data without delay. This goal is supported by the system's efficient use of indexes and other data structures like primary keys and secondary indexes.
+
+4. **Open Source and Extensibility**: As an open-source project, ClickHouse encourages community collaboration and extensibility. Users can modify and extend its functionalities, and over time, this has fostered an ecosystem of plugins and extensions that augment its capabilities.
+
+For the source code underlying these principles, one can explore the ClickHouse repository, starting with the main README file for an overview. Specific files related to storage and query execution are usually found under the `src` directory, such as [src/Storages](https://github.com/ClickHouse/ClickHouse/tree/master/src/Storages), where you can see implementations of various storage engines.
+
+## Key Components and How They Interact
+
+The architecture of ClickHouse comprises several key components that work cohesively to manage data efficiently. These include:
+
+- **Storage Engines**: They handle how data is organized physically on disk. ClickHouse supports various engines, like `MergeTree`, which provides functionalities for sorting and partitioning, crucial for performance optimization in large datasets.
+
+- **Query Execution Engine**: This is responsible for parsing, planning, and executing SQL queries. It transforms a high-level SQL query into a series of executable operations, ensuring optimization at various stages.
+
+- **Inter-server Communication**: In a distributed setup, nodes in a ClickHouse cluster communicate over protocols designed for fast data transfer and coordination. This component ensures consistent data replication and load balancing across nodes.
+
+- **SQL Interface**: ClickHouse provides an SQL interface for query execution, which is integral for ease of use and integration with various applications. This interface supports a wide range of SQL dialect features and is continually evolving.
+
+These components interact through well-defined APIs and data structures, which are visible in various parts of the codebase like [src/Interpreters](https://github.com/ClickHouse/ClickHouse/tree/master/src/Interpreters), where you will find the implementation of the SQL parser and executor.
+
+## Build System and Codebase Structure
+
+The ClickHouse codebase employs a robust build system, powered mainly by CMake. This choice allows for cross-platform compatibility and efficient management of dependencies. When setting up ClickHouse from source, CMake configurations automate the compilation process, ensuring that all necessary components and optimizations are included based on the target environment.
+
+The codebase is organized into directories, each representing a submodule or significant domain within the system. Some of the main directories include:
+
+- **`src`**: This directory contains the bulk of the ClickHouse source code, including query processors, storage implementations, and more.
+- **`base`**: It holds foundational utilities and common functionalities shared across different modules.
+- **`dbms`**: Here, you find higher-level database management functionalities that coordinate between various lower-level components.
+- **`programs`**: Contains the entry points for various executable programs, such as the ClickHouse server and client binaries.
+
+By exploring these directories, contributors can gain insight into the architectural decisions behind ClickHouse and the modular way in which its codebase is structured to facilitate scalability and maintenance. For specifics, refer to the [CMakeLists.txt](https://github.com/ClickHouse/ClickHouse/blob/master/CMakeLists.txt) file at the root of the repository, which outlines build configurations and dependencies. 
+
+Understanding the architecture of ClickHouse not only enhances one's ability to work with the system but also opens avenues for innovation and contribution to one of the leading OLAP databases in the open-source community.

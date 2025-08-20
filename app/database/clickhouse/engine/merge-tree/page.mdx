@@ -1,0 +1,31 @@
+# MergeTree
+
+The MergeTree family of table engines in ClickHouse, including variants like `ReplacingMergeTree` and `AggregatingMergeTree`, is renowned for handling high data ingest rates and massive data volumes. These engines work by creating table parts during insert operations, which are later merged using a background process to optimize storage and ensure efficient data retrieval.
+
+## Primary keys
+
+A key feature of MergeTree engines is the use of a primary key that imposes a specific sort order within each table part. Instead of referencing individual rows, the primary key indexes blocks of 8192 rows, called **granules**, which balances the need for high-speed data access and memory efficiency. Furthermore, MergeTree tables can be partitioned, allowing partitions irrelevant to a query to be pruned, thus reducing the read overhead during query execution.
+
+MergeTree engines also support data replication across multiple nodes, enhancing high availability and enabling seamless upgrades with zero downtime. Moreover, these engines provide various statistics and sampling methods to facilitate optimized querying. Despite their name similarity, it's important to note that the Merge engine is distinct from the MergeTree engines.
+
+## Creating tables
+
+Creating tables using the MergeTree engine involves specifying a range of options such as the ordering of data, partitioning expression, primary key, and other settings like index granularity. For instance, a table can be defined with a statement that includes an order by clause to dictate the sorted order of data, and optionally, a partitioning by monthly dates using a function like `toYYYYMM`.
+
+## Storage format
+
+Data storage in MergeTree engines is organized into parts sorted by primary key. When data is inserted, it's sorted lexicographically according to the primary key. The table parts can be stored in either a Wide or Compact format, with the latter being suitable for increasing the performance of small, frequent inserts. Each data part is divided into granules, and their size is restricted by settings like `index_granularity`. Additionally, ClickHouse creates an index that maps marks to each row group, allowing fast data retrieval without scanning the entire dataset.
+
+Selecting a primary key is crucial as it affects both index efficiency and data compression. While a long primary key might reduce insert performance, it does not adversely impact performance during `SELECT` queries. ClickHouse supports the specification of sampling expressions, and users can define data expiration rules with the TTL clause, establishing conditions for automatic data deletion or movement between storage tiers.
+
+## Data access
+
+When accessing data, ClickHouse can leverage the sparse primary key index to accelerate queries, thus avoiding full table scans. However, the engine does not mandate unique primary keys, allowing for the insertion of duplicate rows. Furthermore, MergeTree tables benefit from advanced indexing options such as data skipping indexes that can significantly reduce read operations by skipping non-relevant data blocks.
+
+## Projections
+
+For more efficient data handling, projections act like materialized views, aiding queries by utilizing pre-aggregated or sorted data stored within table parts. Moreover, the MergeTree engines support concurrent access through multi-versioning, preventing read operations from conflicting with ongoing data writes or updates.
+
+## Hot and cold data
+
+To manage storage efficiently, especially when dealing with partitioned or replicated data, specialized configurations allow data to be distributed across multiple local or external block devices, following predefined storage policies. This approach helps in differentiating between "hot" (frequently accessed) and "cold" (rarely accessed) data, optimizing resource utilization.

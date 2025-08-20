@@ -1,0 +1,35 @@
+# Vector Dot Product
+
+The dot product of two vectors is a scalar value that can be computed from their components. If $$\mathbf{u} = (u_1, u_2, \ldots, u_n)$$ and $$\mathbf{v} = (v_1, v_2, \ldots, v_n)$$ are two vectors, their dot product $$\mathbf{u} \cdot \mathbf{v}$$ is given by:
+
+$$
+\mathbf{u} \cdot \mathbf{v} = u_1v_1 + u_2v_2 + \cdots + u_nv_n
+$$
+
+In JavaScript, the dot product can be computed using the `dotProduct` function:
+
+```javascript
+function dotProduct(u, v) {
+  return u.reduce((sum, value, index) => sum + value * v[index], 0);
+}
+```
+
+This function takes two vectors (arrays) and returns their dot product as a number. For example:
+
+```javascript
+const u = [1, 2, 3];
+const v = [4, 5, 6];
+
+const dotProd = dotProduct(u, v);
+console.log(dotProd); // Output: 32
+```
+
+## Properties of the Dot Product
+
+The dot product has several important properties:
+
+1. **Commutative Property**: $$\mathbf{u} \cdot \mathbf{v} = \mathbf{v} \cdot \mathbf{u}$$
+2. **Distributive Property**: $$\mathbf{u} \cdot (\mathbf{v} + \mathbf{w}) = \mathbf{u} \cdot \mathbf{v} + \mathbf{u} \cdot \mathbf{w}$$
+3. **Scalar Multiplication**: $$(\alpha \mathbf{u}) \cdot \mathbf{v} = \alpha (\mathbf{u} \cdot \mathbf{v})$$
+
+These properties make the dot product a useful tool in various applications, including physics, engineering, and computer graphics.

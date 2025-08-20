@@ -1,0 +1,15 @@
+# Continuous Batching in vLLM
+
+You can stream many requests simultaneously. Here's an example using curl
+
+```bash
+curl -X POST http://localhost:8000/v1/chat/completions \
+-H "Content-Type: application/json" \
+-d '{
+  "model": "meta-llama/Llama-2-7b-chat-hf",
+  "messages": [{"role": "user", "content": "Summarize the plot of Dune."}],
+  "stream": false
+}'
+```
+
+You can send multiple such requests in parallel, and vLLM will dynamically batch them together under the hood.

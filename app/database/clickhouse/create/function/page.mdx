@@ -1,0 +1,46 @@
+# User-defined functions
+
+User Defined Functions (UDFs) in ClickHouse allow for the encapsulation of complex logic within a named function, easing the maintenance of SQL queries by enabling reusability and improved readability. UDFs can be created from lambda expressions and support a broad range of operations, encompassing parameters, constants, operators, and other function commands.
+
+## Syntax for Creating a UDF
+
+To create a UDF, you utilize the `CREATE FUNCTION` statement, which has the following general form:
+
+```sql
+CREATE FUNCTION name [ON CLUSTER cluster] AS (parameter0, ...) -> expression
+```
+
+In this syntax:
+- `name` is the identifier for your function, which must be unique amidst existing user-defined and system functions to avoid conflicts.
+- `[ON CLUSTER cluster]` is optional and specifies the cluster on which the function should be created.
+- `(parameter0, ...)` is a list that denotes an arbitrary number of parameters that are used within your function.
+- `expression` represents the logic or calculation you want the function to perform.
+
+## Restrictions
+
+When creating UDFs, ClickHouse enforces several restrictions to maintain system integrity and prevent potential errors:
+- The function name must be unique across the system; this ensures there is no ambiguity or override of existing functionality.
+- Recursive function definitions are prohibited, aligning with many SQL-based systems where recursion is either limited or disallowed.
+- All variables employed inside the function have to be explicitly listed in the parameter list. Failure to adhere to these constraints will lead to the system raising exceptions.
+
+## Example: Linear Equation Function
+
+Consider creating a UDF to calculate the value of a linear equation. This process illustrates the power and simplicity of embedding dynamic calculations directly within your SQL queries:
+
+```sql
+CREATE FUNCTION linear_equation AS (x, k, b) -> k*x + b;
+SELECT number, linear_equation(number, 2, 1) FROM numbers(3);
+```
+
+Here, `linear_equation` takes three parameters: $$ x $$, $$ k $$, and $$ b $$. The UDF computes $$ k \cdot x + b $$, demonstrating how to integrate a mathematical formula. When executed, the query applies this function over a generated sequence of numbers $$ 0, 1, 2 $$, producing corresponding results based on the linear equation.
+
+## Example: Parity Check Function
+
+UDFs also support conditional operations, as evidenced in a function that determines parity:
+
+```sql
+CREATE FUNCTION parity_str AS (n) -> if(n % 2, 'odd', 'even');
+SELECT number, parity_str(number) FROM numbers(3);
+```
+
+In this example, `parity_str` takes a single parameter $$ n $$. It utilizes the conditional `if` statement to check if $$ n $$ is odd or even, outputting "odd" or "even" respectively. This expression leverages the modulo operation to perform the parity check and returns a string indicative of the outcome.

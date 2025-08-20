@@ -1,0 +1,30 @@
+export const metadata = {
+  title: "RFC 2781",
+  description: "UTF-16, an encoding of ISO 10646"
+};
+
+## RFC 2781 (The Unicode Standard)
+
+[RFC 2781](https://www.ietf.org/rfc/rfc2781.txt), titled "UTF-16, an encoding of ISO 10646," was published in February 2000 by [P. Hoffman](https://www.icann.org/profiles/28869) and [F. Yergeau](https://yergeau.com). This RFC addresses the serialization of UTF-16 as an octet stream for Internet transmission and discusses the registration of three MIME charset parameter values: UTF-16BE (big-endian), UTF-16LE (little-endian), and UTF-16.
+
+## Background and Motivation
+
+The Unicode Standard and ISO/IEC 10646 jointly define a coded character set (CCS) known as Unicode, which encompasses most of the world's writing systems. UTF-16 is one of the standard ways of encoding Unicode character data. It encodes all currently defined characters in plane 0, the Basic Multilingual Plane (BMP), in exactly two octets and can encode all other characters likely to be defined in the next 16 planes in exactly four octets.
+
+The Unicode Standard further defines additional character properties and application details of great interest to implementors. Up to the present time, changes in Unicode and amendments to ISO/IEC 10646 have tracked each other, ensuring that character repertoires and code point assignments remain synchronized. The relevant standardization committees have committed to maintaining this synchronism and not assigning characters outside the 17 planes accessible to UTF-16.
+
+The IETF policy on character sets and languages mandates that IETF protocols must be able to use the UTF-8 character encoding scheme. However, some products and network standards already specify UTF-16, making it an important encoding for the Internet. This document is not an update to the IETF policy but rather a description of the UTF-16 encoding.
+
+## UTF-16 Definition
+
+UTF-16 is described in the Unicode Standard, version 3.0, and the definitive reference is Annex Q of ISO/IEC 10646-1. In ISO 10646, each character is assigned a number, referred to as the Unicode scalar value. In UTF-16 encoding, characters are represented using either one or two unsigned 16-bit integers, depending on the character value. The rules for encoding characters in UTF-16 are as follows:
+
+- Characters with values less than `0x10000` are represented as a single 16-bit integer with a value equal to that of the character number.
+- Characters with values between `0x10000` and `0x10FFFF` are represented by a 16-bit integer within the high surrogate area followed by a 16-bit integer within the low surrogate area.
+- Characters with values greater than `0x10FFFF` cannot be encoded in UTF-16.
+
+> "Values between `0xD800` and `0xDFFF` are specifically reserved for use with UTF-16, and don't have any characters assigned to them."
+
+## Encoding and Decoding UTF-16
+
+Encoding a single character from an ISO 10646 character value to UTF-16 involves checking if the character value is less than `0x10000`, in which case it is encoded as a 16-bit unsigned integer. If the character value is greater, it is split into two 16-bit integers using surrogate pairs. Decoding involves reversing this process, ensuring that surrogate pairs are correctly interpreted to reconstruct the original character value.

@@ -5,16 +5,12 @@ import { motion } from 'motion/react'
 import { IntroSection } from '@/components/section/intro'
 import { ContactSection } from '@/components/section/contact'
 
-// Dynamically generated sections
-import { FloatSection } from './section/floats'
-import { LessonSection } from './section/lessons'
-import { FloatingPointTheorems } from './section/theorems'
-
 import { SectionList } from '@/components/section/list'
 import { SectionListBox } from '@/components/section/listbox'
 import lessons from '@/data/lessons'
 import theorems from '@/data/theorems'
 import formats from '@/data/formats'
+import guides from '@/data/guides'
 
 export default function HomePage() {
     return (
@@ -29,6 +25,7 @@ export default function HomePage() {
         }} initial="hidden" animate="visible">
             <IntroSection/>
             <SectionList { ...lessons }/>
+            <SectionListBox { ...guides }/>
             <SectionListBox { ...formats }/>
             <SectionListBox { ...theorems }/>
             <ContactSection title="Contact" sections={[

@@ -1,0 +1,45 @@
+# SHA-1 Hash Function
+
+SHA-1 (Secure Hash Algorithm 1) is a cryptographic hash function that produces a 160-bit (20-byte) hash value, typically expressed as a 40-character hexadecimal number. While it was once widely used, it is now considered cryptographically weak and not recommended for security applications.
+
+## Mathematical Definition
+
+The SHA-1 algorithm processes input data in 512-bit blocks and produces a 160-bit hash value. The algorithm can be mathematically defined as:
+
+$$ h: \{0,1\}^* \to \{0,1\}^{160} $$
+
+In this definition, the input space $$ \{0,1\}^* $$ represents any binary string of arbitrary length, allowing for a wide range of input data. The output space $$ \{0,1\}^{160} $$ represents a fixed-length 160-bit binary string, ensuring a consistent output size regardless of the input length.
+
+## Algorithm Steps
+
+1. **Padding**: The input message is padded to ensure its length is congruent to 448 modulo 512 bits. This padding process involves appending a single '1' bit to the message, followed by enough '0' bits to make the length congruent to 448 modulo 512. Finally, a 64-bit representation of the original message length is appended to the end.
+
+2. **Initialization**: The algorithm initializes five 32-bit variables (h0, h1, h2, h3, h4) with specific values. These variables are set to the following hexadecimal values: $$ h_0 = 0x67452301 $$, $$ h_1 = 0xEFCDAB89 $$, $$ h_2 = 0x98BADCFE $$, $$ h_3 = 0x10325476 $$, and $$ h_4 = 0xC3D2E1F0 $$. These initial values are derived from the square roots of prime numbers and are used to set up the initial state of the hash computation.
+
+3. **Main Loop**: The algorithm processes the message in 512-bit blocks through 80 rounds of operations. These operations utilize bitwise logical functions (f1, f2, f3, f4), modular addition, left rotations, and predefined constants (Kt) to transform the input data into the final hash value.
+
+4. **Output**: The final hash value is the concatenation of the five 32-bit variables (h0, h1, h2, h3, h4) after all blocks have been processed. This concatenated value represents the SHA-1 hash of the input message.
+
+## Security Considerations
+
+SHA-1 is considered cryptographically weak due to its vulnerability to collision attacks, which have a complexity of approximately $$ 2^{63.1} $$ operations. This means that it is relatively easy for an attacker to find two different inputs that produce the same hash value. Additionally, SHA-1 is susceptible to pre-image attacks, with a complexity of approximately $$ 2^{160} $$ operations, and second pre-image attacks, with a similar complexity. These vulnerabilities make SHA-1 unsuitable for security-critical applications.
+
+## Time and Space Complexity
+
+The time complexity of the SHA-1 algorithm is $$ O(n) $$, where n is the length of the input message. This linear time complexity ensures that the hash computation is efficient, even for large input sizes. The space complexity is $$ O(1) $$, as the algorithm uses a fixed amount of memory regardless of the input size, due to the fixed-length output.
+
+## Common Applications
+
+While SHA-1 is no longer recommended for security-critical applications, it is still used in various non-security-critical contexts. For example, SHA-1 is often used for legacy digital signatures, where the goal is to ensure that a document has not been altered. It is also used in file integrity verification, the Git version control system (though being phased out), and some legacy SSL/TLS implementations.
+
+## Example Hash Values
+
+For an empty string, the SHA-1 hash value is `da39a3ee5e6b4b0d3255bfef95601890afd80709`. For the string "Hello, World!", the hash value is `0a0a9f2a6772942557ab5355d76af442f8f65e01`. These examples illustrate the fixed-length output of the SHA-1 algorithm, regardless of the input size.
+
+## Implementation Considerations
+
+When implementing SHA-1, it is important to consider the algorithm's sensitivity to endianness. All operations are performed on 32-bit words, and the algorithm uses big-endian byte ordering. The output is typically represented as a 40-character hexadecimal string, which is a common format for displaying hash values.
+
+## Best Practices
+
+Given the vulnerabilities of SHA-1, it is best to avoid using it for security-critical applications. Instead, consider using more secure hash functions like SHA-256 or SHA-3 for new applications. If SHA-1 must be used, it is advisable to use it in combination with a salt to enhance security. Additionally, be aware of the algorithm's vulnerabilities to collision attacks and plan for migration to stronger hash functions in existing systems. 

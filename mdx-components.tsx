@@ -14,6 +14,7 @@ import { References } from '@/components/mdx/references'
 import { CodeBlock } from '@/components/code/code-block'
 import { MatrixRain } from '@/components/ui/matrix-code'
 import { ASCIIViewer } from '@/components/string/ascii-viewer'
+import { TopNavigation } from '@/components/mdx/top-navigation'
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -29,8 +30,16 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     BinaryNumber,
     References,
     pre: pre,
-    Center: center
+    Center: center,
+    wrapper,
+    TopNavigation
   }
+}
+
+function wrapper({ children }: React.PropsWithChildren) {
+    return (<div className='max-w-screen-md'>
+        { children }
+    </div>)
 }
 
 function pre({ children }: React.PropsWithChildren) {

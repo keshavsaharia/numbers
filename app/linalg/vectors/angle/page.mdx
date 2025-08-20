@@ -1,0 +1,43 @@
+# Vector Angle
+
+The angle between two vectors can be computed using the [dot product](/linalg/vectors/dot-product). If $$\mathbf{u}$$ and $$\mathbf{v}$$ are two vectors, their angle $$\theta$$ is given by:
+
+$$
+\theta = \cos^{-1}\left(\frac{\mathbf{u} \cdot \mathbf{v}}{\|\mathbf{u}\| \|\mathbf{v}\|}\right)
+$$
+
+In JavaScript, we can implement a simple `angle` function to compute the angle between two vectors.
+
+```javascript
+function angle(u, v) {
+  const dotProd = dotProduct(u, v);
+  const magU = magnitude(u);
+  const magV = magnitude(v);
+  if (magU === 0 || magV === 0) {
+    throw new Error("Cannot compute angle with zero magnitude vector.");
+  }
+  
+  const cosTheta = dotProd / (magU * magV);
+  
+  // Ensure the value is within the valid range for acos
+  if (cosTheta < -1 || cosTheta > 1) {
+    throw new Error("Numerical error: cosine value out of range.");
+  }
+  
+  return Math.acos(cosTheta);
+}
+
+function magnitude(v) {
+  return Math.sqrt(v.reduce((sum, e) => sum + e ** 2, 0));
+}
+
+function dotProduct(u, v) {
+  return u.reduce((sum, value, index) => sum + value * v[index], 0);
+}
+
+const u = [1, 2, 3];
+const v = [4, 5, 6];
+
+const theta = angle(u, v);
+console.log(theta);
+```

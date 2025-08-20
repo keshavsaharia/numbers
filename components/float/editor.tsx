@@ -1,21 +1,45 @@
 'use client'
 
 import { Interactive } from '../number/interactive'
+import clsx from 'clsx'
+
+interface FloatEditorProps {
+    instructions?: string;
+}
+
+interface GridColumn {
+    label: string;
+    span: {
+        default: number;
+        md: number;
+    };
+    className?: string;
+}
+
+const columns: GridColumn[] = [
+    { label: 'sign', span: { default: 1, md: 1 } },
+    { label: 'exponent', span: { default: 3, md: 4 }, className: 'bg-red-500' },
+    { label: 'mantissa', span: { default: 3, md: 4 }, className: 'bg-green-500' }
+];
 
 export function FloatEditor({ 
     instructions = 'Try editing the underlying numbers or bits of the floating point number.'
-}: { instructions?: string }) {
-    return (<Interactive instructions={instructions}>
-        <div className="grid grid-cols-7 md:grid-cols-9">
-            <div className="col-span-1">
-                sign
+}: FloatEditorProps) {
+    return (
+        <Interactive instructions={instructions}>
+            <div className="grid grid-cols-7 md:grid-cols-9">
+                {columns.map((col, index) => (
+                    <div 
+                        key={col.label}
+                        className={clsx(
+                            `col-span-${col.span.default} md:col-span-${col.span.md}`,
+                            col.className
+                        )}
+                    >
+                        {col.label}
+                    </div>
+                ))}
             </div>
-            <div className="col-span-3 md:col-span-4 bg-red-500">
-                exponent
-            </div>
-            <div className="col-span-3 md:col-span-4 bg-green-500">
-                mantissa
-            </div>
-        </div>
-    </Interactive>)
+        </Interactive>
+    )
 }

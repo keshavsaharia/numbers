@@ -1,0 +1,78 @@
+# INSERT INTO operations
+
+The `INSERT INTO` statement in ClickHouse is a fundamental SQL operation used to insert data into a table. It allows for a flexible way to manage data input, supporting various formats, and accommodating complex data structures.
+
+```sql
+INSERT INTO [TABLE] [db.]table [(c1, c2, c3)] [SETTINGS ...] VALUES (v11, v12, v13), (v21, v22, v23), ...
+```
+
+## Inserting literal values
+
+When inserting data into a table, you can specify the columns using a list format such as `(c1, c2, c3)`. This list allows you to define the exact columns to populate, with the remaining columns either set to their default values or remain empty. Furthermore, you can use expressions and modifiers to customize your column selection, such as using the asterisk `*` to denote all columns and keywords like `EXCEPT` to exclude specific ones.
+
+Consider a table `insert_select_testtable` created with the following structure:
+
+```sql
+CREATE TABLE insert_select_testtable
+(
+    `a` Int8,
+    `b` String,
+    `c` Int8
+)
+ENGINE = MergeTree()
+ORDER BY a
+```
+
+Here is an SQL statement that inserts data into all columns of this table.
+
+```sql
+INSERT INTO insert_select_testtable (*) VALUES (1, 'a', 1);
+```
+
+If you want to exclude a specific column, such as `b`, use the `EXCEPT` keyword:
+
+```sql
+INSERT INTO insert_select_testtable (* EXCEPT(b)) VALUES (2, 2);
+```
+
+In this case, the columns `a` and `c` are specified, with `b` automatically filled with its default value.
+
+### Default Values
+
+For columns not explicitly specified, you can insert default values using the `DEFAULT` keyword. For example:
+
+```sql
+INSERT INTO insert_select_testtable VALUES (1, DEFAULT, 1);
+```
+
+## Advanced Data Insertion
+
+ClickHouse supports various data formats, and the data can be passed in formats like `CSV`, `TabSeparated`, and more. This needs to be explicitly specified using the `FORMAT` clause.
+
+For instance:
+
+```sql
+INSERT INTO [db.]table [(c1, c2, c3)] FORMAT TabSeparated 11  Hello\!world!
+```
+
+### Using the SELECT Clause
+
+You can insert data results from a SELECT query into another table:
+
+```sql
+INSERT INTO [TABLE] [db.]table [(c1, c2, c3)] SELECT ...
+```
+
+## File-based Insertion
+
+Data can also be inserted from files with the `INFILE` directive, allowing insertion from both single and multiple files using glob patterns. For example, inserting from multiple CSV files:
+
+```bash
+INSERT INTO infile_globs FROM INFILE 'input_*.csv' FORMAT CSV;
+```
+
+## Asynchronous Inserts and Performance Considerations
+
+Inserts can be asynchronous, allowing them to be buffered before being inserted. This can optimize performance by reducing frequent small writes, instead batching data in larger writes. It's critical to handle large data inserts efficiently to avoid performance degradation, typically by grouping data based on partition keys and uploading large batches.
+
+In instances of large or long-running inserts, ClickHouse automatically squashes smaller blocks of data into larger ones to optimize disk writes. Parameters such as `async_insert` can be configured for asynchronous operations, promoting better performance.

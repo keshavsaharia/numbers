@@ -1,0 +1,115 @@
+# Creating tables
+
+ClickHouse provides a flexible and efficient method for creating tables using the `CREATE TABLE` SQL command. This command allows defining a table with various configurations depending on the specific requirements, including explicit schemas, schema cloning, table functions, and more. To accommodate distributed databases, an `ON CLUSTER` clause is available for distributed Data Definition Language (DDL) queries.
+
+## Simple table example
+
+Here is a basic table that stores a unique identifier, name, age, and creation date of a table of people.
+
+```sql
+CREATE TABLE people
+(
+    id UInt32 NOT NULL,
+    name String,
+    age Nullable(Int),
+    created_at DateTime DEFAULT now()
+)
+ENGINE = MergeTree()
+ORDER BY id;
+```
+
+This command creates a `MergeTree` table named `my_table` with an `id` column as the primary key and some additional fields. Default values and nullability specifications help ensure data integrity.
+
+## General syntax
+
+You can define a table directly with its schema using the following structure:
+
+```sql
+CREATE TABLE [IF NOT EXISTS] [db.]table_name [ON CLUSTER cluster]
+(
+    column_name1 [data_type1] [NULL|NOT NULL] [DEFAULT|MATERIALIZED|EPHEMERAL|ALIAS expr1] [COMMENT 'column_comment'],
+    column_name2 [data_type2] [NULL|NOT NULL] [DEFAULT|MATERIALIZED|EPHEMERAL|ALIAS expr2] [COMMENT 'column_comment'],
+    ...
+) ENGINE = engine
+  [COMMENT 'table_comment']
+```
+
+In this syntax, each column is described with its name and data type, and can be further customized with modifiers like `NULL` or `NOT NULL`, default value expressions (`DEFAULT`, `MATERIALIZED`, `EPHEMERAL`, or `ALIAS`), and optional comments for columns and the table as a whole.
+
+
+## Copying table schema
+
+You can create a table based on the schema of an existing table using the syntax:
+
+```sql
+CREATE TABLE [IF NOT EXISTS] [db.]new_table AS [db2.]existing_table [ENGINE = engine]
+```
+
+If no engine is specified, the new table inherits the engine from the existing table. 
+
+```sql
+CREATE TABLE new_table AS old_table;
+```
+
+This is a simple example of duplicating the schema of `old_table` into `new_table`.
+
+## Copying schema and data
+
+To copy both schema and data, use the `CLONE` keyword.
+
+```sql
+CREATE TABLE [IF NOT EXISTS] [db.]new_table CLONE AS [db2.]existing_table [ENGINE = engine]
+```
+
+This not only replicates the structure but also duplicates all the existing data from the original table.
+
+## Creating Tables From SELECT Queries
+
+ClickHouse also allows creating tables based on the results of a `SELECT` statement:
+
+```sql
+CREATE TABLE [IF NOT EXISTS] [db.]table_name[(name1 [type1], name2 [type2], ...)] ENGINE = engine AS SELECT ...
+```
+
+This technique is particularly useful for ETL processes where transformation or filtering is necessary before data insertion.
+
+```sql
+CREATE TABLE summary_table ENGINE = MergeTree ORDER BY id AS
+SELECT id, sum(value) as total_value FROM detailed_table GROUP BY id;
+```
+
+## Default Values
+
+Columns can have default values specified using the `DEFAULT` keyword followed by an expression. This helps in providing a fallback when a value is not provided during data insertion.
+
+## Special columns
+
+These are special column types.
+
+### Materialized Columns
+
+These are computed automatically upon insertion and are not stored directly in the table. This saves space and allows dynamic computation on read if required.
+
+### Alias Columns
+
+Alias columns allow computation at query time, similar to views, which helps maintain performant queries without redundant data storage.
+
+## Specialized Concepts
+
+### Primary Keys
+
+Primary keys can be specified inside or outside the column list. They are crucial for ensuring uniqueness and optimizing data retrieval.
+
+### Compression Codecs
+
+ClickHouse supports advanced compression, which can be customized per column to optimize storage based on data characteristics. Popular codecs include `LZ4`, `ZSTD`, and Delta, enhancing both storage efficiency and query performance.
+
+### Temporary Tables
+
+Temporary tables in ClickHouse exist only for the duration of a session and can be created similarly as permanent ones but without a specified database.
+
+```sql
+CREATE TEMPORARY TABLE temp_table (id Int, value String);
+```
+
+Temporary tables are ideal for short-term data analysis or joining small datasets within a session.

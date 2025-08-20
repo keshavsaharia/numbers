@@ -1,0 +1,17 @@
+FPGA,Transistor count,Date of introduction,Designer,Manufacturer,Process,Area,"Transistor density, tr./mm2",Ref
+Virtex,"70,000,000",1997,Xilinx,,,,,
+Virtex-E,"200,000,000",1998,Xilinx,,,,,
+Virtex-II,"350,000,000",2000,Xilinx,,130 nm,,,
+Virtex-II PRO,"430,000,000",2002,Xilinx,,,,,
+Virtex-4,"1,000,000,000",2004,Xilinx,,90 nm,,,
+Virtex-5,"1,100,000,000",2006,Xilinx,TSMC,65 nm,,,
+Stratix IV,"2,500,000,000",2008,Altera,TSMC,40 nm,,,
+Stratix V,"3,800,000,000",2011,Altera,TSMC,28 nm,,,[citation needed]
+Arria 10,"5,300,000,000",2014,Altera,TSMC,20 nm,,,
+Virtex-7 2000T,"6,800,000,000",2011,Xilinx,TSMC,28 nm,,,
+Stratix 10 SX 2800,"17,000,000,000",TBD,Intel,Intel,14 nm,560 mm2,"30,400,000",
+Virtex-Ultrascale VU440,"20,000,000,000",Q1 2015,Xilinx,TSMC,20 nm,,,
+Virtex-Ultrascale+ VU19P,"35,000,000,000",2020,Xilinx,TSMC,16 nm,900 mm2,"38,900,000",
+Versal VC1902,"37,000,000,000",2H 2019,Xilinx,TSMC,7 nm,,,
+Stratix 10 GX 10M,"43,300,000,000",Q4 2019,Intel,Intel,14 nm,"1,400 mm2","30,930,000",
+Versal VP1802,"92,000,000,000",2021 ?,Xilinx,TSMC,7 nm,,,

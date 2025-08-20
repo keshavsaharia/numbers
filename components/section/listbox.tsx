@@ -13,7 +13,7 @@ export function SectionListBox({ title, description, base, sections }: SectionPr
 
     return (
         <motion.section variants={VARIANTS_SECTION} transition={TRANSITION_SECTION}>
-            { title && <h3 className="mb-5 text-xl font-bold">
+            { title && <h3 className="mb-4 mt-8 text-xl font-bold">
                 { title }
             </h3> }
             { description && <p className='text-md text-gray-700 dark:text-gray-300 font-normal mb-4'>

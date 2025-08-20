@@ -1,5 +1,4 @@
 import theorems from '@/data/theorems'
-import { StackingNavbar } from '../navbar/stacking'
 
 import {
     Pagination,
@@ -32,7 +31,7 @@ export function Theorem({ id }: { id: string }) {
                         <Link href="/theorem">Theorem</Link>
                     </PaginationItem>
                     { id != firstTheorem.path && <PaginationItem>
-                        <PaginationPrevious href="#" />
+                        <PaginationPrevious href={ theorems.base + '/' + firstTheorem.path } />
                     </PaginationItem> }
                     { theorems.sections.map((section) => {
                         const sectionNumber = parseInt(section.path)
@@ -51,14 +50,14 @@ export function Theorem({ id }: { id: string }) {
                         <PaginationItem key={ section.path }>
                             <PaginationLink 
                                 isActive={ id == section.path }
-                                href={ '/theorem/' + section.path }>
+                                href={ theorems.base + '/' + section.path }>
                                     { section.path }
                                 </PaginationLink>
                         </PaginationItem>)
                     }) }
                     { id != lastTheorem.path && 
                     <PaginationItem>
-                        <PaginationNext href="#" />
+                        <PaginationNext href={ theorems.base + '/' + lastTheorem.path } />
                     </PaginationItem> }
                 </PaginationContent>
             </Pagination>

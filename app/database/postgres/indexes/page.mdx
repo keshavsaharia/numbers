@@ -1,0 +1,63 @@
+# Indexes
+
+In PostgreSQL, **indexes** are auxiliary data structures used to speed up data retrieval operations. By maintaining separate structures that map key values to physical row locations (TIDs), indexes allow the query planner to avoid full table scans and instead locate matching rows more efficiently. PostgreSQL supports multiple index types, each optimized for different workloads and query patterns, with **B-tree** being the most common and versatile.
+
+Indexes are automatically used by the planner based on query predicates, column statistics, and cost estimates. However, effective index usage depends heavily on schema design, workload characteristics, and query patterns.
+
+## B-Tree Indexes
+
+The **B-tree** index is the default and most widely used index type in PostgreSQL. It maintains a balanced tree where keys are stored in sorted order, allowing efficient logarithmic-time lookups, range queries, and ordered scans. B-tree indexes also support equality (`=`), range comparisons (`<`, `<=`, `>`, `>=`), and prefix matching for text types.
+
+Internally, a B-tree index is structured as a hierarchy of pages: root, internal, and leaf nodes. Leaf nodes store key values alongside `TID`s (tuple IDs) that point to the corresponding rows in the heap. Pages are automatically split as they fill up, maintaining balance and preserving order.
+
+PostgreSQL B-tree indexes support multicolumn indexes, partial indexes (with `WHERE` clauses), and unique constraints.
+
+## Index Structure
+
+Each index is stored in its own physical file on disk, separate from the heap. Index pages, like heap pages, are typically 8KB in size and managed by the same buffer and write-ahead logging (WAL) infrastructure. Each index entry includes:
+
+- The indexed column value(s), possibly compressed or truncated.
+- A reference to the tuple in the heap (`ctid`), encoded as a block number and offset.
+
+For multicolumn indexes, values are stored in the order specified at index creation. This impacts scan performance and determines which types of queries can benefit from index usage.
+
+## Multi-Version Concurrency Control (MVCC)
+
+Unlike some MVCC-based systems with "index-only" tuple storage, PostgreSQL heaps and indexes are decoupled. Indexes do not store visibility metadata, so a lookup in an index does not guarantee that the pointed-to tuple is visible to the current transaction. This is why heap access is typically required to check visibility during a standard index scan.
+
+PostgreSQL indexes must be manually kept in sync with the heap. Any `INSERT`, `DELETE`, or `UPDATE` operation on a table results in corresponding changes to the relevant index(es). These updates are [WAL](/database/postgres/wal)-logged to ensure durability, and are handled [transactionally](/database/postgres/transactions).
+
+Updates that change indexed columns must delete the old index entry and insert a new one. This contributes to index bloat over time, which can be mitigated using `REINDEX` or `VACUUM`.
+
+## Other Index Types
+
+PostgreSQL supports several specialized index types beyond B-tree, each with its own internal logic and applicable use cases.
+
+- **Hash Indexes**: Support only equality operations. As of PostgreSQL 10, they are WAL-logged and crash-safe.
+- **GIN (Generalized Inverted Indexes)**: Optimized for indexing composite data like arrays, JSONB, and full-text search tokens.
+- **GiST (Generalized Search Trees)**: Flexible indexing framework for geometric data, range types, and other extensible use cases.
+- **SP-GiST**: Space-partitioned GiST, good for sparse or non-uniform datasets like quadtrees.
+- **BRIN (Block Range Indexes)**: Lightweight, lossy indexes for very large tables with naturally ordered data. They store metadata summaries per block range instead of per row.
+
+Choosing the right index type is crucial. GIN, for example, is excellent for containment operations (`@>`), while BRIN offers performance on huge append-only tables at a fraction of the storage cost.
+
+### Index-Only Scans and Covering Indexes
+
+PostgreSQL supports [index-only scans](/database/postgres/index-only-scans), where the index itself can satisfy a query without visiting the heap, provided that all needed columns are present in the index and the heap page is marked all-visible in the visibility map. 
+
+To facilitate this, developers can use the `INCLUDE` clause to add non-key columns to a B-tree index, allowing it to act as a covering index for a broader range of queries.
+
+```sql
+CREATE INDEX idx_covering ON logs (user_id) INCLUDE (status, created_at);
+```
+
+## Index Design Considerations
+
+Good index design involves tradeoffs. Indexes speed up reads but impose overhead on writes (`INSERT`/`UPDATE`/`DELETE`). Each additional index must be updated during data changes, and unused indexes consume disk and memory resources. Effective indexing strategy involves:
+
+- Creating indexes for frequently filtered or joined columns
+- Avoiding redundant or overlapping indexes
+- Using partial indexes for sparse data
+- Monitoring usage with `pg_stat_user_indexes` and `pg_stat_all_indexes`
+
+Developers should also monitor **index bloat**, which can accumulate over time and degrade performance. Tools like `pgstattuple`, `pg_repack`, or `REINDEX` can help analyze and mitigate index fragmentation.

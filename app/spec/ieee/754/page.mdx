@@ -1,0 +1,21 @@
+import { fp } from '@/data/fp'
+
+## IEEE754
+
+The IEEE 754 standard is a widely adopted standard for representing floating point numbers in binary systems. It defines two main formats for [single precision](/format/fp32) (32-bit) and [double precision](/format/fp64) (64-bit).
+
+## History
+
+Before the inception of the IEEE 754 standard in 1985, there was a lack of uniformity in how different computer systems represented and processed real numbers, leading to inconsistencies and errors in calculations. The need for a standardized approach became evident as computing technology advanced and applications requiring precise numerical computations proliferated.
+
+The development of IEEE 754 was spearheaded by a committee of experts, including [William Kahan](/people/kahan), who is often referred to as the "Father of Floating Point." The committee's goal was to create a standard that would ensure consistent and reliable results across different computing platforms. They aimed to address issues such as rounding errors, overflow, underflow, and the representation of special values like infinity and `NaN` (Not a Number).
+
+One of the key innovations of the IEEE 754 standard was the introduction of a binary format for floating-point numbers, which includes a sign bit, an exponent, and a significand (or mantissa). This format allows for a wide range of values to be represented with a high degree of precision. The standard also defined rules for rounding and specified how arithmetic operations should be performed to minimize errors.
+
+Over the years, the IEEE 754 standard has undergone revisions to accommodate new technological advancements and address emerging computational needs. The most significant update came in 2008, which introduced additional formats and operations, further enhancing the standard's robustness and flexibility.
+
+## Finite representation
+
+Here is an example specification of a floating point format:
+
+<FloatSpecification fp={ fp.fp32 } />

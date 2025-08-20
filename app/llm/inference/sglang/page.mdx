@@ -1,0 +1,58 @@
+# SGLang
+
+SGLang is an open-source LLM programming and inference framework built by the team behind SkyPilot. It is a wrapper around [vLLM](/llm/inference/vllm) that adds structured output generation capabilities, tool calling, and better prompt control. It is ideal for building AI agents and implementing tool calling architectures.
+
+## Getting started
+
+```bash
+pip install --upgrade pip
+pip install uv
+uv pip install "sglang[all]>=0.4.10.post2"
+```
+
+You can launch an OpenAI-compatible API server with:
+
+```bash
+python3 -m sglang.launch_server --model-path qwen/qwen2.5-0.5b-instruct --host 0.0.0.0
+```
+
+## Usage
+
+```python
+from sglang import SGLang, system, user, assistant
+
+sg = SGLang(model="mistralai/Mistral-7B-Instruct-v0.1")
+
+@sg.function
+def chat_func(sg):
+    sg += system("You are a helpful assistant.")
+    sg += user("What's the difference between stars and planets?")
+    sg += assistant()
+
+# Call the function
+print(sg.chat_func().run().text)
+```
+
+This defines a chat function, compiles it to a prompt, sends it to the LLM, and parses the assistant's response.
+
+## Tool calling
+
+```python
+from sglang import SGLang, tool, user, assistant
+
+sg = SGLang(model="mistralai/Mixtral-8x7B-Instruct-v0.1")
+
+# Define a tool that can be called by the LLM
+@tool
+def get_weather(city: str) -> str:
+    return f"The weather in {city} is sunny."
+
+@sg.function
+def weather_agent(sg):
+    sg.user("What is the weather like in Tokyo?")
+    sg.assistant(tools=[get_weather])
+
+result = sg.weather_agent().run()
+print(result.tool_calls)  # Inspect tool call info
+print(result.text)        # Final answer
+```

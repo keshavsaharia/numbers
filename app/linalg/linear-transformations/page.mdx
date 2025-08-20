@@ -1,0 +1,87 @@
+# Linear Transformations
+
+A linear transformation is a function between vector spaces that preserves vector addition and scalar multiplication. These transformations are fundamental to understanding how vectors and matrices interact in linear algebra.
+
+## Definition
+
+A transformation $$T: V → W$$ between vector spaces is linear if for all vectors $$u, v ∈ V$$ and scalars $$c$$:
+
+1. **Additivity**: $$T(u + v) = T(u) + T(v)$$
+2. **Homogeneity**: $$T(cu) = cT(u)$$
+
+## Matrix Representation
+
+Every linear transformation $$T: ℝⁿ → ℝᵐ$$ can be represented by a unique $$m \times n$$ matrix $$A$$ such that $$T(\vec{x}) = A\vec{x}$$, where:
+
+$$
+A = \begin{pmatrix}
+a_{11} & a_{12} & \cdots & a_{1n} \\
+a_{21} & a_{22} & \cdots & a_{2n} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{m1} & a_{m2} & \cdots & a_{mn}
+\end{pmatrix}
+$$
+
+## Common Linear Transformations
+
+A rotation transformation takes a vector and rotates it by a fixed angle θ in the plane, preserving the vector's magnitude while changing its direction. This is one of the most common linear transformations used in computer graphics and physics simulations.
+
+$$
+R_\theta = \begin{pmatrix}
+\cos\theta & -\sin\theta \\
+\sin\theta & \cos\theta
+\end{pmatrix}
+$$
+
+A scaling transformation multiplies each component of a vector by a fixed scalar value, effectively stretching or shrinking the vector along each axis. The scaling factors can be different for each dimension, allowing non-uniform scaling that changes the shape of geometric objects.
+
+$$
+S = \begin{pmatrix}
+s_1 & 0 \\
+0 & s_2
+\end{pmatrix}
+$$
+
+A projection transformation maps vectors onto a subspace, effectively reducing the dimension of the vector space. This is commonly used in dimensionality reduction and finding vector components along specific directions. The projection matrix shown below projects vectors onto the x-axis.
+
+$$
+P = \begin{pmatrix}
+1 & 0 \\
+0 & 0
+\end{pmatrix}
+$$
+
+## Properties
+
+### Kernel (Null Space)
+The set of all vectors that map to zero:
+$$
+\text{ker}(T) = \{\vec{v} \in V : T(\vec{v}) = \vec{0}\}
+$$
+
+### Image (Range)
+The set of all possible outputs:
+$$
+\text{im}(T) = \{T(\vec{v}) : \vec{v} \in V\}
+$$
+
+### Rank-Nullity Theorem
+For a linear transformation T: V → W:
+$$
+\dim(\text{ker}(T)) + \dim(\text{im}(T)) = \dim(V)
+$$
+
+## Applications
+
+Linear transformations are used in:
+- Computer Graphics (3D transformations)
+- Signal Processing
+- Quantum Mechanics
+- Data Compression
+- Machine Learning (Feature Transformations)
+
+## Computational Aspects
+
+- Time Complexity: O(mn) for applying a transformation to a vector
+- Space Complexity: O(mn) for storing the transformation matrix
+- Composition of Transformations: O(mnp) for combining transformations 

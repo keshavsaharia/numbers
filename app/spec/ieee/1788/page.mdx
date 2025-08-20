@@ -1,0 +1,23 @@
+# Standard for Interval Arithmetic
+
+The IEEE 1788 standard, published in 2015, establishes a comprehensive framework for interval arithmetic operations and their implementation. Interval arithmetic involves performing arithmetic operations on intervals, which are defined as ranges of real numbers represented by their endpoints. This standard is crucial for ensuring reliable computing and accurate error analysis.
+
+## History
+
+The development of IEEE 1788 was driven by the necessity for a standardized approach to interval arithmetic. This need is particularly important in fields that require precise error analysis and reliable computations. The standard was crafted over several years, with significant contributions from a global community of mathematicians, computer scientists, and engineers. Initially proposed in 2008, the standard underwent numerous revisions before its publication in 2015, marking a pivotal advancement in reliable computing. It provides a formal framework that ensures consistent implementation of interval arithmetic operations across various platforms and applications.
+
+## Interval Arithmetic
+
+Interval arithmetic is founded on several key concepts. Intervals are defined as ranges of real numbers, represented by their endpoints. Arithmetic operations are specifically defined for these intervals, and the mathematical properties of these operations are carefully considered. The standard also outlines methods for implementing interval arithmetic effectively.
+
+An interval is mathematically represented as $$ [a, b] = \{x \in \mathbb{R} \mid a \leq x \leq b\} $$, where $a$ is the lower bound, $b$ is the upper bound, and the condition $a \leq b$ must always be satisfied. The standard defines basic operations such as addition, subtraction, multiplication, and division for intervals. For instance, addition is defined as $[a, b] + [c, d] = [a + c, b + d]$, while multiplication is given by $[a, b] \times [c, d] = [\min(ac, ad, bc, bd), \max(ac, ad, bc, bd)]$. Division is defined as $[a, b] / [c, d] = [a, b] \times [1/d, 1/c]$, provided that zero is not within the interval $[c, d]$.
+
+## Special Cases
+
+The standard also addresses several special cases, such as empty intervals where $a > b$, infinite intervals with unbounded endpoints, degenerate intervals where $a = b$, and overflow situations where operations exceed the representable range. Implementation requirements are specified to ensure proper rounding of interval endpoints, effective handling of special cases and errors, efficient operation execution, and accurate result containment.
+
+IEEE 1788 has a wide range of applications. In scientific computing, it is used for error analysis and verification. In engineering, it aids in the design and analysis of systems. It is also valuable in solving global optimization problems, enhancing computer graphics through techniques like ray tracing and collision detection, and in financial computing for risk analysis and portfolio optimization.
+
+## Implementation
+
+When working with interval arithmetic, it is essential to understand the significance of interval endpoints, handle special cases like empty and infinite intervals appropriately, and consider the computational costs involved. Verifying that results are properly contained and selecting operations that suit the specific problem are also crucial best practices.

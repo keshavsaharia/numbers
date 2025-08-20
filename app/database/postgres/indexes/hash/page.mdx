@@ -1,0 +1,74 @@
+# Hash indexes
+
+A **hash index** in PostgreSQL is a specialized index type used primarily for fast equality comparisons. Unlike B-tree indexes, which support a wide range of comparison operations (e.g., less than, greater than, etc.), hash indexes are designed for use cases where only **equality (`=`)** queries are required. They are most effective when queries frequently filter on a single column using equality conditions.
+
+Historically, hash indexes were not WAL-logged (Write-Ahead Logging) and could be corrupted in the event of a crash. However, starting with PostgreSQL 10, hash indexes are [WAL](/database/postgres/wal)-logged and therefore crash-safe, which significantly improves their reliability and suitability for production workloads.
+
+## Creating a hash index
+
+To create a hash index, use the `CREATE INDEX` statement with the `USING HASH` clause.
+
+```sql
+CREATE INDEX idx_hash_email ON users USING HASH (email);
+```
+
+This index will now optimize queries that filter on the `email` column using equality.
+
+```sql
+SELECT * FROM users WHERE email = 'example@example.com';
+```
+
+## Hash functions
+
+In a hash index, each key value is passed through a **hash function**, which produces a fixed-size value called a **hash value**. This hash value is then used to determine the location of the data in the index. A good hash function should spread its hash values evenly across a relatively uniform set of slots in the index, allowing for quick lookups.
+
+When a query is executed that uses a hash index, PostgreSQL applies the hash function to the search key and looks up the corresponding hash value in the index. If the hash value matches, it retrieves the [tuple](/database/postgres/tuple) identifier (`TID`) for the corresponding row in the table.
+
+In terms of internal structure, hash indexes are organized as **buckets** where the hash values are stored, and each bucket contains a list of TIDs pointing to the actual rows in the heap. Hash indexes are typically faster for equality lookups than B-tree indexes because they avoid the need for comparisons between values and instead use direct hash-based lookups.
+
+The **hash function** used by PostgreSQL's hash index is designed to distribute values uniformly across the hash table, minimizing the likelihood of "collisions" (when different input values hash to the same bucket). The goal is to ensure that index lookups remain efficient, with a relatively small number of keys per bucket, and that access time remains constant, ideally **O(1)**.
+
+Internally, a hash index is stored as a **hashtable** where each entry contains a **hash value** corresponding to a row's key, and a **list of tuple IDs (TIDs)** pointing to rows in the heap that match the hashed value. Hash index buckets are essentially linked lists, and each bucket can store multiple TIDs in case of hash collisions, though PostgreSQL tries to minimize these occurrences.
+
+## Hash Indexes and WAL-Logging
+
+Before PostgreSQL 10, hash indexes were not **WAL-logged**, meaning they were not crash-safe. If the database crashed before an index operation was written to WAL, the hash index could become corrupted, leading to data inconsistency. 
+
+Starting with PostgreSQL 10, hash indexes are **WAL-logged**, which ensures that updates to the index are durable and consistent, even in the event of a crash. This improvement makes hash indexes safe for use in production environments, where durability is essential.
+
+## Use Cases for Hash Indexes
+
+Hash indexes are particularly effective for **equality queries** on columns where you don't need to perform any ordering or range comparisons. For example, hash indexes work well with exact match lookups such as `WHERE column = value`, and primary keys or unique constraints on columns where equality is the only relevant operation.
+  
+However, hash indexes are not suitable for range queries (`<`, `>`, `BETWEEN`), as they only support equality comparisons. Nor are they suitable for sorting operations, since hash indexes do not maintain any specific ordering of the indexed values. 
+
+The only way to use a hash index in a multi-column query is if the hashed column is the only one used for equality filtering.
+
+## Performance
+
+Hash indexes are efficient for equality queries because they allow direct access to the corresponding bucket without the need for traversing an ordered structure, as is the case with B-tree indexes. This can result in faster lookups for specific types of queries.
+
+However, hash indexes have some limitations:
+
+- **Range queries** are inefficient with hash indexes because they do not maintain any ordering of key values. For range operations, B-tree indexes are generally the preferred choice.
+- **Index Bloat** can occur over time, particularly if the hash function does not distribute values uniformly or if the data contains skewed patterns. Periodic **REINDEX** operations may be necessary to maintain the efficiency of the hash index.
+- **Hash collisions**: Although the hash function is designed to reduce collisions, they can still occur. Collisions result in multiple TIDs being stored in the same bucket, which can reduce performance if not managed properly.
+
+### Hash indexes vs. B-Tree indexes
+
+While both hash indexes and B-tree indexes are used for speeding up query performance, they have key differences:
+
+- **B-tree indexes** support a wide range of comparison operators, including equality, range queries (`<`, `>`, etc.), and prefix matching. They are generally more versatile and suitable for a broader range of use cases.
+- **Hash indexes**, on the other hand, are optimized specifically for equality queries. They offer faster lookups for these types of queries but are limited in their support for other types of queries (e.g., range queries, sorting).
+
+In practice, hash indexes can be an excellent choice for simple lookups where only equality comparisons are needed, especially when query performance is a critical concern.
+
+### Best practices
+
+While hash indexes can improve performance for specific queries, they come with some trade-offs:
+
+- **No support for range queries**: If you need range queries, a B-tree index is generally better.
+- **Limited flexibility**: Hash indexes cannot be used with `ORDER BY`, `GROUP BY`, or other operations that require sorted data.
+- **Potential for collisions**: Depending on the distribution of your data and the effectiveness of the hash function, hash collisions can degrade index performance.
+
+Thus, hash indexes are best used for highly specific cases where equality lookups dominate the workload, and range queries are not a concern.

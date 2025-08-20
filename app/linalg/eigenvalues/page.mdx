@@ -1,0 +1,103 @@
+import { EigenvectorVisualizer } from '@/components/linalg/eigen-visualizer';
+
+# Eigenvalues and Eigenvectors
+
+An eigenvector is a non-zero vector that, when transformed by a [linear transformation](/linalg/linear-transformations), only changes by a scalar factor (the **eigenvalue**).
+
+<EigenvectorVisualizer/>
+
+## Definition
+
+For a square matrix $$A$$, if there exists a non-zero vector $$\vec{v}$$ and a scalar $$\lambda$$ such that:
+
+$$
+A\vec{v} = \lambda\vec{v}
+$$
+
+Then:
+- λ is called an eigenvalue of A
+- v is called an eigenvector of A corresponding to λ
+
+## Finding Eigenvalues and Eigenvectors
+
+### Characteristic Equation
+To find eigenvalues, solve:
+
+$$
+\det(A - \lambda I) = 0
+$$
+
+where I is the identity matrix of the same size as A.
+
+### Finding Eigenvectors
+For each eigenvalue λ, solve:
+
+$$
+(A - \lambda I)\vec{v} = \vec{0}
+$$
+
+## Properties
+
+1. **Eigenvalue Properties**
+   - The sum of eigenvalues equals the trace of A
+   - The product of eigenvalues equals the determinant of A
+   - Complex eigenvalues always come in conjugate pairs
+
+2. **Eigenvector Properties**
+   - Eigenvectors corresponding to different eigenvalues are linearly independent
+   - The number of linearly independent eigenvectors for an eigenvalue ≤ its algebraic multiplicity
+
+## Diagonalization
+
+A matrix A is diagonalizable if:
+
+$$
+A = PDP^{-1}
+$$
+
+where:
+- D is a diagonal matrix of eigenvalues
+- P is a matrix whose columns are eigenvectors
+
+## Applications
+
+### 1. Principal Component Analysis (PCA)
+- Uses eigenvalues and eigenvectors for dimensionality reduction
+- Identifies principal directions of variation in data
+
+### 2. Quantum Mechanics
+- Energy levels (eigenvalues) and states (eigenvectors)
+- Observable operators and measurement outcomes
+
+### 3. Vibration Analysis
+- Natural frequencies (eigenvalues)
+- Mode shapes (eigenvectors)
+
+### 4. Google's PageRank Algorithm
+- Web page importance as an eigenvector problem
+- Steady-state distribution of random walks
+
+## Computational Considerations
+
+### Time Complexity
+- Finding eigenvalues: O(n³) using QR algorithm
+- Finding eigenvectors: O(n³) per eigenvalue
+- Diagonalization: O(n³)
+
+### Space Complexity
+- O(n²) for storing matrices
+- O(n) for storing eigenvalues and individual eigenvectors
+
+## Numerical Methods
+
+1. **Power Method**
+   - Finds dominant eigenvalue and eigenvector
+   - Time complexity: O(kn²) for k iterations
+
+2. **QR Algorithm**
+   - Finds all eigenvalues
+   - More stable than direct characteristic equation solving
+
+3. **Lanczos Algorithm**
+   - Efficient for sparse matrices
+   - Finds extreme eigenvalues 

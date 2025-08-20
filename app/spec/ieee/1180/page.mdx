@@ -1,0 +1,77 @@
+# IEEE 1180: Standard for 8x8 Inverse Discrete Cosine Transform
+
+IEEE 1180 is a technical standard that defines specifications for the 8x8 inverse discrete cosine transform (IDCT) used in image and video compression. It was published in 1990 and provides a framework for implementing the IDCT with specific accuracy requirements.
+
+## History
+
+The development of IEEE 1180 was motivated by the need for standardized specifications for the IDCT, which is a crucial component in image and video compression algorithms like JPEG and MPEG. The standard was developed by a working group of signal processing experts and engineers, with the goal of ensuring consistent and accurate implementation of the IDCT across different platforms.
+
+The standard was first proposed in the late 1980s and went through several revisions before being published in 1990. It represents a significant milestone in the field of image and video compression, providing a formal framework for implementing the IDCT that can be used consistently across different applications.
+
+## Technical Details
+
+### Basic Concepts
+
+The IDCT is based on several fundamental concepts:
+
+1. **Discrete Cosine Transform**: Mathematical transform for signal processing
+2. **Inverse Transform**: Reconstruction of original signal
+3. **Quantization**: Rounding of transform coefficients
+4. **Accuracy Requirements**: Specifications for implementation accuracy
+
+### Mathematical Definition
+
+The 8x8 IDCT is defined as:
+
+$$
+f(x,y) = \frac{1}{4} \sum_{u=0}^{7} \sum_{v=0}^{7} C(u)C(v)F(u,v)\cos\left(\frac{(2x+1)u\pi}{16}\right)\cos\left(\frac{(2y+1)v\pi}{16}\right)
+$$
+
+where:
+- $C(u) = \frac{1}{\sqrt{2}}$ for $u = 0$, $C(u) = 1$ otherwise
+- $F(u,v)$ is the input DCT coefficient
+- $f(x,y)$ is the output pixel value
+
+### Implementation Requirements
+
+The standard specifies several implementation requirements:
+
+1. **Accuracy**: Maximum error bounds for different test cases
+2. **Performance**: Efficient implementation of the transform
+3. **Compatibility**: Consistent behavior across implementations
+4. **Error Handling**: Proper handling of edge cases
+
+### Test Cases
+
+The standard defines several test cases:
+
+1. **Zero Input**: All coefficients set to zero
+2. **DC Only**: Only the DC coefficient is non-zero
+3. **Checkerboard**: Alternating pattern of coefficients
+4. **Random**: Random coefficient values
+
+## Impact and Applications
+
+IEEE 1180 has significant applications in:
+
+1. **Image Compression**: JPEG and other image formats
+2. **Video Compression**: MPEG and other video formats
+3. **Digital Television**: Broadcast and streaming
+4. **Multimedia Systems**: Audio and video processing
+5. **Computer Graphics**: Image processing and rendering
+
+## Best Practices
+
+When implementing the IDCT:
+
+1. **Ensure Accuracy**: Meet the specified error bounds
+2. **Optimize Performance**: Use efficient algorithms
+3. **Handle Edge Cases**: Properly handle special cases
+4. **Test Thoroughly**: Verify against test cases
+5. **Document Implementation**: Provide clear documentation
+
+## References
+
+1. IEEE 1180-1990: Standard for 8x8 Inverse Discrete Cosine Transform
+2. Pennebaker, W. B., & Mitchell, J. L. (1992). "JPEG: Still Image Data Compression Standard"
+3. Wallace, G. K. (1991). "The JPEG Still Picture Compression Standard" 

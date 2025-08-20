@@ -1,0 +1,71 @@
+# Trial Division Factorization
+
+Trial division is the most straightforward method for prime factorization. It works by systematically testing whether a number is divisible by smaller numbers, starting from 2 and continuing up to the square root of the number being factored. While simple to understand and implement, its time complexity makes it inefficient for large numbers.
+
+## Algorithm Overview
+
+The trial division algorithm operates by dividing the input number by each potential factor, starting from 2. When a factor is found, it is added to the list of prime factors, and the process continues with the quotient. The algorithm stops when the remaining number becomes 1 or when we've tested all possible factors up to the square root of the original number.
+
+## Time and Space Complexity
+
+The time complexity of trial division is $O(\sqrt{n})$, where n is the number being factored. This is because we only need to check potential factors up to the square root of n. The space complexity is $O(\log n)$ to store the prime factors.
+
+## JavaScript Implementation
+
+```javascript
+function trialDivision(n) {
+    const factors = [];
+    
+    // Handle 2 separately
+    while (n % 2 === 0) {
+        factors.push(2);
+        n = n / 2;
+    }
+    
+    // Check odd numbers up to sqrt(n)
+    for (let i = 3; i <= Math.sqrt(n); i += 2) {
+        while (n % i === 0) {
+            factors.push(i);
+            n = n / i;
+        }
+    }
+    
+    // If n is still greater than 2, it's a prime factor
+    if (n > 2) {
+        factors.push(n);
+    }
+    
+    return factors;
+}
+```
+
+## Example Usage
+
+Let's factorize the number 84:
+
+```javascript
+const result = trialDivision(84);
+console.log(result); // [2, 2, 3, 7]
+```
+
+This means that 84 = 2 × 2 × 3 × 7.
+
+## Optimization Techniques
+
+While the basic implementation is straightforward, several optimizations can improve its performance:
+
+1. Pre-computing small primes using the Sieve of Eratosthenes
+2. Using wheel factorization to skip numbers that are known to be composite
+3. Implementing early termination when the remaining number is prime
+
+## Limitations
+
+The main limitation of trial division is its poor performance on large numbers. For numbers with large prime factors, the algorithm must test many potential divisors, making it impractical for cryptographic applications or factoring very large numbers.
+
+## Applications
+
+Despite its limitations, trial division remains useful for:
+- Educational purposes to understand prime factorization
+- Factoring small numbers (up to 10-12 digits)
+- As a component in more sophisticated factorization algorithms
+- Quick checks for small prime factors in composite numbers 

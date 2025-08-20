@@ -1,0 +1,19 @@
+# Multi-Version Concurrency Control (MVCC)
+
+PostgreSQL implements Multi-Version Concurrency Control (MVCC) to ensure consistent and concurrent access to data without the need for excessive [locking](https://en.wikipedia.org/wiki/Lock_(computer_science)). Unlike locking-based concurrency models, MVCC allows readers to access a snapshot of the database without being blocked by writers, and write updates without being blocked by concurrent readers.
+
+## Transactions
+
+In MVCC, every **transaction** operates on a consistent snapshot of the database as of its start time. When a transaction modifies a row, either through an `UPDATE` or `DELETE` query, PostgreSQL does not overwrite the existing [tuple](/database/postgres/tuple). Instead, it creates a new version of the tuple (for `UPDATE`) or marks it as deleted (for `DELETE`) while retaining the old one. Each tuple in a table contains metadata indicating which transaction created it (`xmin`) and which transaction deleted or replaced it (`xmax`). The visibility of a tuple to any given transaction is determined by comparing its transaction ID (`XID`) to the `xmin` and `xmax` values of the tuple. A tuple is visible if it was created by a committed transaction before the current transaction started, and not deleted by any transaction that committed before the current transaction started.
+
+This tuple versioning means that multiple versions of the same logical row can exist simultaneously. Readers only see versions that are valid according to their transaction's snapshot, which is established when the transaction starts. Writers, meanwhile, are free to create new versions of rows or delete old ones without affecting readers. This eliminates read-write conflicts and avoids the need for read locks, resulting in better concurrency.
+
+## Vacuuming
+
+However, MVCC introduces the need for periodic cleanup of obsolete row versions that are no longer visible to any active transaction. These dead tuples consume space and degrade performance if left unmanaged. This is the role of the `VACUUM` process, which identifies and removes these tuples. Until this happens, PostgreSQL continues to maintain multiple versions, increasing disk usage and potentially impacting performance.
+
+MVCC also relies heavily on transaction visibility rules enforced by the transaction manager. The system tracks the status of every transaction in a special structure called the commit log (`CLOG`), which indicates whether a given `XID` has committed, aborted, or is still in progress. These status flags are critical for evaluating tuple visibility, especially when resolving conflicts or during crash recovery. PostgreSQL ensures that all transactions make consistent visibility decisions even in the presence of concurrent updates by checking transaction status directly and through snapshot comparisons.
+
+## Other techniques
+
+To support MVCC efficiently, PostgreSQL uses mechanisms like transaction snapshots, subtransactions, and command IDs (`cmin` and `cmax`) to manage intra-transaction visibility. These ensure that even within a single transaction, a row version written earlier in the same transaction may or may not be visible to a subsequent command, depending on its logical timestamp. This level of precision is essential for ensuring that SQL semantics are upheld even under complex sequences of operations.

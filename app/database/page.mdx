@@ -1,0 +1,15 @@
+import databases from '@/data/databases'
+
+# Database Internals
+
+Databases are really just structured collections of numbers. Everything that is "stored" by an application is eventually [encoded as sequences of bytes](/learn/encodings) and stored with a specialized piece of software that optimizes for some aspect of retrieving that information in the future. Just as a librarian may implement [Dewey Decimal Classification](https://en.wikipedia.org/wiki/Dewey_Decimal_Classification) to make it easier to find books in a library, a database system optimizes the placement of information so it can be *queried* (searched) efficiently.  
+
+
+
+
+The way numbers are stored, indexed, compressed, and compared in a database system has a direct impact on performance, precision, and even correctness. For instance, floating-point rounding errors can introduce subtle bugs in range queries. The choice between fixed-point and floating-point representation affects how financial data is stored and retrieved. Sorting large datasets relies on lexicographical or binary comparison of encoded numbers. And query optimizers often depend on cardinality estimates derived from histograms and statistical models.
+The way numbers are stored, indexed, compressed, and compared in a database system has a direct impact on performance, precision, and even correctness. For instance, floating-point rounding errors can introduce subtle bugs in range queries. The choice between fixed-point and floating-point representation affects how financial data is stored and retrieved. Sorting large datasets relies on lexicographical or binary comparison of encoded numbers. And query optimizers often depend on cardinality estimates derived from histograms and statistical models.
+
+It is useful for system designers to see databases not just as tools for storing data, but as finely tuned numerical machines that are deeply reliant on number theory and encoding schemes.
+
+<SectionListBox { ...databases } />

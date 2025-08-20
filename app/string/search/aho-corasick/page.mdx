@@ -1,0 +1,13 @@
+# Aho Corasick Algorithm
+
+The Aho-Corasick algorithm is a string searching algorithm that uses a finite automaton to efficiently search for multiple patterns in a text.
+
+## History
+
+Alfred V. Aho describes the history of his encounter with Margaret Corasick, and subsequent development of Aho-Corasick, in the *Masterminds of Programming* book, as well as in a [subsequent interview with the Computer History Museum](https://youtu.be/ir9Mwl9zhIM?t=3590).
+
+> The origin has a very interesting story behind it. I was working on the book *The Design and Analysis of Computer Algorithms* with John Hopcroft and Jeffrey Ullman back in the early 70s. I was giving a lecture at Bell Labs on algorithm design techniques. Margaret Corasick from Bell Labs's technical information libraries was in the audience. At the end of my lecture she came to me saying she had written a bibliographic search program for Boolean functions of keywords and phrases. However, on some complex searches, running the program could exceed the $600 limit for searches.
+
+> Her initial implementation of the search program used a straightforward pattern-matching algorithm. I suggested that she might look for the keywords in parallel using a finite automaton, and that there was a way of efficiently constructing the pattern-matching automaton in linear time from any set of keywords.
+
+> She reappeared in my office a few weeks later and said, "Remember that $600 program search? I've implemented the algorithm you suggested. That search now costs $25. In fact, every search now costs $25; this is the cost of reading the tape." This was the birth of the Aho-Corasick algorithm.

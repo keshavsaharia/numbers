@@ -1,0 +1,55 @@
+# Balanced Primes
+
+A balanced prime is a prime number that is equal to the arithmetic mean of the nearest primes above and below it. In other words, a prime number $$p_n$$ is balanced if:
+
+<Center>
+$$
+p_n = \frac{p_{n-1} + p_{n+1}}{2}
+$$
+</Center>
+
+where $p_{n-1}$ and $p_{n+1}$ are the previous and next prime numbers respectively. In other words, for a prime $$p_n$$ to be balanced, it must satisfy $$2p_n = p_{n-1} + p_{n+1}$$, and the gaps between consecutive primes must be $$p_n - p_{n-1} = p_{n+1} - p_n$$.
+
+The first few balanced primes are 5 (balanced between 3 and 7), 53 (balanced between 47 and 59), 157 (balanced between 151 and 163), 173 (balanced between 167 and 179).
+
+## Computational Complexity
+
+The process of finding balanced primes involves checking the primality of numbers, which can be efficiently done using the [Sieve of Eratosthenes](https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes). This algorithm has a time complexity of $$O(n \log \log n)$$, where $$n$$ is the upper limit of numbers being checked. Additionally, the space complexity is $$O(n)$$, as it requires storing an array of boolean values to represent the primality of each number up to $$n$$.
+
+```javascript
+function isBalancedPrime(n) {
+  const primes = sieveOfEratosthenes(n);
+  const primeIndex = primes.indexOf(n);
+  const prevPrime = primes[primeIndex - 1];
+  const nextPrime = primes[primeIndex + 1];
+  return n === (prevPrime + nextPrime) / 2;
+}
+
+function sieveOfEratosthenes(n) {
+  const isPrime = Array(n + 1).fill(true);
+  isPrime[0] = isPrime[1] = false;
+  for (let i = 2; i * i <= n; i++) {
+    if (isPrime[i]) {
+      for (let j = i * i; j <= n; j += i) {
+        isPrime[j] = false;
+      }
+    }
+  }
+  return isPrime.map((isPrime, index) => isPrime ? index : null).filter(Boolean);
+}
+```
+
+## Applications
+
+Balanced primes have applications in:
+- Cryptography
+- Number theory research
+- Prime gap analysis
+- Mathematical pattern recognition
+
+## Interesting Facts
+
+1. Balanced primes are relatively rare compared to regular primes
+2. The distribution of balanced primes becomes sparser as numbers get larger
+3. There are infinitely many balanced primes (proven)
+4. The largest known balanced prime has over 1000 digits 

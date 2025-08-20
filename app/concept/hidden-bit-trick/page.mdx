@@ -1,2 +1,31 @@
 # Hidden bit trick
 
+The hidden bit trick is a clever optimization used in floating point computation to increase the precision of numbers without requiring additional storage space. This technique is particularly relevant in the context of IEEE 754 floating point formats, which are widely used in computer systems for representing real numbers.
+
+## Understanding the Hidden Bit Trick
+
+In floating point representation, a number is typically expressed in the form $$(-1)^s \times 1.m \times 2^e$$, where:
+
+- $$s$$ is the sign bit, indicating whether the number is positive or negative.
+- $$m$$ is the mantissa (or significand), which represents the precision bits of the number.
+- $$e$$ is the exponent, which scales the number by a power of two.
+
+The hidden bit trick comes into play with the mantissa. In normalized floating point numbers, the leading digit of the mantissa is always 1. Instead of storing this leading 1 explicitly, it is "hidden" and assumed to be present. This allows the storage of an additional bit of precision in the mantissa without increasing the size of the representation.
+
+### Example
+
+Consider a floating point number with a 4-bit exponent and a 3-bit mantissa. Normally, you might represent a number as:
+
+- Sign bit: 0
+- Exponent: 1010 (in binary)
+- Mantissa: 110 (in binary)
+
+With the hidden bit trick, the mantissa is interpreted as 1.110 (in binary), where the leading 1 is implicit. This effectively gives you a 4-bit mantissa precision without needing to store the extra bit.
+
+### Benefits
+
+The primary benefit of the hidden bit trick is increased precision. By assuming the leading 1 in normalized numbers, floating point formats can represent numbers more accurately within the same bit width. This is crucial in scientific computations and graphics processing, where precision is paramount.
+
+### Limitations
+
+The hidden bit trick only applies to normalized numbers. Subnormal numbers, which are used to represent values very close to zero, do not have a leading 1 in their mantissa and thus do not benefit from this trick. In these cases, the leading bit is explicitly stored as 0.

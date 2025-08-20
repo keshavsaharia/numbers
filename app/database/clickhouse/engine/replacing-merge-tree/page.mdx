@@ -1,0 +1,111 @@
+# ReplacingMergeTree
+
+ReplacingMergeTree is a specialized table engine in ClickHouse that augments the basic MergeTree functionality by managing duplicate entries based on sorting key values, as defined in the `ORDER BY` clause. The primary purpose of ReplacingMergeTree is to eliminate duplicates during background merge operations, making it particularly useful for space optimization. However, it's important to note that deduplication occurs asynchronously during these merges, meaning that some duplicate data might persist for an indeterminate duration. While there's an option to force a merge with the `OPTIMIZE` query, it's not advisable to rely on this due to the heavy read and write operations it involves.
+
+## Creating a Table
+
+To create a table using ReplacingMergeTree, you use the SQL `CREATE TABLE` statement with specifications similar to those for a standard MergeTree table, but with some additional parameters available for ReplacingMergeTree.
+
+```sql
+CREATE TABLE [IF NOT EXISTS] [db.]table_name [ON CLUSTER cluster]
+(
+    name1 [type1] [DEFAULT|MATERIALIZED|ALIAS expr1],
+    name2 [type2] [DEFAULT|MATERIALIZED|ALIAS expr2],
+    ...
+) ENGINE = ReplacingMergeTree([ver [, is_deleted]])
+[PARTITION BY expr]
+[ORDER BY expr]
+[PRIMARY KEY expr]
+[SAMPLE BY expr]
+[SETTINGS name=value, ...]
+```
+
+The uniqueness of records is determined by the `ORDER BY` clause, rather than the `PRIMARY KEY`. This distinction is crucial as it drives how duplicates are identified and managed.
+
+## ReplacingMergeTree Parameters
+
+### Version (`ver`)
+
+The `ver` parameter, which is an optional column of type `UInt*`, `Date`, `DateTime`, or `DateTime64`, is used to manage row versions during merging. When rows with the same sorting key are merged:
+
+- If `ver` is not specified, the system retains the most recently inserted row.
+- If `ver` is specified, the row with the highest version is retained. Ties in version values are resolved by choosing the most recent row.
+
+Below is an example to illustrate these behaviors:
+
+```sql
+-- without ver - the last inserted 'wins'
+CREATE TABLE myFirstReplacingMT
+(
+    `key` Int64,
+    `someCol` String,
+    `eventTime` DateTime
+)
+ENGINE = ReplacingMergeTree
+ORDER BY key;
+
+INSERT INTO myFirstReplacingMT VALUES (1, 'first', '2020-01-01 01:01:01');
+INSERT INTO myFirstReplacingMT VALUES (1, 'second', '2020-01-01 00:00:00');
+
+SELECT * FROM myFirstReplacingMT FINAL;
+```
+
+Querying the table with `FINAL` ensures the selection of the row inserted most recently. When `ver` is used, it changes the determination:
+
+```sql
+-- with ver - the row with the biggest ver 'wins'
+CREATE TABLE mySecondReplacingMT
+(
+    `key` Int64,
+    `someCol` String,
+    `eventTime` DateTime
+)
+ENGINE = ReplacingMergeTree(eventTime)
+ORDER BY key;
+
+INSERT INTO mySecondReplacingMT VALUES (1, 'first', '2020-01-01 01:01:01');
+INSERT INTO mySecondReplacingMT VALUES (1, 'second', '2020-01-01 00:00:00');
+
+SELECT * FROM mySecondReplacingMT FINAL;
+```
+
+### Deletion Indicator (`is_deleted`)
+
+The `is_deleted` column, also optional and used in conjunction with `ver`, indicates whether a row should be considered deleted (`1`) or active (`0`). Its data type is `UInt8`.
+
+To ensure deleted rows are removed, enable `allow_experimental_replacing_merge_with_cleanup` and configure appropriate settings, or manually run the `OPTIMIZE TABLE` command with `FINAL CLEANUP`.
+
+Here's an example demonstrating its usage:
+
+```sql
+-- with ver and is_deleted
+CREATE OR REPLACE TABLE myThirdReplacingMT
+(
+    `key` Int64,
+    `someCol` String,
+    `eventTime` DateTime,
+    `is_deleted` UInt8
+)
+ENGINE = ReplacingMergeTree(eventTime, is_deleted)
+ORDER BY key
+SETTINGS allow_experimental_replacing_merge_with_cleanup = 1;
+
+INSERT INTO myThirdReplacingMT VALUES (1, 'first', '2020-01-01 01:01:01', 0);
+INSERT INTO myThirdReplacingMT VALUES (1, 'first', '2020-01-01 01:01:01', 1);
+
+SELECT * FROM myThirdReplacingMT FINAL;
+```
+
+## Query Clauses and Finality
+
+In `ReplacingMergeTree`, deduplication isn't guaranteed to occur immediately after insertion. To enforce deduplication at query time, the `FINAL` keyword is used, ensuring that the most current data after deduplication is retrieved.
+
+For instance:
+
+```sql
+SELECT count()
+FROM rmt_example
+FINAL
+```
+
+Utilizing the `FINAL` clause in queries ensures accuracy concerning duplicates and version-based deletions. For more comprehensive details, including optimizations, reviewing the [detailed guide on ReplacingMergeTree](/guides/replacing-merge-tree) is recommended, which provides further insights into efficient use and setup practices.

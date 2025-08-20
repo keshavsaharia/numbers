@@ -1,0 +1,55 @@
+# Real Rationals
+
+- Compare iOS calculator to Android calculator.
+
+The purpose of a calculator app is to give correct answers. [Floating point numbers](/learn/floats/) are inherently imprecise, so a calculator that relies entirely on floating point arithmetic is like a house built on sand.
+
+## Representing numbers
+
+- Most numbers cannot be precisely represented by floating point values, and must be rounded.
+- Simple operations like summation of floating point values requires careful algorithms to handle error
+
+## Big numbers
+
+- JavaScript `BigInt` solves this problem for integers
+- Represent a fraction as two `BigInt` values
+- How about representing pi or sqrt(2)?
+
+## Algebraic numbers
+
+- Represent numbers by polynomial, so sqrt(2) is x^2 - 2 = 0
+- Math operations are a bit trickier (add polynomials)
+- Multiply with polynomial composition and resultants
+- Still only works for algebraic numbers, does not get us pi
+
+Create a diagram here:
+- Image of hierarchy (natural (N) - integer (Z) - rational (Q) - real algebraic (A_R) - real (R) )
+- Highlight irrational (real algebraic + real) and transcendental (Real)
+- Real examples: e, pi, -2pi, cos(theta)
+
+## Rational real numbers
+
+- link to mark bridger book 
+
+Constructive real numbers are numbers which can be computed to an arbitrary degree of accuracy.
+
+You can't give me every single digit of $$\pi$$, but you can define a function $$\pi(\delta)$$ which gives me the value of $$\pi$$ that is within $$\delta$$ of the true value.
+
+```javascript
+// Leibniz formula: pi/4 = 1 - 1/3 + 1/5 - 1/7
+function pi(tolerance) {
+    let sum = 0;
+    let i = 0;
+    let term = 1;
+
+    while (Math.abs(term) > tolerance) {
+        term = 1 / (2 * i + 1);
+        sum = i % 2 == 0 ? (sum + term) : (sum - term);
+        i++;
+    }
+
+    return sum * 4;
+}
+```
+
+

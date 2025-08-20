@@ -1,0 +1,59 @@
+# vLLM
+
+vLLM is an open-source, high-performance inference engine for [large language models](/llm). It provides fast, memory-efficient, and scalable inference, making it ideal for serving production-level workloads with modern transformer-based models like GPT, LLaMA, Mistral, and more.
+
+## Getting started
+
+First, install vLLM:
+
+```bash
+pip install vllm
+```
+
+Then, run the following command to start the API server:
+
+```bash
+python -m vllm.entrypoints.openai.api_server \
+    --model meta-llama/Llama-2-7b-chat-hf \
+    --port 8000
+```
+
+This launches vLLM with the OpenAI API-compatible interface on port 8000 using the LLaMA 2 7B model from [Hugging Face](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf). You can test that the server is running by sending a request to the API:
+
+```python
+import openai
+
+openai.api_key = "EMPTY"  # No key required locally
+openai.api_base = "http://localhost:8000/v1"
+
+response = openai.ChatCompletion.create(
+    model="meta-llama/Llama-2-7b-chat-hf",
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "Explain quantum computing in simple terms."}
+    ],
+    temperature=0.7,
+    max_tokens=256,
+    stream=True,  # Optional: Enable streaming response
+)
+
+for chunk in response:
+    print(chunk["choices"][0]["delta"].get("content", ""), end="")
+```
+
+This works just like OpenAI's ChatGPT API, making it easy to switch integrations to and from the public API endpoints without any code changes.
+
+## Usage
+
+```python
+import vllm
+
+```
+
+## Performance
+
+vLLM is designed to be highly efficient, with low latency and high throughput. It uses a variety of techniques to optimize performance, including:
+
+- **Sparse activation**: vLLM uses a sparse activation pattern to reduce memory usage and improve performance.
+- **Weight sharing**: vLLM uses weight sharing to reduce memory usage and improve performance.
+- **Quantization**: vLLM uses quantization to reduce memory usage and improve performance.

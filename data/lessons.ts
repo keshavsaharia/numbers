@@ -7,18 +7,27 @@ export default {
     sections: [
         {
             title: 'Binary integers',
-            description: 'Learn how whole numbers are stored in a digital computer.',
-            link: '/learn/binary'
+            description: 'An interactive guide to storing natural numbers in a digital computer.',
+            link: '/learn/binary',
+            path: 'binary'
         },
-        // {
-        //     title: 'Binary arithmetic',
-        //     description: 'A visual guide to binary arithmetic.',
-        //     link: '/learn/arithmetic'
-        // },
+        {
+            title: 'Logic gates',
+            description: 'The fundamental building blocks of digital circuits.',
+            link: '/learn/logic-gates',
+            path: 'logic-gates'
+        },
+        {
+            title: 'Binary arithmetic',
+            description: 'A visual guide to binary arithmetic.',
+            link: '/learn/arithmetic',
+            path: 'arithmetic'
+        },
         {
             title: 'Floating point numbers',
             description: 'Learn how floating point numbers are represented in a digital computer.',
-            link: '/learn/floats'
+            link: '/learn/floats',
+            path: 'floats'
         }
     ]
 } satisfies SectionGroup

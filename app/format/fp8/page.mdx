@@ -4,13 +4,23 @@ import { fp8 } from '@/data/fp8'
 
 The 8-bit floating point format is a compact numerical representation of real numbers, where each number is represented by a single byte. It is commonly used in machine learning applications where memory usage and bandwidth capabilities are especially important.
 
+<FP8Editor fp={ fp8.e4m3 }/>
+
 ## Anatomy of an FP8
 
 Unlike [FP32](/numbers/quantize/fp32), FP8 is not standardized - while every FP8 format uses 1 bit for the sign, the choice on how the remaining 7 bits should be divided between mantissa and exponent is dependent on the specific FP8 format being used.
 
+Here is an example specification for an FP8 format named `E4M3`.
+
+<FP8Specification fp={ fp8.e4m3 }/>
+
 Since an FP8 can represent 256 possible values, it is easy to visualize their numeric range and distribution with a table.
 
 <FP8Table fp={ fp8.e4m3 }/>
+
+## Finite and unsigned zeros
+
+There is also a separate specification for an FP8 named `E4M3FNUZ`, where `FN` means **finite** and `UZ` means **unsigned zeros**. 
 
 <FP8Table fp={ fp8.e4m3fnuz }/>
 

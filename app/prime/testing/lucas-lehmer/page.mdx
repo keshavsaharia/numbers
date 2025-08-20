@@ -1,0 +1,189 @@
+# Lucas-Lehmer Primality Test
+
+The Lucas-Lehmer primality test is a deterministic primality test specifically designed for Mersenne numbers. A Mersenne number is a number of the form $$M_p = 2^p - 1$$ where $$p$$ is prime. The test is remarkably efficient for these numbers and is used to find some of the largest known prime numbers.
+
+## Mathematical Foundation
+
+The Lucas-Lehmer test is based on the following theorem:
+
+For $$p > 2$$, the Mersenne number $$M_p = 2^p - 1$$ is prime if and only if $$M_p$$ divides $$S_{p-2}$$, where $$S_n$$ is defined by:
+
+$$ S_0 = 4 $$<br/>
+$$ S_n = S_{n-1}^2 - 2 $$
+
+This leads to a surprisingly simple and efficient algorithm for testing Mersenne primes.
+
+## Time and Space Complexity
+
+The time complexity for testing $$M_p$$ is $$ O(p \log p \log \log p) $$, and the space complexity is $$O(p)$$, where $$p$$ is the exponent of the Mersenne number.
+
+## JavaScript Implementation
+
+Here's an implementation of the Lucas-Lehmer test.
+
+```javascript
+function lucasLehmer(p) {
+    // Handle edge cases
+    if (p === 2) return true;  // 2^2 - 1 = 3 is prime
+    if (p <= 1) return false;
+    
+    // Calculate Mersenne number M_p = 2^p - 1
+    const mersenne = BigInt(Math.pow(2, p)) - 1n;
+    
+    // Initialize s = 4
+    let s = 4n;
+    
+    // Perform p-2 iterations
+    for (let i = 0; i < p - 2; i++) {
+        // Calculate next term: s = (s * s - 2) mod M_p
+        s = ((s * s) - 2n) % mersenne;
+        
+        // If s becomes negative, add mersenne
+        if (s < 0n) s += mersenne;
+    }
+    
+    // M_p is prime if and only if s = 0
+    return s === 0n;
+}
+
+// Example usage:
+console.log(lucasLehmer(3));   // true (2^3 - 1 = 7 is prime)
+console.log(lucasLehmer(11));  // true (2^11 - 1 = 2047 is prime)
+```
+
+## Optimized Implementation
+
+For larger numbers, we need more efficient modular arithmetic:
+
+```javascript
+function modMultiply(a, b, m) {
+    let result = 0n;
+    a = a % m;
+    while (b > 0n) {
+        if (b % 2n === 1n) {
+            result = (result + a) % m;
+        }
+        a = (a * 2n) % m;
+        b = b / 2n;
+    }
+    return result;
+}
+
+function optimizedLucasLehmer(p) {
+    if (p === 2) return true;
+    if (p <= 1) return false;
+    
+    // Calculate Mersenne number
+    const m = (1n << BigInt(p)) - 1n;
+    
+    // Initialize s = 4
+    let s = 4n;
+    
+    // Perform p-2 iterations with optimized arithmetic
+    for (let i = 0; i < p - 2; i++) {
+        s = modMultiply(s, s, m) - 2n;
+        if (s < 0n) s += m;
+    }
+    
+    return s === 0n;
+}
+```
+
+## Finding Mersenne Primes
+
+Here's a function to find Mersenne primes up to a given exponent:
+
+```javascript
+function findMersennePrimes(maxExponent) {
+    function isPrime(n) {
+        if (n <= 1) return false;
+        if (n <= 3) return true;
+        if (n % 2 === 0) return false;
+        
+        for (let i = 3; i * i <= n; i += 2) {
+            if (n % i === 0) return false;
+        }
+        return true;
+    }
+    
+    const mersennePrimes = [];
+    
+    for (let p = 2; p <= maxExponent; p++) {
+        if (isPrime(p) && lucasLehmer(p)) {
+            mersennePrimes.push({
+                exponent: p,
+                value: BigInt(Math.pow(2, p)) - 1n
+            });
+        }
+    }
+    
+    return mersennePrimes;
+}
+
+// Example usage:
+console.log(findMersennePrimes(11));
+```
+
+## Applications
+
+The Lucas-Lehmer test is used in several important contexts:
+
+1. Finding large prime numbers (GIMPS project)
+2. Perfect number discovery (related to Mersenne primes)
+3. Cryptographic applications
+4. Number theory research
+
+## Historical Significance
+
+Mersenne primes, tested using the Lucas-Lehmer test, have led to:
+
+1. Discovery of the largest known prime numbers
+2. Advances in computer arithmetic
+3. Development of distributed computing projects
+4. Better understanding of prime number distribution
+
+## Performance Considerations
+
+For optimal performance:
+
+1. Use efficient modular arithmetic
+2. Implement Montgomery reduction for large numbers
+3. Use parallel processing for multiple tests
+4. Optimize memory usage for large exponents
+
+## Example: Testing Known Mersenne Primes
+
+```javascript
+const knownMersennePrimeExponents = [
+    2, 3, 5, 7, 13, 17, 19, 31, 61, 89, 107, 127
+];
+
+function testKnownMersennePrimes() {
+    const results = knownMersennePrimeExponents.map(p => ({
+        exponent: p,
+        isPrime: lucasLehmer(p),
+        value: `2^${p} - 1`
+    }));
+    
+    return results;
+}
+```
+
+## Limitations
+
+1. Only works for Mersenne numbers
+2. Requires significant computational resources for large exponents
+3. Memory intensive for very large numbers
+4. Not suitable for general primality testing
+
+## Best Practices
+
+When implementing the Lucas-Lehmer test:
+
+1. Use appropriate data types (BigInt for JavaScript)
+2. Implement efficient modular arithmetic
+3. Consider memory management for large numbers
+4. Verify input is appropriate (p should be prime)
+5. Handle edge cases properly
+
+For general primality testing, other algorithms like Miller-Rabin are more appropriate. The Lucas-Lehmer test should be used specifically for testing Mersenne numbers. 

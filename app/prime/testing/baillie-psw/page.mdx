@@ -1,0 +1,268 @@
+# Baillie-PSW Primality Test
+
+The Baillie-PSW test is a probabilistic primality test that combines the [Miller-Rabin test](/prime/testing/miller-rabin) with a Lucas probable prime test. Despite being probabilistic, no composite number has been found that passes the test, making it extremely reliable for practical purposes.
+
+## Mathematical Foundation
+
+The Baillie-PSW test consists of three main steps:
+
+1. Trial division by small primes
+2. A Miller-Rabin primality test with base 2
+3. A Lucas probable prime test with carefully chosen parameters
+
+The test uses the following mathematical concepts:
+
+For the Lucas test part, we use:
+
+$$
+U_n = \frac{\alpha^n - \beta^n}{\alpha - \beta}
+$$
+
+where $$\alpha$$ and $$\beta$$ are the roots of the quadratic equation $$x^2 - Px + Q = 0$$ for carefully chosen $$P$$ and $$Q$$.
+
+## Time and Space Complexity
+
+The time complexity is:
+
+$$
+O(\log^3 n)
+$$
+
+The space complexity is:
+
+$$
+O(\log n)
+$$
+
+## JavaScript Implementation
+
+Here's a complete implementation of the Baillie-PSW test:
+
+```javascript
+function modPow(base, exponent, modulus) {
+    if (modulus === 1n) return 0n;
+    
+    let result = 1n;
+    base = base % modulus;
+    
+    while (exponent > 0n) {
+        if (exponent % 2n === 1n) {
+            result = (result * base) % modulus;
+        }
+        base = (base * base) % modulus;
+        exponent = exponent / 2n;
+    }
+    
+    return result;
+}
+
+function millerRabinBase2(n) {
+    if (n <= 1n || n === 4n) return false;
+    if (n <= 3n) return true;
+    
+    // Write n-1 as d * 2^s
+    let s = 0n;
+    let d = n - 1n;
+    while (d % 2n === 0n) {
+        s++;
+        d /= 2n;
+    }
+    
+    // Test with base 2
+    let x = modPow(2n, d, n);
+    if (x === 1n || x === n - 1n) return true;
+    
+    while (s > 1n) {
+        x = (x * x) % n;
+        if (x === n - 1n) return true;
+        if (x === 1n) return false;
+        s--;
+    }
+    
+    return false;
+}
+
+function findLucasParameters(n) {
+    let d = 5n;
+    let sign = 1n;
+    
+    while (true) {
+        const jacobiSymbol = calculateJacobiSymbol(d * sign, n);
+        if (jacobiSymbol === -1n) {
+            return [1n, d * sign];
+        }
+        
+        d += 2n;
+        sign = -sign;
+        
+        if (d > 1000n) {
+            throw new Error("Suitable parameters not found");
+        }
+    }
+}
+
+function calculateJacobiSymbol(a, n) {
+    if (n <= 0n || n % 2n === 0n) {
+        throw new Error("n must be positive odd number");
+    }
+    
+    a = a % n;
+    let result = 1n;
+    
+    while (a !== 0n) {
+        while (a % 2n === 0n) {
+            a = a / 2n;
+            const mod8 = n % 8n;
+            if (mod8 === 3n || mod8 === 5n) {
+                result = -result;
+            }
+        }
+        
+        [a, n] = [n, a];
+        if (a % 4n === 3n && n % 4n === 3n) {
+            result = -result;
+        }
+        a = a % n;
+    }
+    
+    return n === 1n ? result : 0n;
+}
+
+function lucasTest(n) {
+    if (n === 2n) return true;
+    if (n <= 1n || n % 2n === 0n) return false;
+    
+    const [p, d] = findLucasParameters(n);
+    const q = 1n;
+    
+    // Calculate n+1 = d * 2^s
+    let s = 0n;
+    let k = n + 1n;
+    while (k % 2n === 0n) {
+        s++;
+        k /= 2n;
+    }
+    
+    // Calculate initial Lucas sequence values
+    let u = 1n;
+    let v = p;
+    let q2 = 2n * q;
+    k = k / 2n;
+    
+    // Main loop
+    while (k > 0n) {
+        if (k % 2n === 1n) {
+            u = (u * v) % n;
+            v = (v * v - q2) % n;
+        }
+        v = (v * v - q2) % n;
+        k = k / 2n;
+    }
+    
+    if (u === 0n) return true;
+    
+    // Additional checks
+    for (let r = 0n; r < s; r++) {
+        v = (v * v - q2) % n;
+        if (v === 0n) return true;
+    }
+    
+    return false;
+}
+
+function bailliePSW(n) {
+    // Convert to BigInt
+    n = BigInt(n);
+    
+    // Step 1: Trial division by small primes
+    const smallPrimes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37];
+    for (let p of smallPrimes) {
+        if (n === BigInt(p)) return true;
+        if (n % BigInt(p) === 0n) return false;
+    }
+    
+    // Step 2: Miller-Rabin base 2
+    if (!millerRabinBase2(n)) return false;
+    
+    // Step 3: Lucas test
+    return lucasTest(n);
+}
+
+// Example usage:
+console.log(bailliePSW(17));    // true
+console.log(bailliePSW(561));   // false (Carmichael number)
+```
+
+## Optimized Implementation
+
+Here's a version optimized for numbers below 2⁶⁴:
+
+```javascript
+function optimizedBailliePSW(n) {
+    if (n <= 1 || n === 4) return false;
+    if (n <= 3) return true;
+    
+    // Quick check for small factors
+    if (n % 2 === 0) return false;
+    
+    // Use lookup table for small primes
+    const smallPrimes = new Set([
+        3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47
+    ]);
+    
+    if (smallPrimes.has(n)) return true;
+    if ([...smallPrimes].some(p => n % p === 0)) return false;
+    
+    // Perform strong base-2 pseudoprime test
+    if (!millerRabinBase2(BigInt(n))) return false;
+    
+    // Perform Lucas test
+    return lucasTest(BigInt(n));
+}
+```
+
+## Applications
+
+The Baillie-PSW test is used in:
+
+1. Computer algebra systems (e.g., Mathematica)
+2. Cryptographic applications
+3. Number theory research
+4. Prime number generation
+
+## Best Practices
+
+When implementing Baillie-PSW:
+
+1. Use appropriate data types (BigInt for large numbers)
+2. Implement efficient modular arithmetic
+3. Handle edge cases properly
+4. Consider using optimized versions for smaller numbers
+5. Combine with other tests for critical applications
+
+## Limitations
+
+1. Probabilistic nature (though no counterexamples known)
+2. Slower than simpler tests like Miller-Rabin
+3. Complex implementation
+4. Requires careful parameter selection
+
+## Performance Considerations
+
+To optimize performance:
+
+1. Use trial division for small numbers
+2. Implement efficient modular arithmetic
+3. Use lookup tables for small primes
+4. Consider parallel processing for multiple tests
+
+## Historical Significance
+
+The Baillie-PSW test is significant because:
+
+1. No composite number has been found that passes it
+2. Combines deterministic and probabilistic approaches
+3. More reliable than single-algorithm tests
+4. Widely used in mathematical software
+
+For most practical applications, the Baillie-PSW test provides an excellent balance of reliability and performance. 
