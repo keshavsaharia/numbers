@@ -114,10 +114,6 @@ async function deploy() {
 
     console.log(`Deploying ${ files.length } files`)
     for (const file of files) {
-        const body = fs.readFileSync(file)
-        totalLength += body.length
-        
-        // console.log('put ', file, path.relative(__output, file))
         const key = path.relative(__output, file)
         // console.log(`[ writing ] ${ key }`)
         await s3.send(new PutObjectCommand({

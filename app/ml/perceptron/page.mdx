@@ -1,0 +1,162 @@
+import MNISTViewer from '@/components/ml/perceptron/MNISTViewer'
+
+# Perceptron Network
+
+A **multi-layer perceptron** is an interconnected network of virtual neurons that is commonly used in machine learning applications.
+
+> The brain has about 100 trillion synapses... so if you want to learn how it works, you should probably start by building something that has the same kind of structure.<br/>
+> <small>- Geoffrey Hinton (Godfather of deep learning)</small>
+
+The multi-layer perceptron was developed by Frank Rosenblatt in 1957 as a computational model of the human brain. Rosenblatt was tragically ahead of his time, and his 
+untimely death caused his work to go unappreciated until the 1980s. 
+
+## Neurons
+
+In a perceptron network, a **neuron** is a single unit of computation. It can combine input values from other neurons into an output value that can be used as an input to another neuron. 
+
+- TODO: image of a neuron
+
+When a neuron is **activated**, it computes a new output value for itself. By activating groups of neurons in order, a perceptron network gradually builds up an "answer" that is
+stored in a final group of "output neurons".
+
+### The `Neuron` class
+
+The simple `Neuron` class has the following properties:
+
+- a `value`, which stores the current "activation" value of the neuron
+- an array of neurons that it is connected to ("input neurons")
+- an array of weights, which are used to scale the input activation values
+
+```typescript
+class Neuron {
+  value: number;
+  inputs: Neuron[];
+  weights: number[];
+  
+  activate(): void {
+    let total = 0;
+    // Scale each input by its weight
+    for (let i = 0; i < this.inputs.length; i++) {
+      const input = this.inputs[i];
+      const weight = this.weights[i];
+      total += input.value * weight;
+    }
+    // Store the new value for this neuron
+    this.value = total;
+  }
+}
+```
+
+We can start by initializing the weights and bias to random values between -1 and 1. The goal of **backpropagation**, covered in a later section, is to adjust the weights and bias 
+such that the error between the output and the expected output is minimized. We also allow a neuron to be initialized with an empty array of inputs, in which case it is only
+for the purpose of passing a particular value to other neurons in the network (i.e. an "input neuron").
+
+```typescript
+class Neuron {
+  // ... other properties
+  weights: number[];
+  bias: number;
+  
+  constructor(inputs: Neuron[] = []) {
+    this.inputs = inputs;
+    this.initializeWeights();
+    this.initializeBias();
+  }
+
+  initializeWeights(): void {
+    this.weights = new Array(this.inputs.length);
+    for (let i = 0; i < this.weights.length; i++) {
+      this.weights[i] = Math.random() * 2 - 1;
+    }
+  }
+
+  initializeBias(): void {
+    this.bias = Math.random() * 2 - 1;
+  }
+}
+```
+
+A simple network with only two inputs and one output.
+
+```typescript
+const input1 = new Neuron();
+const input2 = new Neuron();
+const output = new Neuron([input1, input2]);
+```
+
+Given two inputs $$a$$ and $$b$$, the output of the network is:
+
+$$
+y = \sigma(a * w_1 + b * w_2)
+$$
+
+Where $$w_1$$ and $$w_2$$ are the weights of the input neurons, and $$b$$ is the bias of the output neuron.
+
+Construct a neural network with a "hidden layer" allows us to encode a more complex function.
+
+```typescript
+const input1 = new Neuron();
+const input2 = new Neuron();
+const hidden1 = new Neuron([input1, input2]);
+const hidden2 = new Neuron([input1, input2]);
+const output = new Neuron([hidden1, hidden2]);
+```
+
+
+
+## Backpropagation
+
+## Sigmoid
+
+The sigmoid function is a common activation function for neurons. It is a smooth, S-shaped curve that is similar to the shape of the human brain's neurons.
+It is defined as:
+
+<Center>
+$$
+\sigma(x) = \frac{1}{1 + e^{-x}}
+$$
+</Center>
+
+The derivative of the sigmoid function is:
+
+<Center>
+$$
+\sigma'(x) = \sigma(x) * (1 - \sigma(x))
+$$
+</Center>
+
+```typescript
+function sigmoid(x: number): number {
+	return 1 / (1 + Math.pow(Math.E, -x));
+}
+	
+function sigmoidDerivative(x: number): number {
+	return x * (1 - x);
+}
+```
+
+We can now extend the `Neuron` class to store an "error" value, which would then be used in the backpropagation algorithm to adjust the weights and bias.
+
+## Layers
+
+A layer is a collection of neurons that are connected to the same inputs.
+
+```typescript
+class Layer {
+  neurons: Neuron[];
+
+  constructor(size: number) {
+}
+```
+
+## History
+
+In 1943, McCulloch and Pitts described the first artificial neural network model. They described neurons as computational cells that receive inputs, process them, and produce outputs.
+
+Neural networks aren't meant to replicate the brain exactly. Instead, they're computational models inspired by the brain, designed to solve problems that are easy for humans but hard for computers.
+
+<MNISTViewer />
+
+## Exercises
+
+- Implement a `bias` which is added to the output of the neuron.
