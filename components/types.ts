@@ -5,6 +5,7 @@ export interface SectionProps {
     title?: string
     description?: string
     base?: string
+    image?: string
     sections: SectionLink[]
 }
 
@@ -28,6 +29,7 @@ export interface SectionLink {
     alias?: string[]       // aliases for content matching
     path?: string          // relative path from group base
     link?: string          // absolute link
+    image?: string
     video?: string
     tags?: string[]
 }

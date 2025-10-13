@@ -21,16 +21,19 @@ export function SectionListBox({ title, description, base, sections }: SectionPr
             </p> }
 
             <div className="flex flex-col space-y-2">
-                { sections.map(({ link, path, title, description, identifier, tags }) => {
+                { sections.map(({ link, path, title, description, image, identifier, tags }) => {
                     const href = getUrl(base, link, path)
                     
                     return (
                         <Link key={ href } href={ href } 
                             className="relative overflow-hidden rounded-2xl bg-zinc-300/30 p-[1px] dark:bg-zinc-600/30">
                             <Spotlight className="from-zinc-900 via-zinc-800 to-zinc-700 blur-2xl dark:from-zinc-100 dark:via-zinc-200 dark:to-zinc-50" size={64}/>
-                            <div className="relative h-full w-full rounded-[15px] bg-white p-4 dark:bg-zinc-950">
+                            <div className="relative h-full w-full rounded-[15px] bg-white dark:bg-zinc-950 flex flex-col justify-between">
                                 <div className="relative flex w-full flex-row justify-between">
-                                    <div>
+                                    { image && <div className="flex-shrink-0 w-28 h-28">
+                                        <img src={image} alt={title} className="w-full h-full object-cover rounded-l-lg" />
+                                    </div> }
+                                    <div className="p-4">
                                         <h4 className="font-semibold dark:text-zinc-100">
                                             { title }
                                         </h4>

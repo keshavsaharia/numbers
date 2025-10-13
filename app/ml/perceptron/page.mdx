@@ -1,4 +1,5 @@
 import MNISTViewer from '@/components/ml/perceptron/MNISTViewer'
+import { InteractiveNeuron } from '@/components/ml/perceptron/InteractiveNeuron'
 
 # Perceptron Network
 
@@ -14,24 +15,26 @@ untimely death caused his work to go unappreciated until the 1980s.
 
 In a perceptron network, a **neuron** is a single unit of computation. It can combine input values from other neurons into an output value that can be used as an input to another neuron. 
 
-- TODO: image of a neuron
+<InteractiveNeuron />
 
 When a neuron is **activated**, it computes a new output value for itself. By activating groups of neurons in order, a perceptron network gradually builds up an "answer" that is
 stored in a final group of "output neurons".
 
 ### The `Neuron` class
 
-The simple `Neuron` class has the following properties:
+The `Neuron` implementation below has the following properties:
 
 - a `value`, which stores the current "activation" value of the neuron
 - an array of neurons that it is connected to ("input neurons")
 - an array of weights, which are used to scale the input activation values
+- a `bias`, which is added to the final activation value
 
 ```typescript
 class Neuron {
   value: number;
   inputs: Neuron[];
   weights: number[];
+  bias: number;
   
   activate(): void {
     let total = 0;
@@ -42,7 +45,7 @@ class Neuron {
       total += input.value * weight;
     }
     // Store the new value for this neuron
-    this.value = total;
+    this.value = total + this.bias;
   }
 }
 ```
@@ -53,7 +56,8 @@ for the purpose of passing a particular value to other neurons in the network (i
 
 ```typescript
 class Neuron {
-  // ... other properties
+  value: number = 0;
+  inputs: Neuron[] = [];
   weights: number[];
   bias: number;
   
@@ -76,7 +80,7 @@ class Neuron {
 }
 ```
 
-A simple network with only two inputs and one output.
+Now we can construct the network from the example above, with two input neurons and one output neuron.
 
 ```typescript
 const input1 = new Neuron();
