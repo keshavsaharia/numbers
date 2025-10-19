@@ -59,7 +59,7 @@ export class ConvolutionLayer extends Layer {
 		}
 	}
 
-	public update(previous: Layer): void {
+	public update(previous: Layer, learningRate: number): void {
 		// For each pair of outmaps
 		for (let j = 0 ; j < this.getDepth() ; j++) {
 			for (let i = 0 ; i < previous.getDepth() ; i++) {
@@ -68,7 +68,7 @@ export class ConvolutionLayer extends Layer {
 				let delta = Matrix.convolution(previous.getLevel(i), this.getError(j));
 
 				// Add to the existing kernel the delta scaled by learning rate
-				delta = Matrix.addMatrix(this.getKernel(i, j), Matrix.multiplyScalar(delta, CNN.learningRate));
+				delta = Matrix.addMatrix(this.getKernel(i, j), Matrix.multiplyScalar(delta, learningRate));
 
 				// Store the new kernel
 				this.setKernel(i, j, delta);

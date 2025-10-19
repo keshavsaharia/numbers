@@ -1,5 +1,5 @@
 import MNISTViewer from '@/components/ml/perceptron/MNISTViewer'
-import { InteractiveNeuron } from '@/components/ml/perceptron/InteractiveNeuron'
+import { InteractiveNeuron } from '@/components/ml/perceptron/interactive-neuron'
 
 # Perceptron Network
 
@@ -17,8 +17,40 @@ In a perceptron network, a **neuron** is a single unit of computation. It can co
 
 <InteractiveNeuron />
 
-When a neuron is **activated**, it computes a new output value for itself. By activating groups of neurons in order, a perceptron network gradually builds up an "answer" that is
-stored in a final group of "output neurons".
+The neuron above computes an unbounded output value (between $$-\infty$$ and $$+\infty$$). For practical purposes, it is useful to scale the
+output value to a bounded range, such as $$[0, 1]$$ or $$[-1, 1]$$. This can be achieved using the **sigmoid** function:
+
+<Center>
+$$
+\sigma(x) = \frac{1}{1 + e^{-x}}
+$$
+</Center>
+
+For any $$x$$ between $$-\infty$$ and $$+\infty$$, the value of $$\sigma(x)$$ is always between $$0$$ and $$1$$. This is useful when you want to use the output of
+the neuron as a probability or a "gating mechanism".
+
+<InteractiveNeuron activationFunction="sigmoid" />
+
+It is also possible to use **hyperbolic tangent** as an activation function.
+
+<Center>
+$$
+\tanh(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}} = \frac{e^{2x} - 1}{e^{2x} + 1} = \frac{\sinh(x)}{\cosh(x)}
+$$
+</Center>
+
+For any $$x$$ between $$-\infty$$ and $$+\infty$$, the value of $$\tanh(x)$$ is always between $$-1$$ and $$1$$. 
+
+<InteractiveNeuron activationFunction="tanh" />
+
+When a neuron is **activated**, it computes a new value that is used by other neurons when they activate. 
+By activating groups of neurons in order, a perceptron network gradually builds up an "answer" within a final group of **output neurons**. In this example, output
+neurons will use `sigmoid` as an activation function, while neurons that are "hidden" within the network (called **hidden neurons**) use `tanh` as an activation function.
+
+### Bounded output
+
+
+The sigmoid function is used at a neuron's final output because it gives a smooth, interpretable way to turn a raw weighted sum (which can be any real number) into something meaningful — typically a value between 0 and 1 that can be treated like a probability or “degree of activation.”
 
 ### The `Neuron` class
 
@@ -28,14 +60,21 @@ The `Neuron` implementation below has the following properties:
 - an array of neurons that it is connected to ("input neurons")
 - an array of weights, which are used to scale the input activation values
 - a `bias`, which is added to the final activation value
+- an `activation` function that produces a bounded output value
 
 ```typescript
+type ActivationFunction = (x: number) => number;
+
 class Neuron {
   value: number;
   inputs: Neuron[];
   weights: number[];
   bias: number;
+  activation: ActivationFunction = tanh;
   
+  /**
+   * Compute a new value for this neuron.
+  */
   activate(): void {
     let total = 0;
     // Scale each input by its weight
@@ -45,14 +84,26 @@ class Neuron {
       total += input.value * weight;
     }
     // Store the new value for this neuron
-    this.value = total + this.bias;
+    this.value = this.activation(total + this.bias);
   }
+}
+
+function sigmoid(x: number): number {
+	return 1 / (1 + Math.exp(-x));
+}
+
+function tanh(x: number): number {
+	return Math.tanh(x);
 }
 ```
 
-We can start by initializing the weights and bias to random values between -1 and 1. The goal of **backpropagation**, covered in a later section, is to adjust the weights and bias 
-such that the error between the output and the expected output is minimized. We also allow a neuron to be initialized with an empty array of inputs, in which case it is only
-for the purpose of passing a particular value to other neurons in the network (i.e. an "input neuron").
+### Initializing the weights and bias
+
+In this example, we will initialize the weights and bias to random values between -1 and 1. The goal of **backpropagation**, covered in the next section, is to adjust the 
+weights and bias such that the error between the output and the expected output is minimized. 
+
+We also allow a neuron to be an "input neuron" that is initialized with an empty array of inputs, in which case it exists simply for the purpose of providing a 
+particular "input value" to other neurons in the network.
 
 ```typescript
 class Neuron {
@@ -60,22 +111,24 @@ class Neuron {
   inputs: Neuron[] = [];
   weights: number[];
   bias: number;
+  activation: ActivationFunction = tanh;
   
   constructor(inputs: Neuron[] = []) {
     this.inputs = inputs;
-    this.initializeWeights();
-    this.initializeBias();
-  }
-
-  initializeWeights(): void {
+    // Initialize the weights
     this.weights = new Array(this.inputs.length);
     for (let i = 0; i < this.weights.length; i++) {
       this.weights[i] = Math.random() * 2 - 1;
     }
+    // Initialize the bias
+    this.bias = Math.random() * 2 - 1;
   }
 
-  initializeBias(): void {
-    this.bias = Math.random() * 2 - 1;
+  /**
+   * Explicitly set the activation value for this neuron.
+  */
+  setValue(value: number): void {
+    this.value = this.activation(value);
   }
 }
 ```
@@ -88,10 +141,10 @@ const input2 = new Neuron();
 const output = new Neuron([input1, input2]);
 ```
 
-Given two inputs $$a$$ and $$b$$, the output of the network is:
+Given two inputs $$a$$ and $$b$$, the output $$x$$ of the neuron is:
 
 $$
-y = \sigma(a * w_1 + b * w_2)
+x = \tanh(a * w_1 + b * w_2 + b)
 $$
 
 Where $$w_1$$ and $$w_2$$ are the weights of the input neurons, and $$b$$ is the bias of the output neuron.
@@ -106,40 +159,106 @@ const hidden2 = new Neuron([input1, input2]);
 const output = new Neuron([hidden1, hidden2]);
 ```
 
-
-
 ## Backpropagation
 
-## Sigmoid
+When the neuron is in its "training phase", we provide example inputs where we know the expected output. We can then use the technique of **backpropagation** to 
+adjust the weights and bias such that the error between the output and the expected output is gradually minimized over time.
 
-The sigmoid function is a common activation function for neurons. It is a smooth, S-shaped curve that is similar to the shape of the human brain's neurons.
-It is defined as:
-
-<Center>
-$$
-\sigma(x) = \frac{1}{1 + e^{-x}}
-$$
-</Center>
-
-The derivative of the sigmoid function is:
-
-<Center>
-$$
-\sigma'(x) = \sigma(x) * (1 - \sigma(x))
-$$
-</Center>
+The first step of backpropagation is to compute the "error" within the output neurons, which is simply the difference between the output and the expected output.
 
 ```typescript
-function sigmoid(x: number): number {
-	return 1 / (1 + Math.pow(Math.E, -x));
+class Neuron {
+  value: number;
+  error: number;
+
+  // ... activate() method to set "value" ...
+
+  setOutputError(expected: number): void {
+    this.error = (expected - this.value) * sigmoidDerivative(this.value);
+  }
 }
-	
+
 function sigmoidDerivative(x: number): number {
 	return x * (1 - x);
 }
 ```
 
+To compute the error of a hidden neuron, we need to compute the error of the neurons that are connected to it, scaled by the weight of the connection.
+
+```typescript
+
+class Neuron {
+  index: number;
+  error: number;
+  weights: number[];
+
+  constructor(index: number, inputs: Neuron[]) {
+    this.index = index;
+    this.inputs = inputs;
+    // ... initialize weights and bias ...
+  }
+
+  // ... activate() method to set "value" ...
+
+  setHiddenError(nextNeurons: Neuron[]) {
+		let totalError = 0;
+		// Go to each forward neuron
+		for (const nextNeuron of nextNeurons) {
+			// Add to the total error
+			totalError += nextNeuron.weights[this.index] * nextNeuron.error;
+		}
+		this.error = totalError * sigmoidDerivative(this.value);
+	}
+
+  setOutputError(expected: number): void {
+    this.error = (expected - this.value) * sigmoidDerivative(this.value);
+  }
+}
+
+function sigmoidDerivative(x: number): number {
+	return x * (1 - x);
+}
+```
+
+Once each neuron computes its error, we can change the weights and bias by a small amount in the direction that reduces the error.
+
+```typescript
+class Neuron {
+  weights: number[];
+  bias: number;
+  
+  changeWeights(learningRate: number): void {
+    for (let i = 0; i < this.weights.length; i++) {
+      const input = this.inputs[i];
+      const inputError = input.value * this.error;
+      this.weights[i] += learningRate * inputError;
+    }
+    this.bias += learningRate * this.error;
+  }
+}
+```
+
 We can now extend the `Neuron` class to store an "error" value, which would then be used in the backpropagation algorithm to adjust the weights and bias.
+
+<div className="flex align-middle justify-center text-3xl">
+<MathTooltip tooltip={<>
+    <strong>How much the loss function changes</strong>
+    when we make a small change to the weights of a neural network layer.
+</>}>
+$$ \frac{\partial L}{\partial W^{[l]}}$$
+</MathTooltip>
+$$=$$ 
+<MathTooltip tooltip={<>
+    <strong>The error signal for the layer</strong>
+    Shows how much each neuron contributed to the total loss.
+</>}>
+$$\delta^{[l]}$$
+</MathTooltip>
+$$\cdot$$
+<MathTooltip tooltip='A transposition of the previous layer, where outputs are rearranged to properly compute how much each output contributed to the total loss.'>
+$$(A^{[l-1]})^T$$
+</MathTooltip>
+</div>
 
 ## Layers
 
@@ -149,9 +268,142 @@ A layer is a collection of neurons that are connected to the same inputs.
 class Layer {
   neurons: Neuron[];
 
-  constructor(size: number) {
+  constructor(size: number, previous?: Layer) {
+    this.neurons = new Array(size);
+    // Connect each neuron to all neurons in the previous layer
+    for (let i = 0; i < size; i++) {
+      this.neurons[i] = new Neuron(previous?.neurons);
+    }
+  }
+
+  /**
+   * For setting a value on the input layer.
+   */
+  setValue(inputValue: number[]): void {
+    for (let i = 0; i < this.neurons.length; i++) {
+      this.neurons[i].setValue(inputValue[i]);
+    }
+  }
+
+  /**
+   * For computing the values in each subsequent layer, up to the output layer.
+   */
+  activate(): void {
+    for (const neuron of this.neurons) {
+      neuron.activate();
+    }
+  }
 }
 ```
+
+After feeding forward the values, we can backpropagate the errors to each neuron in the layer.
+
+```typescript
+class Layer {
+  neurons: Neuron[];
+  
+  setOutputError(expected: number[]): void {
+    for (let i = 0; i < this.neurons.length; i++) {
+      this.neurons[i].setOutputError(expected[i]);
+    }
+  }
+}
+```
+
+For other layers, we need to compute the error with the "forward layer".
+
+```typescript
+class Layer {
+  neurons: Neuron[];
+
+  // other methods...
+  
+  public void computeError(nextLayer: Layer) {
+		for (let i = 0; i < this.neurons.length; i++) {
+			this.neurons[i].computeError(i, nextLayer);
+		}
+	}
+}
+
+class Neuron {
+  neurons: Neuron[];
+
+  // other methods...
+  
+  public void computeError(myIndex: number, nextLayer: Layer) {
+    // Sum the total error of the forward neurons, scaled by the weight
+		let totalError = 0;
+		// Go to each forward neuron
+		for (let i = 0; i < nextLayer.neurons.length; i++) {
+      const nextNeuron = nextLayer.neurons[i];
+      const weightToNextNeuron = nextNeuron.weights[myIndex];
+			// Add to the total error
+			totalError += weightToNextNeuron * nextNeuron.error;
+		}
+
+		this.error = totalError * sigmoidDerivative(this.value);
+  }
+}
+```
+
+## `NeuralNetwork` class
+
+A neural network is a collection of layers that are connected to each other.
+
+```typescript
+class NeuralNetwork {
+  layers: Layer[];
+  inputLayer: Layer;
+  outputLayer: Layer;
+  
+  constructor(sizes: number[]) {
+    this.layers = new Array(sizes.length);
+    this.inputLayer = new Layer(sizes[0]);
+    // Initialize all layers after the input layer
+    for (let i = 1; i < sizes.length ; i++) {
+      const previousLayer = this.layers[i - 1];
+      this.layers[i] = new Layer(sizes[i], previousLayer);
+    }
+    this.outputLayer = this.layers[this.layers.length - 1];
+  }
+}
+```
+
+The neural network has to be able to compute and learn.
+
+```typescript
+
+class NeuralNetwork {
+  layers: Layer[];
+  inputLayer: Layer;
+  outputLayer: Layer;
+  
+  compute(values: number[]) {
+		// Set the input layer
+		this.inputLayer.setValue(values);
+		// Compute each subsequent layer
+		for (int i = 1 ; i < this.layers.length ; i++) {
+			this.layers[i].compute();
+		}
+		// Return the value of the last layer
+		return this.outputLayer.getValue();
+	}
+	
+	public void backpropagate(expected: number[], learningRate: number) {
+		// Compute output error for the output layer
+		this.outputLayer.setOutputError(expected);
+		// Compute error of each hidden layer
+		for (let i = this.layers.length - 2 ; i > 0 ; i--) {
+      const layer = this.layers[i];
+      const nextLayer = this.layers[i + 1];
+			layer.computeError(nextLayer);
+		}
+		// Change the weights of all layers by the learning rate
+		for (const layer of this.layers) {
+			layer.changeWeights(learningRate);
+		}
+	}
+}
 
 ## History
 

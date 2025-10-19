@@ -1,11 +1,10 @@
 import { Layer, InputLayer, OutputLayer, Matrix } from ".";
-import { Dataset } from "./dataset";
+import { ImageClassificationDataset as Dataset } from "../dataset/types";
 
 export class CNN {
 	
-	// learning rate and momentum
-	public static learningRate = 0.1;
-	public static momentum = 0;
+	// learning rate
+	public learningRate = 0.1;
 	
 	// For drawing layers
 	public static padding = 10;
@@ -39,7 +38,7 @@ export class CNN {
 	 * @param rate
 	 */
 	public setLearningRate(rate: number): void {
-		CNN.learningRate = rate;
+		this.learningRate = rate;
 	}
 	
 	// Train the CNN with a default batch size of 50 and without drawing the kernels
@@ -97,8 +96,8 @@ export class CNN {
 			console.log(" with accuracy " + (100.0 * correct / total) + "%");
 			
 			if (1.0 * correct / total > 0.95) {
-				CNN.learningRate = CNN.learningRate * 0.9 + 0.01;
-				console.log("New learning rate: " + CNN.learningRate);
+				this.learningRate = this.learningRate * 0.9 + 0.01;
+				console.log("New learning rate: " + this.learningRate);
 			}
 		}
 	}
@@ -159,7 +158,7 @@ export class CNN {
 	 */
 	private update() {
 		for (let l = 1; l < this.layer.length ; l++) {
-			this.layer[l].update(this.layer[l - 1]);
+			this.layer[l].update(this.layer[l - 1], this.learningRate);
 		}
 	}
 	

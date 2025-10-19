@@ -1,42 +1,70 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Interactive } from '@/components/number/interactive'
 import { Input } from '@/components/ui/input'
+import { sigmoid, SigmoidCurve } from './activation/sigmoid'
+import { tanh, TanhCurve } from './activation/tanh'
 
-const DEFAULT_INPUTS = [1, 2]
-const DEFAULT_WEIGHTS = [3, 4]
-const DEFAULT_BIAS = 0
+const DEFAULT_INPUTS = [1.1, 2.2]
+const DEFAULT_WEIGHTS = [0.3, 0.4]
+const DEFAULT_BIAS = 0.5
 
-export function InteractiveNeuron(initial: { bias?: number, inputs?: number[], weights?: number[] }) {
+export function InteractiveNeuron(initial: { bias?: number, inputs?: number[], weights?: number[], activationFunction?: 'sigmoid' | 'tanh' }) {
   const [ inputs, setInputs ] = useState<number[]>(initial.inputs ?? DEFAULT_INPUTS)
   const [ inputValues, setInputValues ] = useState<string[]>(initial.inputs?.map((input) => input.toString()) ?? DEFAULT_INPUTS.map((input) => input.toString()))
-  const [ weightValues, setWeightValues ] = useState<string[]>(initial.weights?.map((weight) => weight.toString()) ?? DEFAULT_WEIGHTS.map((weight) => weight.toString()))
   const [ weights, setWeights ] = useState<number[]>(initial.weights ?? DEFAULT_WEIGHTS)
+  const [ weightValues, setWeightValues ] = useState<string[]>(initial.weights?.map((weight) => weight.toString()) ?? DEFAULT_WEIGHTS.map((weight) => weight.toString()))
   const [ bias, setBias ] = useState<number>(initial.bias ?? DEFAULT_BIAS)
   const [ biasValue, setBiasValue ] = useState<string>(initial.bias?.toString() ?? DEFAULT_BIAS.toString())
+
+  const { total: initialTotal, output: initialOutput } = computeOutput(inputs, weights, bias)
+  const [ total, setTotal ] = useState<number>(initialTotal)
+  const [ output, setOutput ] = useState<number>(initialOutput)
 
   function setInputNeuron(index: number, newValue: string) {
     setInputValues(inputValues.map((value, i) => i === index ? newValue : value))
     
-    const value = parseFloat(newValue.replace(/[^0-9.]/g, ''))
+    const value = parseFloat(newValue.replace(/[^\-0-9.]/g, ''))
     if (isNaN(value)) return
-    setInputs(inputs.map((input, i) => i === index ? value : input))
+    const newInputs = inputs.map((input, i) => i === index ? value : input)
+    setInputs(newInputs)
+    setNewComputedOutput(newInputs, weights, bias)
   }
 
   function setWeightFromInput(index: number, newValue: string) {
     setWeightValues(weightValues.map((value, i) => i === index ? newValue : value))
-    
-    const value = parseFloat(newValue.replace(/[^0-9.]/g, ''))
+    const value = parseFloat(newValue.replace(/[^\-0-9.]/g, ''))
     if (isNaN(value)) return
-    setWeights(weights.map((weight, i) => i === index ? value : weight))
+    const newWeights = weights.map((weight, i) => i === index ? value : weight)
+    setWeights(newWeights)
+    setNewComputedOutput(inputs, newWeights, bias)
   }
 
   function setBiasFromInput(newValue: string) {
     setBiasValue(newValue)
-    const value = parseFloat(newValue.replace(/[^0-9.]/g, ''))
+    const value = parseFloat(newValue.replace(/[^\-0-9.]/g, ''))
     if (isNaN(value)) return
     setBias(value)
+    setNewComputedOutput(inputs, weights, value)
+  }
+
+  function setNewComputedOutput(inputs: number[], weights: number[], bias: number) {
+    const { total, output } = computeOutput(inputs, weights, bias)
+    setTotal(total)
+    setOutput(output)
+  }
+
+  function computeOutput(inputs: number[], weights: number[], bias: number): { total: number, output: number } {
+    const total = inputs.reduce((acc, input, index) => acc + input * weights[index], 0)
+    let output = total + bias
+    if (initial.activationFunction === 'sigmoid') {
+      return { total, output: sigmoid(output) }
+    }
+    if (initial.activationFunction === 'tanh') {
+      return { total, output: tanh(output) }
+    }
+    return { total, output }
   }
 
   return (
@@ -70,16 +98,30 @@ export function InteractiveNeuron(initial: { bias?: number, inputs?: number[], w
             <HorizontalLine />
         </div>
         <div className="flex flex-col justify-center z-100 ml-[-16px]">
-          <EditableNeuron index={2} inputValue={"0"} setInputValue={() => {}} />
+          <EditableNeuron index={2} inputValue={total.toFixed(3)} setInputValue={() => {}} />
         </div>
-        <div className="z-10 flex flex-col justify-center gap-12">
+        <div className="z-10 w-4 flex flex-col justify-center">
             <HorizontalLine />
         </div>
-        <div className="z-10 flex flex-col justify-center gap-12 w-24">
+        <div className="z-10 flex flex-col justify-center gap-12 w-18">
           <EditableValue value={biasValue} prefix="+" setValue={setBiasFromInput} />
         </div>
-        <div className="z-10 flex flex-col justify-center gap-12">
-          <p className="text-center mx-2">=</p>
+        { initial.activationFunction && (<>
+          <div className="z-10 w-4 flex flex-col justify-center">
+            <HorizontalLine />
+          </div>
+          <div className="z-10 flex flex-col justify-center gap-12">
+            { initial.activationFunction === 'sigmoid' && <SigmoidCurve currentX={total} /> }
+            { initial.activationFunction === 'tanh' && <TanhCurve currentX={total} /> }
+          </div>
+        </>)}
+        <div className="z-10 flex flex-col justify-center">
+          <HorizontalLine arrow />
+        </div>
+        <div className="z-10 flex flex-col justify-center">
+          <p className="text-md text-center font-mono px-2">
+            {output.toFixed(6).replace(/\.?0+$/, '')}
+          </p>
         </div>
       </div>
     </Interactive>
@@ -104,8 +146,11 @@ function EditableValue({ value, prefix, setValue }: { value: string, prefix?: st
   )
 }
 
-function HorizontalLine() {
+function HorizontalLine({ arrow = false }: { arrow?: boolean }) {
   return (
-    <div className="w-10 h-1 bg-zinc-400 dark:bg-zinc-600">&nbsp;</div>
+    <div className="relative w-6 h-1 bg-zinc-400 dark:bg-zinc-600">
+      { arrow && <div className="absolute -top-1 right-0 w-3 h-3 border-b-4 border-r-4 border-zinc-400 dark:border-zinc-600 -rotate-45"></div> }
+      &nbsp;
+    </div>
   )
 }

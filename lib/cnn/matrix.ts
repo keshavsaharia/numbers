@@ -9,11 +9,11 @@ export class Matrix {
   }
 
   static create3D(width: number, height: number, depth: number): number[][][] {
-    const matrix = new Array(depth);
+    const matrix = new Array(width);
     for (let i = 0; i < matrix.length; i++) {
-      matrix[i] = new Array(width);
+      matrix[i] = new Array(height);
       for (let j = 0; j < matrix[i].length; j++) {
-        matrix[i][j] = new Array(height).fill(0);
+        matrix[i][j] = new Array(depth).fill(0);
       }
     }
     return matrix;

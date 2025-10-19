@@ -57,14 +57,4 @@ export class OutputLayer extends ConvolutionLayer {
 		// Unimplemented
 	}
 
-	public draw(x: number, y: number, scale: number): number {
-    if (! this.value) return 0;
-		for (let i = 0 ; i < this.classes ; i++) {
-			const c = Math.round(this.value[i][0][0] * 255);
-			// window.out.color(c, c, c);
-			// Window.out.square(x + scale / 2, y + scale / 2 + i * scale, scale * 4 / 5);
-		}
-		return scale;
-	}
-
 }

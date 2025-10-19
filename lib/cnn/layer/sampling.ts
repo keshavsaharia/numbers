@@ -39,13 +39,8 @@ export class SamplingLayer extends Layer {
 		}
 	}
 
-	public update(previous: Layer): void {
+	public update(): void {
 		// Unimplemented
-	}
-
-	public draw(x: number, y: number, scale: number): number {
-		//return drawKernel(x, y, scale);
-		return 0;
 	}
 	
 }
