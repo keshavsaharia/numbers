@@ -29,33 +29,40 @@ const monoFont = Noto_Sans_Mono({
 })
 
 export default function RootLayout({
-  children
+  children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
-    return (
-        <html lang="en" suppressHydrationWarning>
-            <body className={`${ serifFont.variable } ${monoFont.variable} bg-white tracking-tight antialiased dark:bg-zinc-950`}>
-                <ThemeProvider
-                    enableSystem={true}
-                    attribute="class"
-                    storageKey="theme"
-                    defaultTheme="system"
-                >
-                    <div className="flex min-h-screen w-full flex-col font-[family-name:var(--font-serif)]">
-                        <div className={clsx(
-                            "relative mx-auto w-full flex-1 px-4 pt-20",
-                            "max-w-screen-md"
-                        )}>
-                            <Header />
-                            { children }
-                            <Footer />
-                        </div>
-                    </div>
-                </ThemeProvider>
-                
-                <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-            </body>
-        </html>
-    )
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <body
+        className={`${serifFont.variable} ${monoFont.variable} bg-white tracking-tight antialiased dark:bg-zinc-950`}
+      >
+        <ThemeProvider
+          enableSystem={true}
+          attribute="class"
+          storageKey="theme"
+          defaultTheme="system"
+        >
+          <div className="flex min-h-screen w-full flex-col font-[family-name:var(--font-serif)]">
+            <div
+              className={clsx(
+                'relative mx-auto w-full flex-1 px-4 pt-20',
+                'max-w-screen-xl',
+              )}
+            >
+              <Header />
+              {children}
+              <Footer />
+            </div>
+          </div>
+        </ThemeProvider>
+
+        <script
+          async
+          src="https://scripts.simpleanalyticscdn.com/latest.js"
+        ></script>
+      </body>
+    </html>
+  )
 }

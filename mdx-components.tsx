@@ -3,9 +3,9 @@ import * as typography from '@/components/typography'
 import * as layouts from '@/components/layouts'
 import * as interactive from '@/components/interactive'
 
-import { 
-    FloatingPointNumber, 
-    FloatingPointIntuition
+import {
+  FloatingPointNumber,
+  FloatingPointIntuition,
 } from '@/components/mdx/float-number'
 
 import { HumanNumber } from '@/components/number/human'
@@ -32,43 +32,40 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     pre: pre,
     Center: center,
     wrapper,
-    TopNavigation
+    TopNavigation,
   }
 }
 
 function wrapper({ children }: React.PropsWithChildren) {
-    return (<div className='max-w-screen-md'>
-        { children }
-    </div>)
+  return <div className="max-w-screen-lg">{children}</div>
 }
 
 function pre({ children }: React.PropsWithChildren) {
-    let language = 'python'
-    let code = ''
-    let filename = ''
-    
-    if (children) {
-        const props = (children as any).props
-        if (props.className && props.children) {
-            language = props.className.replace(/^language\-/, '')
-            code = props.children.trim()
-            filename = {
-                python: 'code.py',
-                typescript: 'code.ts',
-                javascript: 'code.js'
-            }[language] || 'code.txt'
-        }
-    }
+  let language = 'python'
+  let code = ''
+  let filename = ''
 
-    return (
-        <pre className='text-md text-gray-700 dark:text-gray-300 font-normal my-4'>
-            <CodeBlock language={ language } filename={ filename } code={ code } />
-        </pre>
-    )
+  if (children) {
+    const props = (children as any).props
+    if (props.className && props.children) {
+      language = props.className.replace(/^language\-/, '')
+      code = props.children.trim()
+      filename =
+        {
+          python: 'code.py',
+          typescript: 'code.ts',
+          javascript: 'code.js',
+        }[language] || 'code.txt'
+    }
+  }
+
+  return (
+    <pre className="text-md my-4 font-normal text-gray-700 dark:text-gray-300">
+      <CodeBlock language={language} filename={filename} code={code} />
+    </pre>
+  )
 }
 
 function center({ children }: React.PropsWithChildren) {
-    return (<div className="text-center">
-        { children }
-    </div>)
+  return <div className="text-center">{children}</div>
 }
